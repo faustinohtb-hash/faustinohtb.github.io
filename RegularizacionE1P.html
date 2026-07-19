@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Resultados del Proceso de Regularización 1° Periodo</title>
+    <!-- Librería para generar Excel con estilos -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <style>
+        /* --- MEJORAS VISUALES GENERALES --- */
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * { font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif; box-sizing: border-box; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            background-color: rgba(255,255,255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 6px;
+            background: linear-gradient(90deg, #3498db, #2c3e50, #3498db);
+        }
+
+        .logo-container { text-align: center; margin-bottom: 25px; }
+
+        .logo {
+            max-width: 220px; height: auto; border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+        .logo:hover { transform: scale(1.02); }
+
+        h1 {
+            color: var(--primary-color); text-align: center; margin-bottom: 5px;
+            font-size: 28px; font-weight: 700; letter-spacing: -0.5px;
+        }
+
+        .subtitle { color: #7f8c8d; text-align: center; margin-bottom: 30px; font-size: 16px; font-weight: 500; }
+
+        .form-group { margin-bottom: 25px; }
+
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568; font-size: 0.95em; }
+
+        select, input, textarea {
+            width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0;
+            border-radius: 8px; font-size: 16px; background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--accent-color); outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+
+        button {
+            background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none;
+            padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px;
+            font-weight: 600; transition: all 0.3s ease; width: auto; margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3); filter: brightness(110%); }
+        button:active { transform: translateY(0); }
+
+        .results { margin-top: 40px; display: none; animation: fadeIn 0.5s ease-in-out; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+        .table-container { overflow-x: auto; overflow-y: visible; max-height: 80vh; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 0; }
+
+        th, td { padding: 12px 15px; text-align: center; border-bottom: 1px solid #e2e8f0; min-width: 80px; }
+        
+        thead { position: sticky; top: 0; z-index: 100; background-color: #f8f9fa; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+
+        th {
+            position: sticky; top: 0; z-index: 101; background-color: #f8f9fa; font-weight: 700;
+            color: var(--primary-color); text-transform: uppercase; font-size: 0.85em; letter-spacing: 0.05em;
+        }
+
+        tr:hover { background-color: #f0f4f8; }
+
+        .numero-progresivo {
+            text-align: center !important; font-weight: bold; color: var(--accent-color); min-width: 50px;
+            position: sticky !important; left: 0 !important; z-index: 50 !important;
+            background-color: #f8f9fa !important; border-right: 2px solid #e2e8f0;
+        }
+
+        .nombre-alumno {
+            text-align: left !important; font-weight: 600; color: #2d3748; min-width: 220px;
+            position: sticky !important; left: 50px !important; z-index: 50 !important;
+            background-color: #f8f9fa !important; border-right: 2px solid #e2e8f0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+
+        .telefono-tutor { display: none !important; text-align: center !important; font-weight: 600; min-width: 120px; color: #16a085; }
+
+        .promedio { font-weight: bold; background-color: #f1f5f9; color: #4a5568; }
+
+        .input-recuperacion {
+            width: 55px; padding: 6px; text-align: center; font-weight: bold;
+            border: 1px solid #cbd5e0; border-radius: 6px; background-color: #fffbe6;
+            transition: border-color 0.2s;
+        }
+        .input-recuperacion:focus { background-color: #fff; border-color: #d69e2e; }
+
+        .header-recuperacion { background-color: #fefcbf; color: #744210; font-size: 0.85em; }
+
+        /* --- INDICADOR DE CARGA (Actualizando) --- */
+        #loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* ------------------------------------- */
+
+        .calificacion-especial { background-color: #fefcbf; font-weight: bold; color: #744210; }
+        .calificacion-baja { background-color: #fed7d7; color: #9b2c2c; font-weight: bold; }
+        .calificacion-vacia { background-color: #bee3f8; color: #2c5282; font-weight: bold; }
+
+        .print-section {
+            margin-top: 30px; padding: 20px; background-color: #f8f9fa;
+            border-radius: 8px; border: 1px solid #e2e8f0;
+        }
+
+        .print-section h3 { margin-top: 0; color: var(--primary-color); margin-bottom: 15px; }
+
+        .print-button {
+            background-color: #27ae60; color: white; border: none; padding: 10px 20px;
+            border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 600;
+            transition: background-color 0.3s; width: auto; margin-right: 10px;
+            box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2);
+        }
+
+        .print-button:hover { background-color: #219150; }
+        
+        .excel-button { background: linear-gradient(135deg, #217346, #1e6b41); color: white; box-shadow: 0 4px 6px rgba(33, 115, 70, 0.2); }
+        .excel-button:hover { background: linear-gradient(135deg, #1e6b41, #185a37); }
+
+        .cartas-button { background: linear-gradient(135deg, #c0392b, #a93226); color: white; box-shadow: 0 4px 6px rgba(192, 57, 43, 0.2); }
+        .cartas-button:hover { background: linear-gradient(135deg, #a93226, #922b21); }
+
+        .print-preview { margin-top: 20px; padding: 15px; background-color: white; border: 1px solid #e2e8f0; border-radius: 6px; display: none; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 20px; }
+
+        .back-button {
+            background-color: #34495e; color: white; border: none; padding: 10px 20px;
+            border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 600;
+            transition: background-color 0.3s; width: auto; text-decoration: none;
+            display: inline-block; box-shadow: 0 4px 6px rgba(52, 73, 94, 0.2);
+        }
+
+        .whatsapp-section { margin-top: 30px; padding: 25px; background-color: #f0fdf4; border-radius: 8px; border: 1px solid #c6f6d5; display: none;}
+        .whatsapp-section h3 { margin-top: 0; color: #22543d; margin-bottom: 15px; }
+
+        .reunion-config {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .reunion-field {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-enviar-individual { background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.3s; width: auto; display: inline-flex; align-items: center; gap: 5px; margin-right: 5px; margin-bottom: 5px; box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2); }
+        .btn-enviar-individual:hover { background: linear-gradient(135deg, #128C7E, #075E54); transform: translateY(-1px); }
+
+        .btn-guardar-cambios { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.3s; width: auto; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 5px; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2); }
+        .btn-guardar-cambios:hover { background: linear-gradient(135deg, #2563eb, #1d4ed8); transform: translateY(-1px); }
+
+        .btn-carta-agradecimiento { background: linear-gradient(135deg, #8b5cf6, #6366f1); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.3s; width: auto; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 5px; box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2); }
+        .btn-carta-agradecimiento:hover { background: linear-gradient(135deg, #7c3aed, #4f46e5); transform: translateY(-1px); }
+
+        .btn-enviar-individual img, .btn-guardar-cambios img, .btn-carta-agradecimiento img { width: 16px; height: 16px; filter: brightness(0) invert(1); }
+        
+        /* CAMBIO SOLICITADO: Ocultar botón Carta */
+        .btn-carta-agradecimiento {
+            display: none !important;
+        }
+       
+        .opciones-ocultas { display: none; }
+       
+        /* --- CONTENEDOR DE CARTAS PARA IMPRESIÓN --- */
+        .carta-container { display: none; position: absolute; top: 0; left: 0; width: 100%; background-color: white; z-index: 1000; overflow: auto; height: 100%; }
+
+        /* Estilo para asegurar que cada carta ocupe una página */
+        .carta-wrapper {
+            page-break-after: always; 
+            width: 100%;
+            max-width: 100%;
+            padding-bottom: 0;
+        }
+
+        .carta { 
+            max-width: 800px; margin: 0 auto; padding: 15mm; font-family: 'Times New Roman', Times, serif; 
+            font-size: 13px; line-height: 1.3; box-shadow: 0 0 20px rgba(0,0,0,0.1); 
+            background: white; 
+        }
+
+        .carta h1 { text-align: center; font-size: 16px; margin-bottom: 5px; color: #333; text-transform: uppercase; text-decoration: underline; }
+        .carta h2 { font-size: 13px; margin-top: 10px; margin-bottom: 5px; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 2px; font-weight: bold; }
+        .carta p { margin-bottom: 4px; text-align: justify; font-size: 11pt; }
+        .carta .intro-text { font-style: italic; margin-bottom: 15px; text-align: center; }
+        .carta table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        .carta th, .carta td { border: 1px solid #333; padding: 3px; text-align: center; font-size: 10pt; }
+        .carta th { background-color: #f2f2f2; font-weight: bold; }
+        .carta .signature-container { display: flex; justify-content: space-between; margin-top: 25px; }
+        .carta .signature-box { width: 45%; text-align: center; }
+        .carta .signature-line { border-bottom: 1px solid #333; height: 15px; margin-top: 40px; margin-bottom: 3px; }
+        .carta .signature-label { font-size: 10pt; font-weight: bold; }
+        .carta ul { padding-left: 18px; margin-bottom: 5px; }
+        .carta ul li { margin-bottom: 2px; font-size: 10pt; }
+        
+        /* --- NUEVO ESTILO HEADER CON LOGO --- */
+        .header-carta-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .header-text-group {
+            flex: 1;
+            text-align: center; /* CAMBIO: De left a center para centrar el texto */
+            padding-right: 20px; /* Espacio extra para que no choque con el logo si la pantalla es pequeña */
+        }
+        .header-image-group {
+            flex: 0 0 auto; /* No crecer ni encoger */
+            margin-left: 20px;
+            text-align: right;
+        }
+        .logo-carta {
+            max-width: 130px;
+            height: auto,
+            display: block;
+        }
+        /* ------------------------------- */
+
+        .close-carta {
+            position: fixed; top: 10px; right: 10px; background-color: #e53e3e;
+            color: white; border: none; border-radius: 50%; width: 30px; height: 30px;
+            font-size: 16px; cursor: pointer; z-index: 2000; display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .close-carta:hover { background-color: #c53030; }
+
+        .info {
+            background-color: #e6fffa; border-left: 4px solid #38b2ac; padding: 15px;
+            margin-bottom: 25px; border-radius: 4px; color: #285e61; font-size: 0.95em;
+        }
+
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; color: #a0aec0; font-size: 13px; }
+
+        /* --- ESTILOS DE IMPRESIÓN (AJUSTE AGRESIVO PARA ELIMINAR ESPACIOS) --- */
+        @media print {
+            /* Ocultar todo excepto el contenedor de cartas */
+            body > * { display: none !important; }
+            
+            .carta-container[style*="block"] { display: block !important; position: static !important; width: 100% !important; height: auto !important; overflow: visible !important; background-color: white !important; z-index: 1 !important; }
+            
+            .close-carta { display: none !important; }
+
+            body { background-color: white; color: #000; margin: 0; padding: 0; }
+            
+            /* Ajustes críticos para eliminar espacios en blanco */
+            .carta { 
+                box-shadow: none !important; margin: 0 !important; 
+                padding: 5mm 5mm 2mm 5mm !important; /* Padding reducido al mínimo */
+                width: 100% !important; max-width: 100% !important; font-size: 9pt !important; 
+                line-height: 1.05 !important; /* Interlineado muy apretado para eliminar espacios verticales */
+                border: none !important;
+            }
+            
+            /* Ajustes específicos para el nuevo header en impresión */
+            .header-carta-container {
+                margin-bottom: 5mm !important;
+                border-bottom: none !important; /* Quitar borde en impresión para ahorrar tinta */
+                align-items: flex-start !important;
+            }
+            .header-text-group {
+                text-align: center !important; /* CAMBIO: Texto centrado también en impresión */
+                padding-right: 0 !important;
+            }
+            .logo-carta {
+                max-width: 90px !important; /* Logo más pequeño en impresión */
+                height: auto !important;
+            }
+            .carta .header-text-group h3 { 
+                font-size: 11pt !important; 
+                margin-bottom: 2mm !important; /* CAMBIO: Agregado espacio abajo */
+            }
+            .carta .header-text-group p { 
+                font-size: 9pt !important; 
+                /* CAMBIO: Agregado espacio arriba y abajo para que no se monte sobre otros textos */
+                margin: 1mm 0 2mm 0 !important; 
+                display: block !important; 
+                text-align: center !important; 
+            }
+            .carta .header-text-group h1 { 
+                font-size: 12pt !important; 
+                margin-bottom: 3mm !important; 
+                margin-top: 2mm !important;
+                text-decoration: underline; 
+            }
+
+            /* Resto de estilos de impresión */
+            .carta h2 { font-size: 10pt !important; margin-top: 3mm !important; margin-bottom: 0 !important; padding-bottom: 1mm !important; }
+            
+            /* FORZAR MARGENES DE PÁRRAFO A 0 EN IMPRESIÓN (excepto los modificados con !important inline) */
+            .carta p { margin-bottom: 0mm !important; margin-top: 2mm !important; text-align: justify !important; font-size: 9pt; }
+            
+            .carta .intro-text { margin-bottom: 2mm !important; font-style: normal !important; font-size: 9pt; }
+            .carta table { margin: 3mm 0 !important; font-size: 9pt !important; width: 100%; }
+            .carta th, .carta td { border: 1px solid #000 !important; padding: 1mm 2mm !important; font-size: 9pt !important; }
+            
+            /* FORZAR ESPACIO ENTRE TEXTO Y FIRMAS A 0 (aunque el usuario pidió espacio en el párrafo anterior) */
+            .carta ul { padding-left: 10px !important; margin-top: 0 !important; margin-bottom: 0 !important; }
+            .carta ul li { margin-bottom: 0mm !important; font-size: 9pt !important; line-height: 1.1 !important; }
+            
+            .carta .signature-container { 
+                margin-top: 0mm !important; 
+                display: flex !important; 
+                justify-content: space-between !important;
+                line-height: 1 !important;
+            }
+            .carta .signature-line { border-bottom: 1px solid #000; margin-top: 10mm !important; margin-bottom: 0mm !important; }
+            .carta .signature-label { font-size: 8pt !important; margin-bottom: 0 !important; }
+            .carta .signature-box { width: 48% !important; }
+            
+            /* PARRAFO FINAL (ATENTAMENTE) CERCA A LAS FIRMAS */
+            .carta p:last-child { 
+                /* CAMBIO: Aumentado el margen superior para separar de las firmas */
+                margin-top: 15mm !important; 
+                font-size: 9pt !important; 
+                text-align: center !important; 
+                margin-bottom: 0 !important;
+            }
+            
+            @page { size: letter; margin: 5mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela Secundaria Profesor Honorato Tlaseca Barrera" class="logo">
+        </div>
+       
+        <div class="header-container">
+            <div class="title-container">
+                <h1>Resultados del Proceso de Regularización 1° Periodo</h1>
+                <div class="subtitle">Sistema de Consulta de Calificaciones</div>
+            </div>
+            <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="back-button">Regresar a Inicio</a>
+        </div>
+       
+        <!-- Indicador de Carga -->
+        <div id="loading">
+            <div class="spinner"></div>
+            <p style="font-weight: 600; color: var(--primary-color);">Actualizando datos...</p>
+        </div>
+
+        <div class="info">
+            <p>Seleccione el grado y grupo para consultar las calificaciones de los alumnos. Los resultados se actualizarán automáticamente.</p>
+            <p><strong>Nota:</strong> Se mostrarán <strong>Todos los alumnos</strong> del grado/grupo seleccionado. En la vista de pantalla puede ingresar calificaciones de recuperación.</p>
+            <p><strong>Botón "Generar Cartas Individuales (PDF)":</strong> Generará una vista de impresión con una carta para cada alumno que tenía calificaciones de 5, 6 o sin valor, permitiendo guardar el archivo como PDF.</p>
+        </div>
+       
+        <div class="form-group">
+            <label for="grado">Seleccionar Grado:</label>
+            <select id="grado">
+                <option value="todos" selected>-- Todos los grados --</option>
+                <option value="1">1°</option>
+                <option value="2">2°</option>
+                <option value="3">3°</option>
+            </select>
+        </div>
+       
+        <div class="form-group">
+            <label for="grupo">Seleccionar Grupo:</label>
+            <select id="grupo">
+                <option value="todos" selected>-- Todos los grupos --</option>
+                <option value="A">Grupo A</option>
+                <option value="B">Grupo B</option>
+            </select>
+        </div>
+       
+        <div class="results" id="results">
+            <h2 id="resultados-titulo">Resultados de Calificaciones</h2>
+            <div class="total-alumnos" id="total-alumnos"></div>
+           
+            <div class="table-container">
+                <table id="tabla-calificaciones">
+                    <thead>
+                        <tr>
+                            <th class="numero-progresivo">#</th>
+                            <th class="nombre-alumno">Nombre del Alumno</th>
+                            <th class="telefono-tutor">Teléfono Tutor</th>
+                            <th class="asignatura-1">Asig. 1</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-2">Asig. 2</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-3">Asig. 3</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-4">Asig. 4</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-5">Asig. 5</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-6">Asig. 6</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-7">Asig. 7</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-8">Asig. 8</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-9">Asig. 9</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="asignatura-10">Asig. 10</th>
+                            <th class="header-recuperacion">Nueva</th>
+                            <th class="promedio">Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body"></tbody>
+                </table>
+            </div>
+           
+            <div class="print-section" id="print-section" style="display: none;">
+                <h3>Reporte y Descarga de Calificaciones</h3>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <button class="print-button excel-button" id="descargar-excel">
+                        <svg style="width:16px; height:16px; margin-right:5px; vertical-align:text-bottom;" fill="currentColor" viewBox="0 0 24 24"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10.5,11C8.57,11 7,12.57 7,14.5C7,16.43 8.57,18 10.5,18C12.43,18 14,16.43 14,14.5C14,12.57 12.43,11 10.5,11M10.5,16.5C9.67,16.5 9,15.83 9,15C9,14.17 9.67,13.5 10.5,13.5C11.33,13.5 12,14.17 12,15C12,15.83 11.33,16.5 10.5,16.5M16.5,14C15.67,14 15,13.33 15,12.5C15,11.67 15.67,11 16.5,11C17.33,11 18,11.67 18,12.5C18,13.33 17.33,14 16.5,14M16.5,18C15.67,18 15,17.33 15,16.5C15,15.67 15.67,15 16.5,15C17.33,15 18,15.67 18,16.5C18,17.33 17.33,18 16.5,18Z"/></svg>
+                        Descargar Excel Completo
+                    </button>
+                    <!-- Botón actualizado para generar PDF -->
+                    <button class="print-button cartas-button" id="generar-cartas-pdf">
+                        <svg style="width:16px; height:16px; margin-right:5px; vertical-align:text-bottom;" fill="currentColor" viewBox="0 0 24 24"><path d="M19,8L15,12H18V16H6V12H9L5,8L9,4H6V8H5V3H10L14,7H11V11H17V7H20V8H19M19,19H5V21H19V19Z" /></svg>
+                        Generar Cartas Individuales (PDF)
+                    </button>
+                </div>
+
+                <div class="print-preview" id="print-preview">
+                    <div class="print-header">
+                        <h2>Reporte de Calificaciones Regularizadas</h2>
+                        <p id="print-grado-grupo"></p>
+                        <p>Fecha: <span id="print-fecha"></span></p>
+                    </div>
+                    <div id="print-table-container"></div>
+                    <div class="print-footer">
+                        <p>Escuela Secundaria Profesor Honorato Tlaseca Barrera</p>
+                        <p>Sistema de Gestión Escolar © 2025-2026</p>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="whatsapp-section" id="whatsapp-section">
+                <h3>Enviar Invitación a Reunión por WhatsApp</h3>
+                <!-- Configuración de la reunión -->
+                <div class="reunion-config">
+                    <div class="reunion-field">
+                        <label for="reunion-fecha" style="font-size: 0.85em; color: #22543d;">Fecha:</label>
+                        <input type="text" id="reunion-fecha" value="Lunes 15">
+                    </div>
+                    <div class="reunion-field">
+                        <label for="reunion-hora" style="font-size: 0.85em; color: #22543d;">Hora:</label>
+                        <input type="text" id="reunion-hora" value="9:00 horas">
+                    </div>
+                    <div class="reunion-field">
+                        <label for="reunion-lugar" style="font-size: 0.85em; color: #22543d;">Lugar:</label>
+                        <input type="text" id="reunion-lugar" value="salón de 1º A">
+                    </div>
+                </div>
+                
+                <div class="opciones-ocultas">
+                    <div class="form-group">
+                        <label for="fecha-carta">Fecha para la Carta:</label>
+                        <input type="text" id="fecha-carta" placeholder="Se pondrá la fecha de hoy automáticamente">
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="footer">
+            © 2025-2026 Sistema de Gestión Escolar | Escuela Secundaria Profesor Honorato Tlaseca Barrera | Todos los derechos reservados
+        </div>
+    </div>
+    
+    <!-- Contenedor para las Cartas de Agradecimiento (Batch Print) -->
+    <div class="carta-container" id="carta-container">
+        <button class="close-carta" id="close-carta">×</button>
+        <!-- Aquí se inyectarán múltiples cartas -->
+        <div id="cartas-wrapper-content"></div>
+    </div>
+    
+    <!-- Contenedor para carta individual (vía botón en fila) -->
+    <div class="carta-container" id="carta-container-single" style="z-index: 1001;">
+        <button class="close-carta" id="close-carta-single">×</button>
+        <div class="carta" id="carta-content-single"></div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyytzYDWiN8Jc9CllIQw3qqVX2tkwqkrww0N3iz1Dfd8xRSuaHoX3FvG1BJeV_STL-E/exec';
+            const SCRIPT_URL_CONSULTA = 'https://script.google.com/macros/s/AKfycbzTO3coegMVy30JcNVr9EM7xdg-uIHHJKETzStloG8cC13o9Z_86yMED_CmJkFjDX0u/exec';
+            let rawData = [];
+
+            const selectGrado = document.getElementById('grado');
+            const selectGrupo = document.getElementById('grupo');
+            const results = document.getElementById('results');
+            const resultadosTitulo = document.getElementById('resultados-titulo');
+            const totalAlumnos = document.getElementById('total-alumnos');
+            const tablaBody = document.getElementById('tabla-body');
+            const printSection = document.getElementById('print-section');
+            const printPreview = document.getElementById('print-preview');
+            const printGradoGrupo = document.getElementById('print-grado-grupo');
+            const printFecha = document.getElementById('print-fecha');
+            const printTableContainer = document.getElementById('print-table-container');
+            const pageTitle = document.getElementById('page-title');
+            const whatsappSection = document.getElementById('whatsapp-section');
+            const fechaCartaInput = document.getElementById('fecha-carta');
+            const loading = document.getElementById('loading');
+            const btnDescargarExcel = document.getElementById('descargar-excel');
+            
+            // Referencias contenedores de cartas
+            const cartaContainer = document.getElementById('carta-container');
+            const cartasWrapperContent = document.getElementById('cartas-wrapper-content');
+            const closeCarta = document.getElementById('close-carta');
+            
+            const cartaContainerSingle = document.getElementById('carta-container-single');
+            const cartaContentSingle = document.getElementById('carta-content-single');
+            const closeCartaSingle = document.getElementById('close-carta-single');
+            
+            // Nuevo botón para PDFs
+            const btnGenerarPDFs = document.getElementById('generar-cartas-pdf');
+           
+            let updateTimeout = null;
+            let datosProcesados = [];
+            let datosTutores = [];
+
+            // --- FUNCIÓN AUXILIAR PARA OBTENER FECHA DE HOY ---
+            function obtenerFechaHoy() {
+                const hoy = new Date();
+                const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+                let fechaTexto = hoy.toLocaleDateString('es-ES', opciones);
+                // Capitalizar la primera letra
+                return fechaTexto.charAt(0).toUpperCase() + fechaTexto.slice(1);
+            }
+            // ----------------------------------------------
+
+            // Establecer fecha actual en el input al cargar
+            fechaCartaInput.value = obtenerFechaHoy();
+
+            const camposCalificaciones = [
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA1",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA2",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA3",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA4",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA5",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA6",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA7",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA8",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA9",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA10"
+            ];
+           
+            const camposRecuperacionJSON = [
+                "RECUPERACIÓN ASIGNATURA1", "RECUPERACIÓN ASIGNATURA2", "RECUPERACIÓN ASIGNATURA3", 
+                "RECUPERACIÓN ASIGNATURA4", "RECUPERACIÓN ASIGNATURA5", "RECUPERACIÓN ASIGNATURA6", 
+                "RECUPERACIÓN ASIGNATURA7", "RECUPERACIÓN ASIGNATURA8", "RECUPERACIÓN ASIGNATURA9", 
+                "RECUPERACIÓN ASIGNATURA10"
+            ];
+           
+            const asignaturasPrimerGrado = [
+                "Español", "Inglés", "Artes", "Matemáticas", "Biología",
+                "Geografía", "Historia", "Tecnología", "Formación Cívica y Ética", "Educación Física"
+            ];
+            const asignaturasSegundoGrado = [
+                "Español", "Inglés", "Artes", "Matemáticas", "Física",
+                "Historia", "Formación Cívica y Ética", "Tecnología", "Educación Física"
+            ];
+            const asignaturasTercerGrado = [
+                "Español", "Inglés", "Artes", "Matemáticas", "Química",
+                "Historia", "Formación Cívica y Ética", "Tecnología", "Educación Física"
+            ];
+           
+            // Event Listeners para cerrar modales
+            closeCarta.addEventListener('click', () => cartaContainer.style.display = 'none');
+            closeCartaSingle.addEventListener('click', () => cartaContainerSingle.style.display = 'none');
+            
+            selectGrado.addEventListener('change', () => { if(updateTimeout) clearTimeout(updateTimeout); updateTimeout = setTimeout(realizarConsulta, 500); });
+            selectGrupo.addEventListener('change', () => { if(updateTimeout) clearTimeout(updateTimeout); updateTimeout = setTimeout(realizarConsulta, 500); });
+            
+            btnDescargarExcel.addEventListener('click', descargarExcelCompleto);
+            
+            // NUEVO EVENTO: Generar PDFs masivos
+            btnGenerarPDFs.addEventListener('click', generarCartasIndividualesPDF);
+            
+            // --- FUNCIÓN PRINCIPAL PARA GENERAR PDFs (Imprimir) ---
+            function generarCartasIndividualesPDF() {
+                loading.style.display = 'block'; // Mostrar "Actualizando..."
+
+                setTimeout(() => { // Timeout pequeño para permitir que la UI se actualice antes de bloquear
+                    if (!rawData.datos || rawData.datos.length === 0) {
+                        alert("No hay datos cargados para generar las cartas.");
+                        loading.style.display = 'none';
+                        return;
+                    }
+
+                    const gradoSelect = selectGrado.value;
+                    const grupoSelect = selectGrupo.value;
+                    // USAR FUNCIÓN DE FECHA ACTUAL
+                    const fechaCartaValor = fechaCartaInput.value.trim() || obtenerFechaHoy();
+
+                    // Filtrar alumnos
+                    let alumnosFiltrados = rawData.datos.filter(alumno => {
+                        // Filtro UI
+                        const ag = String(alumno["datospara variables::GRADO"] || "").trim();
+                        const gr = String(alumno["datospara variables::GRUPO"] || "").trim().toUpperCase();
+                        if (gradoSelect !== "todos" && ag !== gradoSelect) return false;
+                        if (grupoSelect !== "todos" && gr !== grupoSelect.toUpperCase()) return false;
+                        return true;
+                    });
+
+                    // Limpiar contenedor anterior
+                    cartasWrapperContent.innerHTML = "";
+                    let contadorCartas = 0;
+
+                    alumnosFiltrados.forEach(alumno => {
+                        const grado = String(alumno["datospara variables::GRADO"] || "1").trim();
+                        const grupo = String(alumno["datospara variables::GRUPO"] || "").trim();
+                        const matricula = alumno["matricula_id"] || "";
+                        const nombreCompleto = `${alumno["DATOS DE ALUMNOS::apellido1"] || ''} ${alumno["DATOS DE ALUMNOS::apellido2"] || ''} ${alumno["DATOS DE ALUMNOS::nombre1"] || ''}`.trim();
+
+                        let asignaturasGrado = asignaturasPrimerGrado;
+                        if (grado === "2") asignaturasGrado = asignaturasSegundoGrado;
+                        if (grado === "3") asignaturasGrado = asignaturasTercerGrado;
+
+                        // VERIFICACIÓN: Tiene 5, 6 o sin valor?
+                        let necesitaCarta = false;
+                        let materiasParaCarta = [];
+
+                        for (let i = 0; i < asignaturasGrado.length; i++) {
+                            const oldValRaw = alumno[camposCalificaciones[i]];
+                            const newValRaw = alumno[camposRecuperacionJSON[i]];
+                            
+                            let oldVal = null;
+                            // Verificar si es 5, 6 o vacío/sin valor
+                            if (oldValRaw !== undefined && oldValRaw !== null && oldValRaw !== '') {
+                                oldVal = parseFloat(oldValRaw);
+                                if (oldVal <= 6) { // 5 o 6
+                                    necesitaCarta = true;
+                                    materiasParaCarta.push({
+                                        nombre: asignaturasGrado[i],
+                                        anterior: oldVal,
+                                        nueva: (newValRaw && newValRaw.toString().trim() !== "") ? parseFloat(newValRaw) : null
+                                    });
+                                }
+                            } else {
+                                // Sin valor (vacio, null, undefined)
+                                necesitaCarta = true;
+                                materiasParaCarta.push({
+                                    nombre: asignaturasGrado[i],
+                                    anterior: null, // Se muestra como "-"
+                                    nueva: (newValRaw && newValRaw.toString().trim() !== "") ? parseFloat(newValRaw) : null
+                                });
+                            }
+                        }
+
+                        if (necesitaCarta) {
+                            contadorCartas++;
+                            
+                            // --- Construir HTML de la Carta ---
+                            let filasTabla = '';
+                            let tieneResultados = false;
+
+                            materiasParaCarta.forEach(m => {
+                                let displayAnterior = (m.anterior !== null) ? m.anterior : "-";
+                                
+                                // Mostrar "Sin cambios" en lugar de vacío o nulo
+                                let displayNueva = (m.nueva !== null) ? m.nueva : "Sin cambios";
+                                
+                                let styleAnterior = "";
+                                let styleNueva = "";
+
+                                if (m.nueva !== null) {
+                                    tieneResultados = true;
+                                    styleAnterior = "color: #800000; font-weight: bold;";
+                                    styleNueva = "color: #006400; font-weight: bold;";
+                                } else {
+                                    // Estilo para "Sin cambios"
+                                    styleNueva = "color: #555; font-style: italic; font-weight: normal;";
+                                }
+
+                                filasTabla += `
+                                    <tr>
+                                        <td>${m.nombre}</td>
+                                        <td style="${styleAnterior}">${displayAnterior}</td>
+                                        <td style="${styleNueva}">${displayNueva}</td>
+                                    </tr>
+                                `;
+                            });
+
+                            // Texto para resultados
+                            let textoResultados = tieneResultados ? 
+                                "A continuación, presentamos las asignaturas que se han visto beneficiadas con su apoyo:" : 
+                                "A continuación, presentamos las asignaturas que se encontraban en proceso de regularización:";
+
+                            // --- ESTRUCTURA DEL HEADER CON LOGO ---
+                            let cartaHTML = `
+                            <div class="carta-wrapper">
+                                <div class="carta">
+                                    <div class="header-carta-container">
+                                        <div class="header-text-group">
+                                            <h3>Escuela Secundaria Profesor Honorato Tlaseca Barrera</h3>
+                                            <p>CCT: 21EES0265J | Ciclo escolar: 2025-2026</p>
+                                            <h1>RESULTADOS DE REGULARIZACION ACADEMICA</h1>
+                                        </div>
+                                        <div class="header-image-group">
+                                            <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo" class="logo-carta">
+                                        </div>
+                                    </div>
+
+                                    <p class="intro-text">
+                                        <strong>Huehuetlán el Chico, Pue. A ${fechaCartaValor}</strong>
+                                    </p>
+
+                                    <p>
+                                        Estimado padre, madre o tutor(a) del alumno(a): <strong>${nombreCompleto}</strong> de ${grado}° ${grupo} con matrícula <strong>${matricula}</strong>.
+                                    </p>
+
+                                    <p>
+                                        Por medio de la presente, queremos expresar nuestro más sincero agradecimiento por el apoyo brindado y el compromiso demostrado durante el proceso de regularización de aprendizajes de su tutorado. Sabemos que el esfuerzo conjunto entre familia y escuela es fundamental para el éxito académico de nuestros estudiantes.
+                                    </p>
+
+                                    <h2>RESULTADOS DE LA REGULARIZACIÓN</h2>
+                                    <p>${textoResultados}</p>
+
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Asignatura</th>
+                                                <th>Calificación Anterior</th>
+                                                <th>Calificación Actualizada</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${filasTabla}
+                                        </tbody>
+                                    </table>
+
+                                    <h2>RECOMENDACIONES PARA EL CONTINUO ÉXITO ESCOLAR</h2>
+                                    <p>Para asegurar que el(a) alumno(a) no vuelva a rezagarse y mantenga un desempeño óptimo, recomendamos lo siguiente:</p>
+                                    
+                                    <ul>
+                                        <li><strong>Establecer un horario fijo:</strong> Dedicar tiempo diario al estudio y repaso de clases, incluso cuando no haya tareas.</li>
+                                        <li><strong>Supervisión de tareas:</strong> Revisar diariamente las tareas y cuadernos para asegurar que los apuntes estén completos.</li>
+                                        <li><strong>Comunicación constante:</strong> Mantener una comunicación fluida con los maestros para conocer el desempeño y conducta del alumno.</li>
+                                        <li><strong>Uso responsable de tecnología:</strong> Regule el tiempo de uso de dispositivos electrónicos, priorizando el tiempo de estudio y descanso.</li>
+                                        <li><strong>Apoyo emocional:</strong> Reconozca los logros del alumno y motive a mejorar en las áreas difíciles con paciencia y comprensión.</li>
+                                        <li><strong>Asistencia puntual:</strong> Asegúrese de que el alumno asista a clases todos los días y a tiempo, ya que las explicaciones son difíciles de recuperar.</li>
+                                    </ul>
+
+                                    <!-- Parrafo final con margen inferior aumentado a 4em (2 espacios más) -->
+                                    <p style="margin-bottom: 4em !important;">
+                                        Reiteramos nuestro compromiso de trabajar juntos por la formación integral de su hijo(a). Agradecemos de antemano su continua colaboración.  
+                                    </p>
+
+                                    <!-- Contenedor de firmas -->
+                                    <div class="signature-container">
+                                        <div class="signature-box">
+                                            <div class="signature-line"></div>
+                                            <div class="signature-label">Firma del Padre, Madre o Tutor(a)</div>
+                                        </div>
+                                        <div class="signature-box">
+                                            <div class="signature-line"></div>
+                                            <!-- CAMBIO DE FIRMA -->
+                                            <div class="signature-label">Firma del Director</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Parrafo Atentamente con margen superior de 2em (1 espacio arriba) -->
+                                    <p style="text-align: center; margin-top: 2em; font-size: 12px;">
+                                         Atentamente,<br>
+                                        <strong>Escuela Secundaria Profesor Honorato Tlaseca Barrera</strong><br>
+                                        "Educando con Calidad y Calidez"
+                                    </p>
+                                </div>
+                            </div>
+                            `;
+
+                            cartasWrapperContent.insertAdjacentHTML('beforeend', cartaHTML);
+                        }
+                    });
+
+                    loading.style.display = 'none'; // Ocultar "Actualizando..."
+
+                    if (contadorCartas === 0) {
+                        alert("No se encontraron alumnos con calificaciones de 5, 6 o sin valor en este filtro para generar cartas.");
+                        return;
+                    }
+
+                    // Mostrar modal e imprimir
+                    cartaContainer.style.display = 'block';
+                    setTimeout(() => {
+                        window.print();
+                    }, 500);
+                }, 300);
+            }
+            // -------------------------------------------
+
+            async function cargarDatosTutores() {
+                try {
+                    const res = await fetch('https://script.google.com/macros/s/AKfycbwBl2pjwTOHVIfjmGERMBwE9_FlfQc3OF5KUYUjv8XAIF1o3LtYgj2TVb1a6fZg1eZ4/exec');
+                    const data = await res.json();
+                    datosTutores = data;
+                } catch (err) {
+                    console.error('Error al cargar tutores:', err);
+                }
+            }
+
+            function descargarExcelCompleto() {
+                loading.style.display = 'block';
+                if (!rawData.datos || rawData.datos.length === 0) {
+                    alert("No hay datos cargados para exportar.");
+                    loading.style.display = 'none';
+                    return;
+                }
+                let wb = XLSX.utils.book_new();
+                const configuracionHojas = [
+                    { grado: "1", grupo: "A" }, { grado: "1", grupo: "B" },
+                    { grado: "2", grupo: "A" }, { grado: "2", grupo: "B" },
+                    { grado: "3", grupo: "A" }, { grado: "3", grupo: "B" }
+                ];
+                configuracionHojas.forEach(config => {
+                    let alumnosGrupo = rawData.datos.filter(alumno => {
+                        const ag = String(alumno["datospara variables::GRADO"] || "").trim();
+                        const gr = String(alumno["datospara variables::GRUPO"] || "").trim().toUpperCase();
+                        return ag === config.grado && gr === config.grupo;
+                    });
+                    let headers = ["#", "Nombre del Alumno"];
+                    let nombresAsignaturas = [];
+                    if (config.grado === "1") nombresAsignaturas = asignaturasPrimerGrado;
+                    else if (config.grado === "2") nombresAsignaturas = asignaturasSegundoGrado;
+                    else if (config.grado === "3") nombresAsignaturas = asignaturasTercerGrado;
+                    headers.push(...nombresAsignaturas);
+                    let ws_data = [headers];
+                    if (alumnosGrupo.length > 0) {
+                        alumnosGrupo.forEach((alumno, index) => {
+                            let row = [
+                                { v: index + 1, t: 'n' },
+                                { v: `${alumno["DATOS DE ALUMNOS::apellido1"] || ''} ${alumno["DATOS DE ALUMNOS::apellido2"] || ''} ${alumno["DATOS DE ALUMNOS::nombre1"] || ''}`.trim(), t: 's' }
+                            ];
+                            nombresAsignaturas.forEach((asignatura, i) => {
+                                const oldVal = alumno[camposCalificaciones[i]];
+                                const newVal = alumno[camposRecuperacionJSON[i]];
+                                let finalVal = (newVal && newVal.toString().trim() !== "") ? newVal : (oldVal !== undefined && oldVal !== null && oldVal !== '' ? oldVal : '-');
+                                let cellObj = { v: finalVal, t: 's' };
+                                if (newVal && newVal.toString().trim() !== "") {
+                                    cellObj.s = { fill: { fgColor: { rgb: "90EE90" } }, font: { bold: true, color: { rgb: "000000" } }, alignment: { horizontal: "center" } };
+                                } else { cellObj.s = { alignment: { horizontal: "center" } }; }
+                                row.push(cellObj);
+                            });
+                            ws_data.push(row);
+                        });
+                    }
+                    let ws = XLSX.utils.aoa_to_sheet(ws_data);
+                    let wscols = [{wch: 5}, {wch: 35}];
+                    for(let i=0; i < nombresAsignaturas.length; i++) wscols.push({wch: 12});
+                    ws['!cols'] = wscols;
+                    XLSX.utils.book_append_sheet(wb, ws, `${config.grado}°${config.grupo}`);
+                });
+                let datosTodos = rawData.datos.slice();
+                datosTodos.sort((a, b) => {
+                    const gA = String(a["datospara variables::GRADO"] || "").trim();
+                    const gB = String(b["datospara variables::GRADO"] || "").trim();
+                    if (gA !== gB) return gA.localeCompare(gB);
+                    const grA = String(a["datospara variables::GRUPO"] || "").trim().toUpperCase();
+                    const grB = String(b["datospara variables::GRUPO"] || "").trim().toUpperCase();
+                    return grA.localeCompare(grB);
+                });
+                let headersTodos = ["MATRÍCULA", "Nombre", "ASIGNATURA1", "ASIGNATURA2", "ASIGNATURA3", "ASIGNATURA4", "ASIGNATURA5", "ASIGNATURA6", "ASIGNATURA7", "ASIGNATURA8", "ASIGNATURA9", "ASIGNATURA10"];
+                let ws_data_todos = [headersTodos];
+                datosTodos.forEach(alumno => {
+                    let row = [
+                        { v: alumno["matricula_id"] || "", t: 's' },
+                        { v: `${alumno["DATOS DE ALUMNOS::apellido1"] || ''} ${alumno["DATOS DE ALUMNOS::apellido2"] || ''} ${alumno["DATOS DE ALUMNOS::nombre1"] || ''}`.trim(), t: 's' }
+                    ];
+                    const g = String(alumno["datospara variables::GRADO"] || "1").trim();
+                    let nombresAsignaturas = asignaturasPrimerGrado;
+                    if (g === "2") nombresAsignaturas = asignaturasSegundoGrado;
+                    if (g === "3") nombresAsignaturas = asignaturasTercerGrado;
+                    for (let i = 0; i < 10; i++) {
+                        let cellObj = { v: "", t: 's' };
+                        if (i < nombresAsignaturas.length) {
+                            const oldVal = alumno[camposCalificaciones[i]];
+                            const newVal = alumno[camposRecuperacionJSON[i]];
+                            let finalVal = (newVal && newVal.toString().trim() !== "") ? newVal : (oldVal !== undefined && oldVal !== null && oldVal !== '' ? oldVal : '-');
+                            cellObj.v = finalVal;
+                            if (newVal && newVal.toString().trim() !== "") {
+                                cellObj.s = { fill: { fgColor: { rgb: "90EE90" } }, font: { bold: true, color: { rgb: "000000" } }, alignment: { horizontal: "center" } };
+                            } else { cellObj.s = { alignment: { horizontal: "center" } }; }
+                        } else { cellObj = { v: "", t: 's', s: { alignment: { horizontal: "center" } } }; }
+                        row.push(cellObj);
+                    }
+                    ws_data_todos.push(row);
+                });
+                let ws_todos = XLSX.utils.aoa_to_sheet(ws_data_todos);
+                let wscols_todos = [{wch: 15}, {wch: 35}];
+                for(let i=0; i < 10; i++) wscols_todos.push({wch: 12});
+                ws_todos['!cols'] = wscols_todos;
+                XLSX.utils.book_append_sheet(wb, ws_todos, "Todos");
+                const now = new Date();
+                const fileName = `Reporte_Completo_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate()}.xlsx`;
+                loading.style.display = 'none';
+                XLSX.writeFile(wb, fileName);
+            }
+
+            function guardarRecuperacion(btn) {
+                const row = btn.closest('tr');
+                const inputs = row.querySelectorAll('input.input-recuperacion');
+                const matricula = row.getAttribute('data-matricula');
+                if (!matricula) { alert('Error: No se encontró la matrícula del alumno.'); return; }
+                let datosAEnviar = { matricula_id: matricula };
+                let cambiosPendientes = false;
+                inputs.forEach((input) => {
+                    const numAsignatura = input.getAttribute('data-asig');
+                    const valor = input.value.trim();
+                    const valorOriginal = input.defaultValue;
+                    if (valor !== valorOriginal) {
+                        datosAEnviar[`recup_calif_${numAsignatura}`] = valor;
+                        cambiosPendientes = true;
+                    }
+                });
+                if (!cambiosPendientes) { alert('No ha realizado ningún cambio en las calificaciones.'); return; }
+                if (!confirm(`¿Deseas guardar las calificaciones de recuperación para el alumno con matrícula ${matricula}?`)) return;
+                btn.disabled = true;
+                btn.innerHTML = 'Guardando...';
+                fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datosAEnviar) })
+                .then(() => {
+                    alert('Datos enviados correctamente a la hoja de cálculo.');
+                    inputs.forEach(input => {
+                        if(input.value.trim() !== "") { input.style.backgroundColor = '#d4edda'; input.style.borderColor = '#28a745'; }
+                        else { input.style.backgroundColor = '#fffbe6'; input.style.borderColor = '#ccc'; }
+                        input.defaultValue = input.value;
+                    });
+                })
+                .catch(error => { console.error('Error al enviar:', error); alert('Hubo un error al conectar con el servidor.'); })
+                .finally(() => { btn.disabled = false; btn.innerHTML = `<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTE3IDNINWMtMS4xIDAtMiAuOS0yIDJ2MTRjMCAxLjEuOSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMlY5YzAtMS4xLS45LTItMjY5bTAtNEg1WjhoOXYyem0wLTRINXYtMmg5djJ6bTAtNEg5WjhoOXYyem0tNEg5WjhoOXYyem0wLTRINVY5aDl2MnoiLz48L3N2Zz4=" alt="Guardar"> Guardar`; });
+            }
+            
+            function generarCartaAgradecimiento(btn) {
+                const row = btn.closest('tr');
+                const inputs = row.querySelectorAll('input.input-recuperacion');
+                const grado = btn.getAttribute('data-grado');
+                const matricula = btn.getAttribute('data-matricula');
+                const nombre = btn.getAttribute('data-nombre');
+                const grupo = btn.getAttribute('data-grupo');
+                // USAR FUNCIÓN DE FECHA ACTUAL
+                const fechaCartaValor = fechaCartaInput.value.trim() || obtenerFechaHoy();
+                let nombresAsignaturas = asignaturasPrimerGrado;
+                if (grado === "2") nombresAsignaturas = asignaturasSegundoGrado;
+                else if (grado === "3") nombresAsignaturas = asignaturasTercerGrado;
+                let filasTabla = '';
+                let materiasRegularizadas = 0;
+                inputs.forEach((input) => {
+                    const numAsig = parseInt(input.getAttribute('data-asig'));
+                    const nombreAsig = nombresAsignaturas[numAsig - 1];
+                    const celdaOriginal = input.closest('td').previousElementSibling;
+                    const califOriginal = celdaOriginal ? celdaOriginal.textContent.trim() : "-";
+                    const nuevaCalif = input.value.trim();
+                    if (nuevaCalif !== "") {
+                        materiasRegularizadas++;
+                        filasTabla += `<tr><td>${nombreAsig}</td><td style="color: #800000; font-weight: bold;">${califOriginal}</td><td style="color: #006400; font-weight: bold;">${nuevaCalif}</td></tr>`;
+                    }
+                });
+                if (materiasRegularizadas === 0) { alert("No se detectaron calificaciones nuevas escritas en los campos amarillos de esta fila para generar carta."); return; }
+                const originalTitle = document.title;
+                document.title = "";
+
+                // --- ESTRUCTURA DEL HEADER CON LOGO (INDIVIDUAL) ---
+                let cartaHTML = `
+                <div class="header-carta-container">
+                    <div class="header-text-group">
+                        <h3>Escuela Secundaria Profesor Honorato Tlaseca Barrera</h3>
+                        <p>CCT: 21EES0265J | Ciclo escolar: 2025-2026</p>
+                        <h1>CARTA DE AGRADECIMIENTO Y RECOMENDACIONES</h1>
+                    </div>
+                    <div class="header-image-group">
+                        <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo" class="logo-carta">
+                    </div>
+                </div>
+                <p class="intro-text"><strong>Huehuetlán el Chico, Pue. A ${fechaCartaValor}</strong></p>
+                <p>Estimado padre, madre o tutor(a) del alumno(a): <strong>${nombre}</strong> de ${grado}° ${grupo} con matrícula <strong>${matricula}</strong>.</p>
+                <p>Por medio de la presente, queremos expresar nuestro más sincero agradecimiento por el apoyo brindado y el compromiso demostrado durante el proceso de regularización de aprendizajes de su tutorado. Sabemos que el esfuerzo conjunto entre familia y escuela es fundamental para el éxito académico de nuestros estudiantes.</p>
+                <h2>RESULTADOS DE LA REGULARIZACIÓN</h2><p>A continuación, presentamos las asignaturas que se han visto beneficiadas con su apoyo:</p>
+                <table><thead><tr><th>Asignatura</th><th>Calificación Anterior</th><th>Calificación Actualizada</th></tr></thead><tbody>${filasTabla}</tbody></table>
+                <h2>RECOMENDACIONES PARA EL CONTINUO ÉXITO ESCOLAR</h2><p>Para asegurar que el(a) alumno(a) no vuelva a rezagarse y mantenga un desempeño óptimo, recomendamos lo siguiente:</p>
+                <ul><li><strong>Establecer un horario fijo:</strong> Dedicar tiempo diario al estudio y repaso de clases, incluso cuando no haya tareas.</li><li><strong>Supervisión de tareas:</strong> Revisar diariamente las tareas y cuadernos para asegurar que los apuntes estén completos.</li><li><strong>Comunicación constante:</strong> Mantener una comunicación fluida con los maestros para conocer el desempeño y conducta del alumno.</li><li><strong>Uso responsable de tecnología:</strong> Regule el tiempo de uso de dispositivos electrónicos, priorizando el tiempo de estudio y descanso.</li><li><strong>Apoyo emocional:</strong> Reconozca los logros del alumno y motive a mejorar en las áreas difíciles con paciencia y comprensión.</li><li><strong>Asistencia puntual:</strong> Asegúrese de que el alumno asista a clases todos los días y a tiempo, ya que las explicaciones son difíciles de recuperar.</li></ul>
+                <!-- Parrafo final con margen inferior aumentado a 4em -->
+                <p style="margin-bottom: 4em !important;">Reiteramos nuestro compromiso de trabajar juntos por la formación integral de su hijo(a). Agradecemos de antemano su continua colaboración.  </p>
+                <!-- Contenedor de firmas -->
+                <div class="signature-container"><div class="signature-box"><div class="signature-line"></div><div class="signature-label">Firma del Padre, Madre o Tutor(a)</div></div><div class="signature-box"><div class="signature-line"></div><div class="signature-label">Firma del Director o Docente</div></div></div>
+                <!-- Parrafo Atentamente con margen superior de 2em -->
+                <p style="text-align: center; margin-top: 2em; font-size: 12px;"> Atentamente,<br><strong>Escuela Secundaria Profesor Honorato Tlaseca Barrera</strong><br>"Educando con Calidad y Calidez"</p>`;
+                
+                cartaContentSingle.innerHTML = cartaHTML;
+                cartaContainerSingle.style.display = 'block';
+                setTimeout(() => { window.print(); document.title = originalTitle; }, 500);
+            }
+            
+            await cargarDatosTutores();
+            realizarConsulta();
+           
+            function realizarConsulta() {
+                const grado = selectGrado.value;
+                const grupo = selectGrupo.value;
+                
+                // Mostrar carga
+                results.style.display = 'none';
+                loading.style.display = 'block';
+                
+                const url = `${SCRIPT_URL_CONSULTA}?accion=consultar&sheetName=${encodeURIComponent('Hoja1')}`;
+                fetch(url)
+                    .then(response => { if (!response.ok) throw new Error(`Error: ${response.status}`); return response.text(); })
+                    .then(text => { 
+                        loading.style.display = 'none'; // Ocultar carga al obtener datos
+                        try { procesarDatos(JSON.parse(text), grado, grupo, false, false); } 
+                        catch (e) { throw new Error(`JSON Inválido: ${e.message}`); } 
+                    })
+                    .catch(err => { 
+                        loading.style.display = 'none'; // Ocultar carga si hay error
+                        console.error('Error:', err); 
+                        alert(`Error al cargar datos: ${err.message}`); 
+                    });
+            }
+           
+            function procesarDatos(data, grado, grupo) {
+                tablaBody.innerHTML = '';
+                resultadosTitulo.textContent = (grado === "todos" && grupo === "todos") ? "Todos los Alumnos..." : (grado === "todos") ? `Alumnos - Grupo ${grupo}` : (grupo === "todos") ? `Alumnos - ${grado}°` : `Calificaciones ${grado}° ${grupo}`;
+                if (!data.datos || !Array.isArray(data.datos)) { tablaBody.innerHTML = `<tr><td colspan="35">No hay datos</td></tr>`; results.style.display = 'block'; totalAlumnos.style.display = 'none'; return; }
+                rawData = data;
+                actualizarEncabezadosTabla(grado);
+                let registrosAMostrar = data.datos.filter(alumno => {
+                    if (grado !== "todos" || grupo !== "todos") {
+                        const ag = String(alumno["datospara variables::GRADO"] || "").trim().toLowerCase();
+                        const gr = String(alumno["datospara variables::GRUPO"] || "").trim().toLowerCase();
+                        if (grado !== "todos" && ag !== grado) return false;
+                        if (grupo !== "todos" && gr !== grupo.toLowerCase()) return false;
+                    }
+                    return true;
+                });
+                datosProcesados = []; 
+                if (registrosAMostrar.length === 0) {
+                    totalAlumnos.textContent = "No se encontraron alumnos..."; totalAlumnos.style.display = 'block';
+                    printSection.style.display = 'none'; whatsappSection.style.display = 'none';
+                } else {
+                    totalAlumnos.textContent = `Total: ${registrosAMostrar.length}`; totalAlumnos.style.display = 'block';
+                    registrosAMostrar.forEach((alumno, index) => {
+                        const fila = document.createElement('tr');
+                        const normalizarGrado = (g) => g ? g.toString().trim().replace(/[°º]/g, '') : '';
+                        const nCompleto = `${alumno["DATOS DE ALUMNOS::apellido1"] || ''} ${alumno["DATOS DE ALUMNOS::apellido2"] || ''} ${alumno["DATOS DE ALUMNOS::nombre1"] || ''}`.trim();
+                        const matriculaId = alumno["matricula_id"] || '';
+                        fila.setAttribute('data-matricula', matriculaId);
+                        let telefonoTutor = '', nombreTutor = '';
+                        if (matriculaId && datosTutores.length > 0) {
+                            const t = datosTutores.find(x => String(x.matricula_id) === String(matriculaId));
+                            if (t) { telefonoTutor = t.celular_tutor || ''; nombreTutor = t.tutor || ''; }
+                        }
+                        const alumnoGrado = normalizarGrado(alumno["datospara variables::GRADO"]);
+                        const alumnoGrupo = alumno["datospara variables::GRUPO"] || '';
+                        let nombresAsignaturas = (alumnoGrado === "1") ? asignaturasPrimerGrado : (alumnoGrado === "2" ? asignaturasSegundoGrado : asignaturasTercerGrado);
+                        const numAsignaturas = (alumnoGrado === "2" || alumnoGrado === "3") ? 9 : 10;
+                        
+                        let datosAlumno = { nombre: nCompleto, grado: alumnoGrado, grupo: alumnoGrupo, matricula: matriculaId, telefonoTutor: telefonoTutor, nombreTutor: nombreTutor, asignaturasRegularizar: [], raw: alumno };
+                        
+                        // Verificar si hay recuperaciones previas cargadas
+                        let tieneNuevaCalificacion = false;
+                        for (let i = 0; i < 10; i++) {
+                            const keyRecup = camposRecuperacionJSON[i];
+                            const val = alumno[keyRecup];
+                            if (val && val.toString().trim() !== "") { tieneNuevaCalificacion = true; break; }
+                        }
+
+                        // --- NUEVA LÓGICA: Mostrar botón enviar si hay recuperación O calificación anterior < 7 ---
+                        let mostrarBotonEnviar = tieneNuevaCalificacion;
+
+                        if (tieneNuevaCalificacion) {
+                            datosProcesados.push(datosAlumno);
+                            for (let i = 0; i < numAsignaturas; i++) {
+                                const keyRecup = camposRecuperacionJSON[i];
+                                const val = alumno[keyRecup];
+                                if (val && val.toString().trim() !== "") {
+                                    datosAlumno.asignaturasRegularizar.push({ nombre: nombresAsignaturas[i], calificacion: val });
+                                }
+                            }
+                        }
+                        
+                        let celdas = `<td class="numero-progresivo">${index+1}</td><td class="nombre-alumno">${nCompleto}</td><td class="telefono-tutor">${telefonoTutor}</td>`;
+                        for (let i = 0; i < numAsignaturas; i++) { 
+                            const campo = camposCalificaciones[i];
+                            const calif = alumno[campo];
+                            let displayCalif = "";
+                            if (calif === undefined || calif === null || calif === '') { displayCalif = '-'; } else { const val = parseFloat(calif); displayCalif = val; }
+                            let styleClass = "";
+                            if (calif === 5) styleClass = "calificacion-baja";
+                            else if (calif === 6) styleClass = "calificacion-especial";
+                            else if (calif === '' || calif === undefined) styleClass = "calificacion-vacia";
+                            
+                            // --- MODIFICACIÓN: Detectar si la calificación es menor a 7 ---
+                            const numCalif = parseFloat(calif);
+                            if (!isNaN(numCalif) && numCalif < 7) {
+                                mostrarBotonEnviar = true;
+                            }
+                            
+                            celdas += `<td class="${styleClass}">${displayCalif}</td>`;
+                            const keyRecup = camposRecuperacionJSON[i];
+                            const valorRecup = alumno[keyRecup] ? alumno[keyRecup] : "";
+                            celdas += `<td><input type="number" class="input-recuperacion" data-asig="${i+1}" min="5" max="10" step="0.1" value="${valorRecup}"></td>`;
+                        }
+                        celdas += `<td class="promedio">${tieneNuevaCalificacion ? "Regularizado" : "-"}</td>`;
+                        celdas += `<td>`;
+                        celdas += `<button class="btn-guardar-cambios" data-nombre="${nCompleto}" data-grado="${alumnoGrado}" data-grupo="${alumnoGrupo}" data-matricula="${matriculaId}" data-tutor="${nombreTutor}" data-telefono="${telefonoTutor}"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTE3IDNINWMtMS4xIDAtMiAuOS0yIDJ2MTRjMCAxLjEuOSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMlY5YzAtMS4xLS45LTItMjY5bTAtNEg1WjhoOXYyem0wLTRINXYtMmg5djJ6bTAtNEg5WjhoOXYyem0tNEg5WjhoOXYyem0wLTRINVY5aDl2MnoiLz48L3N2Zz4="> Guardar</button>`;
+                        
+                        // --- CAMBIO SOLICITADO: Ocultar/Comentar el botón Carta ---
+                        // celdas += `<button class="btn-carta-agradecimiento" data-nombre="${nCompleto}" data-grado="${alumnoGrado}" data-grupo="${alumnoGrupo}" data-matricula="${matriculaId}" data-tutor="${nombreTutor}" data-telefono="${telefonoTutor}"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDEgezQuNDggMSAxMC0xMC00LjQ4IDEwLTEgMTcuNTIgMiAxMi4ybTAtNGgtMnYtMmg5djJ6bTAtNEg5WjhoOXYyem0tNEg5WjhoOXYyem0tNEg5WjhoOXYyem0wLTRINVY5aDl2MnoiLz48L3N2Zz4="> Carta</button>`;
+                        
+                        // --- MODIFICACIÓN: Usar la nueva lógica para mostrar el botón ---
+                        if (mostrarBotonEnviar) {
+                            celdas += `<button class="btn-enviar-individual" data-nombre="${nCompleto}" data-telefono="${telefonoTutor}" data-asignaturas='${JSON.stringify(datosAlumno.asignaturasRegularizar)}' data-grado="${alumnoGrado}"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTE3LjQ3MiAxNC4zODJjLS4yOTctLjE0OC0xLjc1OC0uODY3LTIuMDM0LS45NjJjLS4yNzYtLjA5NS0uNDc3LS4xNDgtLjY3OC4xNDhjLS4yLjI5NS0uNzcxLjk2Mi0uOTQ2IDEuMTY1LS4xNzUuMjAzLS4zNS4yMDMtLjYwMi4wNzUtLjI1LS4xMjgtMS4xMzYtLjU3OS0yLjE2NS0xLjA5NC0xLjAyOS0uNTE1LTEuOTk3LS4wMS0yLjg4MS4yMDUtLjg4NC4yMTUtMS43MTguNjA0LTIuNDc2IDEuMTg0LS43NTguNTgtMS4zOTYgMS41NjQgMi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43Mi43MTguNjY0Mi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLzk0MS0uMTc0LTEuODg2LS41MzUtMjc1OHoiLz48L3N2Zz4="> Enviar</button> `;
+                        }
+                        
+                        celdas += `</td>`;
+                        fila.innerHTML = celdas;
+                        tablaBody.appendChild(fila);
+                    });
+                    
+                    document.querySelectorAll('.btn-enviar-individual').forEach(boton => {
+                        boton.addEventListener('click', function() {
+                            const n = this.getAttribute('data-nombre');
+                            let t = this.getAttribute('data-telefono');
+                            const g = this.getAttribute('data-grado');
+                            if (!t || t.trim() === "") { alert(`No se encontró teléfono para:\n${n}`); return; }
+                            
+                            // --- NUEVO MENSAJE DE REUNIÓN ---
+                            const reunionFecha = document.getElementById('reunion-fecha').value;
+                            const reunionHora = document.getElementById('reunion-hora').value;
+                            const reunionLugar = document.getElementById('reunion-lugar').value;
+
+                            let msg = `Estimado padre, madre o tutor(a):\n\n` +
+                            `Por medio del presente, le informamos que habrá una reunión de información de Resultados. Por tal motivo, le solicitamos atentamente acudir a la escuela el día ${reunionFecha}, a las ${reunionHora}, en ${reunionLugar}, donde se le brindará información detallada sobre el proceso de regularización de aprendizajes.\n\n` +
+                            `Escuela Secundaria Profesor Honorato Tlaseca Barrera`;
+                            
+                            let tel = t.replace(/\D/g, '');
+                            if (tel.length === 10) tel = '52' + tel;
+                            window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+                        });
+                    });
+
+                    document.querySelectorAll('.btn-guardar-cambios').forEach(boton => { boton.addEventListener('click', function() { guardarRecuperacion(this); }); });
+                    document.querySelectorAll('.btn-carta-agradecimiento').forEach(boton => { boton.addEventListener('click', function() { generarCartaAgradecimiento(this); }); });
+                    printSection.style.display = 'block';
+                    whatsappSection.style.display = 'block';
+                }
+                results.style.display = 'block';
+            }
+
+            function actualizarEncabezadosTabla(grado) {
+                if (grado === "2" || grado === "3") {
+                    const h10 = document.querySelector('.asignatura-10');
+                    if (h10) { h10.style.display = 'none'; if(h10.nextElementSibling) h10.nextElementSibling.style.display = 'none'; }
+                    let current = (grado === "3") ? asignaturasTercerGrado : asignaturasSegundoGrado;
+                    for(let i=1; i<=9; i++) {
+                        const th = document.querySelector(`.asignatura-${i}`);
+                        if(th) { th.textContent = current[i-1]; th.style.display = ''; if(th.nextElementSibling) th.nextElementSibling.style.display = ''; }
+                    }
+                } else {
+                    for(let i=1; i<=10; i++) {
+                        const th = document.querySelector(`.asignatura-${i}`);
+                        if(th) { th.textContent = asignaturasPrimerGrado[i-1]; th.style.display = ''; if(th.nextElementSibling) th.nextElementSibling.style.display = ''; }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

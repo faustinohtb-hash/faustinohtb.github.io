@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Consulta de Calificaciones</title>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .logo {
+            max-width: 250px;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* Estilo para el botón de regresar */
+        .btn-regresar-container {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .btn-regresar {
+            background-color: #e74c3c; /* Color rojo para indicar salida/regreso */
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        .btn-regresar:hover {
+            background-color: #c0392b;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            min-width: 80px;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+            background-color: #fdecea;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #e74c3c;
+        }
+        .info {
+            background-color: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .nombre-alumno {
+            text-align: left !important;
+            font-weight: 600;
+            min-width: 200px;
+        }
+        .promedio {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+        .debug-panel {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .debug-panel pre {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .toggle-debug {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .toggle-debug:hover {
+            background-color: #5a6268;
+        }
+        .raw-data {
+            margin-top: 20px;
+            display: none;
+        }
+        .raw-data h3 {
+            color: #2c3e50;
+        }
+        .raw-data pre {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .toggle-raw-data {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .toggle-raw-data:hover {
+            background-color: #218838;
+        }
+        .debug-info {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .debug-info h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .debug-info pre {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .hidden-column {
+            display: none;
+        }
+        .auto-update-indicator {
+            display: inline-block;
+            margin-left: 10px;
+            color: #28a745;
+            font-size: 14px;
+        }
+        .auto-update-indicator::before {
+            content: "•";
+            margin-right: 5px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela Secundaria Profesor Honorato Tlaseca Barrera" class="logo">
+        </div>
+
+        <!-- Nuevo botón para regresar a inicio -->
+        <div class="btn-regresar-container">
+            <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="btn-regresar">Regresar a Inicio</a>
+        </div>
+        
+        <h1>Sistema de Consulta de Calificaciones</h1>
+        
+        <div class="info">
+            <p>Seleccione el grado y grupo para consultar las calificaciones de los alumnos. Los resultados se actualizarán automáticamente.</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="grado">Seleccionar Grado:</label>
+            <select id="grado">
+                <option value="">-- Selecciona un grado --</option>
+                <option value="1">1°</option>
+                <option value="2">2°</option>
+                <option value="3">3°</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="grupo">Seleccionar Grupo:</label>
+            <select id="grupo">
+                <option value="">-- Selecciona un grupo --</option>
+                <option value="A">Grupo A</option>
+                <option value="B">Grupo B</option>
+            </select>
+        </div>
+        
+        <span class="auto-update-indicator" id="auto-update-indicator" style="display: none;">Actualizando...</span>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Cargando datos...</p>
+        </div>
+        
+        <div class="error" id="error">
+            <p id="error-message">Ocurrió un error al obtener los datos. Por favor, intenta nuevamente.</p>
+            <button class="toggle-debug" id="toggle-debug">Mostrar detalles de depuración</button>
+        </div>
+        
+        <div class="results" id="results">
+            <h2 id="resultados-titulo">Resultados de Calificaciones</h2>
+            <div class="table-container">
+                <table id="tabla-calificaciones">
+                    <thead>
+                        <tr>
+                            <th class="nombre-alumno">Nombre del Alumno</th>
+                            <th class="asignatura-1">Asig. 1</th>
+                            <th class="asignatura-2">Asig. 2</th>
+                            <th class="asignatura-3">Asig. 3</th>
+                            <th class="asignatura-4">Asig. 4</th>
+                            <th class="asignatura-5">Asig. 5</th>
+                            <th class="asignatura-6">Asig. 6</th>
+                            <th class="asignatura-7">Asig. 7</th>
+                            <th class="asignatura-8">Asig. 8</th>
+                            <th class="asignatura-9">Asig. 9</th>
+                            <th class="asignatura-10">Asig. 10</th>
+                            <th class="promedio">Promedio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body">
+                        <!-- Los datos se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Botón "Mostrar datos brutos" eliminado según solicitud -->
+            
+            <div class="raw-data" id="raw-data">
+                <h3>Datos brutos recibidos</h3>
+                <pre id="raw-data-content"></pre>
+            </div>
+            
+            <div class="debug-info" id="debug-info" style="display: none;">
+                <h3>Información de depuración</h3>
+                <div id="debug-content"></div>
+            </div>
+        </div>
+        
+        <div class="debug-panel" id="debug-panel">
+            <h3>Detalles de Depuración</h3>
+            <div>
+                <strong>URL utilizada:</strong>
+                <pre id="debug-url"></pre>
+            </div>
+            <div>
+                <strong>Respuesta del servidor:</strong>
+                <pre id="debug-response"></pre>
+            </div>
+            <div>
+                <strong>Error completo:</strong>
+                <pre id="debug-error"></pre>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2025-2026 Sistema de Gestión Escolar | Escuela Secundaria Profesor Honorato Tlaseca Barrera | Todos los derechos reservados
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectGrado = document.getElementById('grado');
+            const selectGrupo = document.getElementById('grupo');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const errorMessage = document.getElementById('error-message');
+            const results = document.getElementById('results');
+            const resultadosTitulo = document.getElementById('resultados-titulo');
+            const tablaBody = document.getElementById('tabla-body');
+            const toggleDebug = document.getElementById('toggle-debug');
+            const debugPanel = document.getElementById('debug-panel');
+            const debugUrl = document.getElementById('debug-url');
+            const debugResponse = document.getElementById('debug-response');
+            const debugError = document.getElementById('debug-error');
+            // Eliminada referencia a toggleRawData
+            const rawData = document.getElementById('raw-data');
+            const rawDataContent = document.getElementById('raw-data-content');
+            const debugInfo = document.getElementById('debug-info');
+            const debugContent = document.getElementById('debug-content');
+            const autoUpdateIndicator = document.getElementById('auto-update-indicator');
+            
+            // Variable para almacenar el timeout de la actualización automática
+            let updateTimeout = null;
+            
+            // Nombres de los campos de calificaciones según el orden deseado
+            const camposCalificaciones = [
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA1",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA2",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA3",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA4",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA5",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA6",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA7",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA8",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA9",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA10"
+            ];
+            
+            // Nombres específicos de asignaturas para primer grado
+            const asignaturasPrimerGrado = [
+                "Español",
+                "Inglés",
+                "Artes",
+                "Matemáticas",
+                "Biología",
+                "Geografía",
+                "Historia",
+                "Formación Cívica y Ética",
+                "Tecnología",
+                "Educación Física"
+            ];
+            
+            // Nombres específicos de asignaturas para segundo grado
+            const asignaturasSegundoGrado = [
+                "Español",
+                "Inglés",
+                "Artes",
+                "Matemáticas",
+                "Física",
+                "Historia",
+                "Formación Cívica y Ética",
+                "Tecnología",
+                "Educación Física",
+                "Asig. 10"
+            ];
+            
+            // Nombres específicos de asignaturas para tercer grado
+            const asignaturasTercerGrado = [
+                "Español",
+                "Inglés",
+                "Artes",
+                "Matemáticas",
+                "Química",
+                "Historia",
+                "Formación Cívica y Ética",
+                "Tecnología",
+                "Educación Física",
+                "Asig. 10"
+            ];
+            
+            // Mostrar/ocultar panel de depuración
+            toggleDebug.addEventListener('click', function() {
+                if (debugPanel.style.display === 'block') {
+                    debugPanel.style.display = 'none';
+                    toggleDebug.textContent = 'Mostrar detalles de depuración';
+                } else {
+                    debugPanel.style.display = 'block';
+                    toggleDebug.textContent = 'Ocultar detalles de depuración';
+                }
+            });
+            
+            // Eliminado el event listener para toggleRawData
+            
+            // Event listeners para actualización automática al cambiar grado o grupo
+            selectGrado.addEventListener('change', function() {
+                // Limpiar el timeout anterior si existe
+                if (updateTimeout) {
+                    clearTimeout(updateTimeout);
+                }
+                // Establecer un nuevo timeout para la actualización automática
+                updateTimeout = setTimeout(realizarConsulta, 500); // Esperar 500ms antes de actualizar
+            });
+            
+            selectGrupo.addEventListener('change', function() {
+                // Limpiar el timeout anterior si existe
+                if (updateTimeout) {
+                    clearTimeout(updateTimeout);
+                }
+                // Establecer un nuevo timeout para la actualización automática
+                updateTimeout = setTimeout(realizarConsulta, 500); // Esperar 500ms antes de actualizar
+            });
+            
+            function realizarConsulta() {
+                const grado = selectGrado.value;
+                const grupo = selectGrupo.value;
+                const sheetName = 'Hoja1'; // Valor por defecto ya que no hay input para el nombre de la hoja
+                
+                if (!grado || !grupo) {
+                    // Si no hay grado o grupo seleccionado, ocultar los resultados
+                    results.style.display = 'none';
+                    return;
+                }
+                
+                // Mostrar indicador de carga o de actualización automática
+                autoUpdateIndicator.style.display = 'inline-block';
+                
+                error.style.display = 'none';
+                debugPanel.style.display = 'none';
+                // rawData.style.display = 'none'; // Comentado/Seguro ya que rawData aún existe en DOM pero no se muestra
+                debugInfo.style.display = 'none';
+                
+                // URL del script de Google Apps con los parámetros correctos
+                const baseUrl = 'https://script.google.com/macros/s/AKfycbzeOHCjPDkDsuLLSB4EfK-x-0op3U-q-0hcFjsGffoZ1OxGTZTty223161IROpzMrh1dg/exec';
+                const url = `${baseUrl}?accion=consultar&sheetName=${encodeURIComponent(sheetName)}`;
+                
+                // Guardar URL para depuración
+                debugUrl.textContent = url;
+                
+                // Realizar la petición fetch
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
+                        }
+                        return response.text(); // Obtener como texto primero para depuración
+                    })
+                    .then(text => {
+                        // Guardar respuesta para depuración
+                        debugResponse.textContent = text;
+                        
+                        // Intentar parsear como JSON
+                        try {
+                            const data = JSON.parse(text);
+                            procesarDatos(data, grado, grupo, false, false); // showAllData y debugMode siempre en false
+                        } catch (e) {
+                            console.error("Error al parsear JSON:", e);
+                            throw new Error(`La respuesta no es un JSON válido: ${e.message}`);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                        // Ocultar indicadores de carga
+                        autoUpdateIndicator.style.display = 'none';
+                        
+                        errorMessage.textContent = `Ocurrió un error al obtener los datos: ${err.message}`;
+                        debugError.textContent = err.stack || err.toString();
+                        error.style.display = 'block';
+                    });
+            }
+            
+            function procesarDatos(data, grado, grupo, showAllData, debugMode) {
+                // Ocultar indicadores de carga
+                autoUpdateIndicator.style.display = 'none';
+                
+                // Limpiar tabla anterior
+                tablaBody.innerHTML = '';
+                
+                // Guardar datos brutos (aunque no se muestren el botón, los datos se siguen cargando)
+                if (rawDataContent) rawDataContent.textContent = JSON.stringify(data, null, 2);
+                
+                // Actualizar título con el formato "Calificaciones de X° Y"
+                resultadosTitulo.textContent = `Calificaciones de ${grado}° ${grupo}`;
+                
+                // Verificar si la respuesta tiene la estructura esperada
+                if (data.status && data.status !== 200) {
+                    // Si hay un error en la respuesta
+                    const colspan = (grado === "2" || grado === "3") ? 11 : 12;
+                    tablaBody.innerHTML = `<tr><td colspan="${colspan}">Error: ${data.error || 'Error desconocido'}</td></tr>`;
+                    results.style.display = 'block';
+                    return;
+                }
+                
+                if (!data.datos || !Array.isArray(data.datos)) {
+                    // Si no hay datos o no es un array
+                    const colspan = (grado === "2" || grado === "3") ? 11 : 12;
+                    tablaBody.innerHTML = `<tr><td colspan="${colspan}">No se encontraron datos válidos</td></tr>`;
+                    results.style.display = 'block';
+                    return;
+                }
+                
+                // Actualizar encabezados de la tabla según el grado seleccionado
+                actualizarEncabezadosTabla(grado);
+                
+                // Si se seleccionó mostrar todos los datos, no filtrar
+                let registrosAMostrar = data.datos;
+                
+                if (!showAllData) {
+                    // Filtrar los datos por grado y grupo
+                    registrosAMostrar = data.datos.filter(alumno => {
+                        const alumnoGrado = alumno["datospara variables::GRADO"];
+                        const alumnoGrupo = alumno["datospara variables::GRUPO"];
+                        
+                        // Normalizar valores para comparación (eliminar espacios y convertir a minúsculas)
+                        const normalizar = (valor) => {
+                            return valor ? valor.toString().trim().toLowerCase() : '';
+                        };
+                        
+                        const gradoNormalizado = normalizar(grado);
+                        const grupoNormalizado = normalizar(grupo);
+                        const alumnoGradoNormalizado = normalizar(alumnoGrado);
+                        const alumnoGrupoNormalizado = normalizar(alumnoGrupo);
+                        
+                        if (debugMode) {
+                            console.log(`Comparando: Grado=${gradoNormalizado} vs ${alumnoGradoNormalizado}, Grupo=${grupoNormalizado} vs ${alumnoGrupoNormalizado}`);
+                        }
+                        
+                        return alumnoGradoNormalizado === gradoNormalizado && 
+                               alumnoGrupoNormalizado === grupoNormalizado;
+                    });
+                }
+                
+                // Mostrar información de depuración si está activado el modo
+                if (debugMode) {
+                    let debugHtml = `
+                        <p><strong>Total de registros recibidos:</strong> ${data.datos.length}</p>
+                        <p><strong>Total de registros después del filtro:</strong> ${registrosAMostrar.length}</p>
+                        <p><strong>Valores buscados:</strong> Grado="${grado}", Grupo="${grupo}"</p>
+                        <p><strong>Primeros 5 registros (con valores de grado y grupo):</strong></p>
+                        <pre>`;
+                    
+                    // Mostrar los primeros 5 registros con sus valores de grado y grupo
+                    for (let i = 0; i < Math.min(5, data.datos.length); i++) {
+                        const alumno = data.datos[i];
+                        debugHtml += `Registro ${i+1}: Grado="${alumno["datospara variables::GRADO"]}", Grupo="${alumno["datospara variables::GRUPO"]}"\n`;
+                    }
+                    
+                    debugHtml += `</pre>`;
+                    
+                    debugContent.innerHTML = debugHtml;
+                    debugInfo.style.display = 'block';
+                }
+                
+                if (registrosAMostrar.length === 0) {
+                    const colspan = (grado === "2" || grado === "3") ? 11 : 12;
+                    tablaBody.innerHTML = `<tr><td colspan="${colspan}">No se encontraron alumnos para este grado y grupo</td></tr>`;
+                } else {
+                    // Procesar cada alumno
+                    registrosAMostrar.forEach(alumno => {
+                        const fila = document.createElement('tr');
+                        
+                        // Construir nombre completo del alumno
+                        const apellido1 = alumno["DATOS DE ALUMNOS::apellido1"] || '';
+                        const apellido2 = alumno["DATOS DE ALUMNOS::apellido2"] || '';
+                        const nombre1 = alumno["DATOS DE ALUMNOS::nombre1"] || '';
+                        const nombreCompleto = `${apellido1} ${apellido2} ${nombre1}`.trim();
+                        
+                        // Obtener calificaciones y calcular promedio
+                        let calificaciones = [];
+                        let suma = 0;
+                        let count = 0;
+                        
+                        // Determinar cuántas asignaturas mostrar según el grado
+                        const numAsignaturas = (grado === "2" || grado === "3") ? 9 : 10;
+                        
+                        for (let i = 0; i < numAsignaturas; i++) {
+                            const campo = camposCalificaciones[i];
+                            const calif = alumno[campo];
+                            if (calif !== undefined && calif !== null && calif !== '') {
+                                const valor = parseFloat(calif);
+                                calificaciones.push(valor);
+                                suma += valor;
+                                count++;
+                            } else {
+                                calificaciones.push(null);
+                            }
+                        }
+                        
+                        const promedio = count > 0 ? suma / count : 0;
+                        
+                        // Crear celdas
+                        let celdas = `<td class="nombre-alumno">${nombreCompleto}</td>`;
+                        
+                        calificaciones.forEach(calif => {
+                            celdas += `<td>${calif !== null ? calif : '-'}</td>`;
+                        });
+                        
+                        celdas += `<td class="promedio">${promedio.toFixed(2)}</td>`;
+                        
+                        fila.innerHTML = celdas;
+                        tablaBody.appendChild(fila);
+                    });
+                }
+                
+                // Mostrar resultados
+                results.style.display = 'block';
+            }
+            
+            function actualizarEncabezadosTabla(grado) {
+                // Si es primer grado, usar nombres específicos de asignaturas
+                if (grado === "1") {
+                    // Actualizar cada encabezado de asignatura
+                    for (let i = 0; i < 10; i++) {
+                        const encabezado = document.querySelector(`.asignatura-${i + 1}`);
+                        if (encabezado) {
+                            encabezado.textContent = asignaturasPrimerGrado[i];
+                            encabezado.classList.remove('hidden-column');
+                        }
+                    }
+                } 
+                // Si es segundo grado, usar nombres específicos de asignaturas
+                else if (grado === "2") {
+                    // Actualizar cada encabezado de asignatura
+                    for (let i = 0; i < 9; i++) {
+                        const encabezado = document.querySelector(`.asignatura-${i + 1}`);
+                        if (encabezado) {
+                            encabezado.textContent = asignaturasSegundoGrado[i];
+                            encabezado.classList.remove('hidden-column');
+                        }
+                    }
+                    
+                    // Ocultar la columna de la Asignatura 10
+                    const encabezadoAsignatura10 = document.querySelector('.asignatura-10');
+                    if (encabezadoAsignatura10) {
+                        encabezadoAsignatura10.classList.add('hidden-column');
+                    }
+                }
+                // Si es tercer grado, usar nombres específicos de asignaturas
+                else if (grado === "3") {
+                    // Actualizar cada encabezado de asignatura
+                    for (let i = 0; i < 9; i++) {
+                        const encabezado = document.querySelector(`.asignatura-${i + 1}`);
+                        if (encabezado) {
+                            encabezado.textContent = asignaturasTercerGrado[i];
+                            encabezado.classList.remove('hidden-column');
+                        }
+                    }
+                    
+                    // Ocultar la columna de la Asignatura 10
+                    const encabezadoAsignatura10 = document.querySelector('.asignatura-10');
+                    if (encabezadoAsignatura10) {
+                        encabezadoAsignatura10.classList.add('hidden-column');
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

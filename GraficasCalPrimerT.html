@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Primer Periodo de Evaluación | Sistema de Gráficas de Alumnos</title>
+    <!-- Librería para Gráficas (Chart.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            position: relative; /* Necesario para posicionar el botón de inicio */
+        }
+        
+        /* Estilos del Botón Inicio */
+        .btn-inicio {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background-color: #34495e; /* Color oscuro para contraste */
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .btn-inicio:hover {
+            background-color: #2c3e50;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+            color: white;
+        }
+        .btn-inicio svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 250px;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        /* Panel de Opciones */
+        .options-panel {
+            background-color: #eef2f7;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #dbe4ef;
+        }
+        
+        .section-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 10px;
+        }
+
+        /* Radio Buttons para Modo de Visualización */
+        .view-mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #34495e;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 2px solid #cbd5e0;
+            transition: all 0.3s;
+        }
+        .radio-label:hover {
+            border-color: #3498db;
+        }
+        .radio-label input[type="radio"] {
+            margin-right: 10px;
+            accent-color: #3498db;
+            transform: scale(1.2);
+        }
+        /* Estilo cuando está seleccionado (via JS o :checked) */
+        .radio-label.selected {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        /* Filtros */
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            text-align: left;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 14px;
+        }
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+        }
+
+        /* Contenedores de Resultados */
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+
+        /* --- VISTA INDIVIDUAL --- */
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top; 
+        }
+        thead {
+            background-color: #3498db;
+            color: white;
+        }
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .col-numero {
+            font-weight: bold;
+            color: #3498db;
+            width: 50px;
+        }
+        .col-nombre {
+            text-align: left !important;
+            font-weight: 600;
+            color: #2c3e50;
+            width: 250px;
+            font-size: 16px;
+        }
+        .col-grafica {
+            min-width: 400px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 200px; 
+            width: 100%;
+        }
+
+        /* --- VISTA GENERAL (GRUPAL) --- */
+        #vista-general {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+        .general-chart-wrapper {
+            position: relative;
+            height: 500px; /* Gráfica grande */
+            width: 100%;
+        }
+        .general-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+        .stat-box strong {
+            color: #2c3e50;
+            font-size: 22px;
+        }
+
+        /* Loading y Error */
+        .loading, .error {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        .error { color: #dc3545; }
+        .total-alumnos {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #95a5a6;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .btn-inicio {
+                position: static;
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            .view-mode-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .radio-label { width: 100%; justify-content: center; }
+            thead { display: none; }
+            table, thead, tbody, th, td, tr { display: block; }
+            tr { margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; padding: 15px; background: white; }
+            td { border: none; padding: 10px 0; position: relative; padding-left: 0; text-align: center; }
+            .col-numero { display: none; }
+            .col-nombre { text-align: center !important; margin-bottom: 10px; }
+            .chart-wrapper { height: 250px; }
+            .general-chart-wrapper { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Botón Inicio -->
+        <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="btn-inicio">
+            <!-- Icono de Casa SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Inicio
+        </a>
+
+        <div class="logo-container">
+            <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela Secundaria Profesor Honorato Tlaseca Barrera" class="logo">
+        </div>
+       
+        <!-- Título actualizado -->
+        <h1>Primer Periodo de Evaluación</h1>
+        <!-- Subtítulo actualizado -->
+        <div class="subtitle">Sistema de Gráficas de Alumnos - Visualización de Rendimiento Académico</div>
+
+        <!-- Panel de Opciones Superior -->
+        <div class="options-panel">
+            
+            <!-- Selector de Modo -->
+            <h3 class="section-title">Modo de Visualización</h3>
+            <div class="view-mode-selector">
+                <label class="radio-label selected" id="label-individual">
+                    <input type="radio" name="viewMode" value="individual" checked onchange="cambiarVista(this)">
+                    Individual (Por Alumno)
+                </label>
+                <label class="radio-label" id="label-general">
+                    <input type="radio" name="viewMode" value="general" onchange="cambiarVista(this)">
+                    General (Grupal / Escuela)
+                </label>
+            </div>
+
+            <!-- Filtros -->
+            <h3 class="section-title">Filtros de Búsqueda</h3>
+            <div class="filters-grid">
+                <div class="form-group">
+                    <label for="grado">Filtrar por Grado:</label>
+                    <select id="grado" onchange="if(updateTimeout) clearTimeout(updateTimeout); updateTimeout = setTimeout(realizarConsulta, 500);">
+                        <option value="todos" selected>-- Todos --</option>
+                        <option value="1">1°</option>
+                        <option value="2">2°</option>
+                        <option value="3">3°</option>
+                    </select>
+                </div>
+               
+                <div class="form-group">
+                    <label for="grupo">Filtrar por Grupo:</label>
+                    <select id="grupo" onchange="if(updateTimeout) clearTimeout(updateTimeout); updateTimeout = setTimeout(realizarConsulta, 500);">
+                        <option value="todos" selected>-- Todos --</option>
+                        <option value="A">Grupo A</option>
+                        <option value="B">Grupo B</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <span id="auto-update-indicator" style="display: none; color: #28a745; font-weight: bold;">Procesando datos...</span>
+            </div>
+        </div>
+       
+        <div class="loading" id="loading">
+            <p>Cargando datos...</p>
+        </div>
+       
+        <div class="error" id="error">
+            <p id="error-message">Ocurrió un error al obtener los datos.</p>
+        </div>
+       
+        <div class="results" id="results">
+            
+            <!-- VISTA INDIVIDUAL -->
+            <div id="vista-individual">
+                <div class="total-alumnos" id="total-alumnos"></div>
+                <div class="table-container">
+                    <table id="tabla-alumnos">
+                        <thead>
+                            <tr>
+                                <th class="col-numero">#</th>
+                                <th class="col-nombre">Alumno</th>
+                                <th class="col-grafica">Rendimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VISTA GENERAL -->
+            <div id="vista-general">
+                <div class="general-stats" id="general-stats-info">
+                    <!-- Se llena con JS -->
+                </div>
+                <div class="general-chart-wrapper">
+                    <canvas id="generalChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            © 2025-2026 Sistema de Gestión Escolar | Escuela Secundaria Profesor Honorato Tlaseca Barrera
+        </div>
+    </div>
+    
+    <script>
+        // Configuración Inicial
+        let rawData = [];
+        let viewMode = 'individual'; // 'individual' o 'general'
+        let generalChartInstance = null;
+
+        const SCRIPT_URL_CONSULTA = 'https://script.google.com/macros/s/AKfycbzTO3coegMVy30JcNVr9EM7xdg-uIHHJKETzStloG8cC13o9Z_86yMED_CmJkFjDX0u/exec';
+        
+        const camposCalificaciones = [
+            "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA1", "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA2", "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA3",
+            "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA4", "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA5", "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA6",
+            "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA7", "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA8", "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA9",
+            "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA10"
+        ];
+        const camposRecuperacionJSON = [
+            "RECUPERACIÓN ASIGNATURA1", "RECUPERACIÓN ASIGNATURA2", "RECUPERACIÓN ASIGNATURA3", "RECUPERACIÓN ASIGNATURA4", "RECUPERACIÓN ASIGNATURA5",
+            "RECUPERACIÓN ASIGNATURA6", "RECUPERACIÓN ASIGNATURA7", "RECUPERACIÓN ASIGNATURA8", "RECUPERACIÓN ASIGNATURA9", "RECUPERACIÓN ASIGNATURA10"
+        ];
+        const asignaturasPrimerGrado = ["Español", "Inglés", "Artes", "Matemáticas", "Biología", "Geografía", "Historia", "Tecnología", "Formación Cívica y Ética", "Educación Física"];
+        const asignaturasSegundoGrado = ["Español", "Inglés", "Artes", "Matemáticas", "Física", "Historia", "Formación Cívica y Ética", "Tecnología", "Educación Física"];
+        const asignaturasTercerGrado = ["Español", "Inglés", "Artes", "Matemáticas", "Química", "Historia", "Formación Cívica y Ética", "Tecnología", "Educación Física"];
+
+        // UI Elements
+        const selectGrado = document.getElementById('grado');
+        const selectGrupo = document.getElementById('grupo');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const errorMessage = document.getElementById('error-message');
+        const results = document.getElementById('results');
+        const totalAlumnos = document.getElementById('total-alumnos');
+        const tablaBody = document.getElementById('tabla-body');
+        const autoUpdateIndicator = document.getElementById('auto-update-indicator');
+        const vistaIndividual = document.getElementById('vista-individual');
+        const vistaGeneral = document.getElementById('vista-general');
+        const generalStatsInfo = document.getElementById('general-stats-info');
+
+        let updateTimeout = null;
+
+        // Función para cambiar visualmente las etiquetas de radio
+        window.cambiarVista = function(radio) {
+            document.querySelectorAll('.radio-label').forEach(l => l.classList.remove('selected'));
+            radio.closest('.radio-label').classList.add('selected');
+            viewMode = radio.value;
+            realizarConsulta();
+        };
+
+        // Iniciar
+        realizarConsulta();
+           
+        function realizarConsulta() {
+            const grado = selectGrado.value;
+            const grupo = selectGrupo.value;
+            autoUpdateIndicator.style.display = 'inline-block';
+            error.style.display = 'none';
+            loading.style.display = 'block';
+            results.style.display = 'none';
+           
+            const url = `${SCRIPT_URL_CONSULTA}?accion=consultar&sheetName=${encodeURIComponent('Hoja1')}`;
+           
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error(`Error: ${response.status}`);
+                    return response.text();
+                })
+                .then(text => {
+                    try { procesarDatos(JSON.parse(text), grado, grupo); } 
+                    catch (e) { throw new Error(`JSON Inválido: ${e.message}`); }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    autoUpdateIndicator.style.display = 'none';
+                    loading.style.display = 'none';
+                    errorMessage.textContent = `Error: ${err.message}`;
+                    error.style.display = 'block';
+                });
+        }
+           
+        function procesarDatos(data, grado, grupo) {
+            autoUpdateIndicator.style.display = 'none';
+            loading.style.display = 'none';
+            
+            if (data.status && data.status !== 200) {
+                error.style.display = 'block';
+                errorMessage.textContent = data.error;
+                return;
+            }
+            if (!data.datos || !Array.isArray(data.datos)) {
+                error.style.display = 'block';
+                errorMessage.textContent = "No hay datos.";
+                return;
+            }
+
+            rawData = data;
+
+            // Filtrar datos
+            let registrosAMostrar = data.datos.filter(alumno => {
+                if (grado !== "todos" || grupo !== "todos") {
+                    const ag = String(alumno["datospara variables::GRADO"] || "").trim().toLowerCase();
+                    const gr = String(alumno["datospara variables::GRUPO"] || "").trim().toLowerCase();
+                    if (grado !== "todos" && ag !== grado) return false;
+                    if (grupo !== "todos" && gr !== grupo.toLowerCase()) return false;
+                }
+                return true;
+            });
+
+            if (registrosAMostrar.length === 0) {
+                alert("No se encontraron alumnos con estos filtros.");
+                results.style.display = 'block';
+                vistaIndividual.style.display = 'none';
+                vistaGeneral.style.display = 'none';
+                return;
+            }
+
+            results.style.display = 'block';
+
+            // Enviar a la vista correspondiente
+            if (viewMode === 'individual') {
+                renderizarVistaIndividual(registrosAMostrar, grado, grupo);
+            } else {
+                renderizarVistaGeneral(registrosAMostrar, grado, grupo);
+            }
+        }
+
+        // --- RENDERIZAR VISTA INDIVIDUAL ---
+        function renderizarVistaIndividual(registros, grado, grupo) {
+            vistaIndividual.style.display = 'block';
+            vistaGeneral.style.display = 'none';
+            tablaBody.innerHTML = '';
+            totalAlumnos.textContent = `Mostrando ${registros.length} alumno(s).`;
+
+            registros.forEach((alumno, index) => {
+                const fila = document.createElement('tr');
+                const normalizarGrado = (g) => g ? g.toString().trim().replace(/[°º]/g, '') : '';
+                
+                const nCompleto = `${alumno["DATOS DE ALUMNOS::apellido1"] || ''} ${alumno["DATOS DE ALUMNOS::apellido2"] || ''} ${alumno["DATOS DE ALUMNOS::nombre1"] || ''}`.trim();
+                const alumnoGrado = normalizarGrado(alumno["datospara variables::GRADO"]);
+                const alumnoGrupo = alumno["datospara variables::GRUPO"] || '';
+                
+                const canvasId = `chart-alumno-${index}`;
+
+                let nombresAsignaturas = asignaturasPrimerGrado;
+                if (alumnoGrado === "2") nombresAsignaturas = asignaturasSegundoGrado;
+                else if (alumnoGrado === "3") nombresAsignaturas = asignaturasTercerGrado;
+
+                let labels = [];
+                let dataFinal = [];
+                let backgroundColors = [];
+
+                for (let i = 0; i < nombresAsignaturas.length; i++) {
+                    const keyCalif = camposCalificaciones[i];
+                    const keyRecup = camposRecuperacionJSON[i];
+                    
+                    let valOriginal = parseFloat(alumno[keyCalif]);
+                    if (isNaN(valOriginal)) valOriginal = null;
+
+                    let valFinal = valOriginal;
+                    let valorRecup = alumno[keyRecup];
+
+                    if (valorRecup && valorRecup.toString().trim() !== "") {
+                        valFinal = parseFloat(valorRecup);
+                    }
+
+                    labels.push(nombresAsignaturas[i]);
+                    
+                    if (isNaN(valFinal)) {
+                        dataFinal.push(0); 
+                        backgroundColors.push('#ffc107');
+                    } else {
+                        dataFinal.push(valFinal);
+                        if (valFinal >= 6) {
+                            backgroundColors.push('#28a745'); 
+                        } else {
+                            backgroundColors.push('#dc3545'); 
+                        }
+                    }
+                }
+
+                let celdas = `<td class="col-numero">${index+1}</td>`;
+                celdas += `<td class="col-nombre">
+                    ${nCompleto}
+                    <div style="font-size:12px; color:#7f8c8d; font-weight:normal;">${alumnoGrado}° ${alumnoGrupo}</div>
+                </td>`;
+                celdas += `<td class="col-grafica"><div class="chart-wrapper"><canvas id="${canvasId}"></canvas></div></td>`;
+                
+                fila.innerHTML = celdas;
+                tablaBody.appendChild(fila);
+
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Calificación',
+                            data: dataFinal,
+                            backgroundColor: backgroundColors,
+                            borderColor: 'rgba(0,0,0,0.1)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 500 },
+                        scales: {
+                            y: { beginAtZero: true, max: 10, grid: {display: false}, ticks: {stepSize: 2, font: {size: 10}} },
+                            x: { grid: {display: false}, ticks: {font: {size: 10}} }
+                        },
+                        plugins: { legend: {display: false} }
+                    }
+                });
+            });
+        }
+
+        // --- RENDERIZAR VISTA GENERAL ---
+        function renderizarVistaGeneral(registros, grado, grupo) {
+            vistaIndividual.style.display = 'none';
+            vistaGeneral.style.display = 'block';
+            
+            // Texto informativo
+            let textoFiltro = (grado === "todos" && grupo === "todos") ? "Toda la Escuela" : 
+                               (grado === "todos") ? `Grupo: ${grupo}` : 
+                               (grupo === "todos") ? `Grado: ${grado}°` : `Grado: ${grado}° - Grupo ${grupo}`;
+            
+            generalStatsInfo.innerHTML = `
+                <div class="stat-box">Alumnos: <strong>${registros.length}</strong></div>
+                <div class="stat-box">Filtro: <strong>${textoFiltro}</strong></div>
+            `;
+
+            // Preparar acumuladores para promedios
+            // Usamos un array de 11 posiciones (índice 0 no usado) para las 10 materias
+            let sumas = Array(11).fill(0);
+            let contadores = Array(11).fill(0);
+
+            registros.forEach(alumno => {
+                const alumnoGrado = String(alumno["datospara variables::GRADO"] || "").trim();
+                let numAsignaturas = 10;
+                
+                // Definir cuántas materias procesar según el grado del alumno actual
+                if (alumnoGrado === "2" || alumnoGrado === "3") {
+                    numAsignaturas = 9; 
+                    // Para el índice 10 (Física/Química en 1ro o similar en pos 10), si es grado 2/3 no tiene materia en pos 10 en su arreglo específico, 
+                    // pero vamos a iterar hasta 10 buscando datos en la hoja cruda.
+                    // Nota: La hoja de cálculo tiene 10 columnas fijas para TODOS. 
+                    // Si 2do grado no tiene Asignatura 10, estará vacía.
+                }
+
+                for (let i = 1; i <= 10; i++) {
+                    let val = parseFloat(alumno[camposCalificaciones[i-1]]);
+                    let recup = alumno[camposRecuperacionJSON[i-1]];
+
+                    if (recup && recup.toString().trim() !== "") {
+                        val = parseFloat(recup);
+                    }
+
+                    if (!isNaN(val) && val > 0) {
+                        sumas[i] += val;
+                        contadores[i]++;
+                    }
+                }
+            });
+
+            // Calcular promedios
+            let labelsGeneral = [];
+            let dataPromedios = [];
+            let colors = [];
+
+            // Si el filtro es "Todos", usamos nombres genéricos o del 1er grado como base, pero promediamos todo
+            let nombresBase = (grado === "1") ? asignaturasPrimerGrado : 
+                               (grado === "2") ? asignaturasSegundoGrado : 
+                               (grado === "3") ? asignaturasTercerGrado : asignaturasPrimerGrado; // Default para "Todos"
+
+            // Si es "Todos" (toda la escuela), las materias varían por grado. 
+            // Para simplificar la gráfica de "Toda la escuela", promediaremos por posición (Materia 1, Materia 2...).
+            // El nombre lo asignamos basándonos en 1er grado, pero será una mezcla real.
+            // Ejemplo: Posición 1 siempre será Español para todos. Es seguro.
+            
+            for (let i = 1; i <= 10; i++) {
+                if (contadores[i] > 0) {
+                    let promedio = sumas[i] / contadores[i];
+                    labelsGeneral.push(nombresBase[i-1] || `Materia ${i}`);
+                    dataPromedios.push(promedio.toFixed(1));
+                    
+                    // Color según promedio
+                    if (promedio >= 6) colors.push('#3498db'); // Azul institucional para promedios grupales
+                    else colors.push('#e74c3c');
+                }
+            }
+
+            // Destruir anterior si existe
+            if (generalChartInstance) {
+                generalChartInstance.destroy();
+            }
+
+            const ctxG = document.getElementById('generalChart').getContext('2d');
+            generalChartInstance = new Chart(ctxG, {
+                type: 'bar',
+                data: {
+                    labels: labelsGeneral,
+                    datasets: [{
+                        label: 'Promedio Grupal',
+                        data: dataPromedios,
+                        backgroundColor: colors,
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: { display: true, text: 'Promedio de Calificaciones' },
+                            grid: { color: '#f0f0f0' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: `Promedio de Rendimiento - ${textoFiltro}`,
+                            font: { size: 20 }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

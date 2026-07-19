@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta property="og:title" content="Generador de Permisos Escolares - Secundaria Honorato Tlaseca Barrera">
+    <meta property="og:description" content="Formulario oficial para docentes generar permisos escolares en la Secundaria Profr. Honorato Tlaseca Barrera">
+    <meta property="og:image" content="https://faustinohtb-hash.github.io/honorato/SP.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="URL_DEL_FORMULARIO">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Secundaria Profr. Honorato Tlaseca Barrera">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Generador de Permisos Escolares">
+    <meta name="twitter:description" content="Formulario oficial para docentes generar permisos escolares">
+    <meta name="twitter:image" content="https://faustinohtb-hash.github.io/honorato/SP.png">
+    
+    <title>Generador de Permisos Escolares</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 30px 30px 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .logo-container {
+            width: 220px;
+            max-width: 80%;
+            height: auto;
+            margin: 0 auto 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .home-btn-icon {
+            font-size: 16px;
+        }
+
+        .form-content {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        label span {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Poppins', Arial, sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .row.three-columns {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(30, 60, 114, 0.4);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', Arial, sans-serif;
+            margin-top: 15px;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4);
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        .footer-home-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        .footer-home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .summary h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .summary-item {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-item strong {
+            color: #2a5298;
+        }
+
+        .fechas-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .fechas-list li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .whatsapp-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .whatsapp-btn {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .print-btn {
+            display: inline-block;
+            background-color: #4285F4;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .print-btn:hover {
+            background-color: #0d47a1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            .row.three-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .form-content {
+                padding: 30px 20px;
+            }
+
+            .logo-container {
+                width: 180px;
+            }
+
+            .home-btn {
+                top: 15px;
+                right: 15px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .footer-home-btn {
+                position: static;
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .permission-preview {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .permission-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .permission-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .permission-details {
+            margin-bottom: 15px;
+        }
+
+        .permission-details p {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .permission-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            font-size: 12px;
+        }
+
+        .permission-signature {
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            width: 45%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="home-btn">
+                <span class="home-btn-icon">🏠</span>
+                <span>Inicio</span>
+            </a>
+            
+            <div class="logo-container">
+                <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Secundaria HTB" class="logo">
+            </div>
+            <h1>📋 Generador de Permisos Escolares</h1>
+            <p>Este formulario permite a los docentes generar permisos para los estudiantes de la secundaria.</p>
+        </div>
+
+        <div class="form-content">
+            <div class="message" id="message"></div>
+            <div class="summary" id="summary"></div>
+
+            <form id="permisoForm">
+                <div class="form-group">
+                    <label>Nombre completo del docente <span>*</span></label>
+                    <select id="nombreDocente" required>
+                        <option value="">Cargando docentes...</option>
+                    </select>
+                    <div class="error-message" id="errorNombreDocente"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre completo del padre o tutor <span>*</span></label>
+                    <input type="text" id="nombrePadreTutor" placeholder="Escriba el nombre completo del padre o tutor" required>
+                    <div class="error-message" id="errorNombrePadreTutor"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono del padre o tutor <span>*</span></label>
+                    <input type="tel" id="telefonoPadreTutor" placeholder="Ej: 7771234567" required>
+                    <div class="error-message" id="errorTelefonoPadreTutor"></div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Grado <span>*</span></label>
+                        <select id="grado" required>
+                            <option value="">Seleccione...</option>
+                            <option value="1">1°</option>
+                            <option value="2">2°</option>
+                            <option value="3">3°</option>
+                        </select>
+                        <div class="error-message" id="errorGrado"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Grupo <span>*</span></label>
+                        <select id="grupo" required>
+                            <option value="">Seleccione...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                        </select>
+                        <div class="error-message" id="errorGrupo"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre completo del estudiante <span>*</span></label>
+                    <select id="nombreEstudiante" required disabled>
+                        <option value="">Seleccione grado y grupo primero</option>
+                    </select>
+                    <div class="error-message" id="errorNombreEstudiante"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Motivo del permiso <span>*</span></label>
+                    <select id="motivo" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Salida anticipada">Salida anticipada</option>
+                        <option value="Inasistencia justificada">Inasistencia justificada</option>
+                        <option value="Participación en evento escolar">Participación en evento escolar</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <div class="error-message" id="errorMotivo"></div>
+                </div>
+
+                <div class="form-group" id="otroMotivoGroup" style="display: none;">
+                    <label>Especifique el motivo <span>*</span></label>
+                    <input type="text" id="otroMotivo">
+                    <div class="error-message" id="errorOtroMotivo"></div>
+                </div>
+
+                <div class="row three-columns">
+                    <div class="form-group">
+                        <label>Fecha del permiso <span>*</span></label>
+                        <input type="date" id="fecha" required>
+                        <div class="error-message" id="errorFecha"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hora de salida (si aplica)</label>
+                        <input type="time" id="horaSalida">
+                        <div class="error-message" id="errorHoraSalida"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cantidad de días <span>*</span></label>
+                        <input type="number" id="cantidadDias" min="1" value="1" required>
+                        <div class="error-message" id="errorCantidadDias"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Comentarios adicionales</label>
+                    <textarea id="comentarios" placeholder="Agregue cualquier información adicional que considere relevante..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="declaracion" required>
+                        <label for="declaracion">Declaro que la información proporcionada es verídica y que el permiso es necesario. <span>*</span></label>
+                    </div>
+                    <div class="error-message" id="errorDeclaracion"></div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    📤 Generar permiso
+                </button>
+            </form>
+
+            <div class="permission-preview" id="permissionPreview">
+                <div class="permission-header">
+                    <div class="permission-title">PERMISO ESCOLAR</div>
+                    <p>Secundaria Profr. Honorato Tlaseca Barrera</p>
+                    <p>Huehuetlán el Chico, Puebla</p>
+                </div>
+                
+                <div class="permission-details" id="permissionDetails">
+                    </div>
+                
+                <div class="permission-footer">
+                    <div class="permission-signature">
+                        <p>_________________________</p>
+                        <p>Firma del docente</p>
+                    </div>
+                    <div class="permission-signature">
+                        <p>_________________________</p>
+                        <p>Firma del padre/tutor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Formulario elaborado para la Secundaria Profr. Honorato Tlaseca Barrera<br>
+            Huehuetlán el Chico, Puebla. Edición 2025.
+            
+            <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="footer-home-btn">
+                <span>🏠</span>
+                <span>Regresar al inicio</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('permisoForm');
+        const motivoSelect = document.getElementById('motivo');
+        const otroMotivoGroup = document.getElementById('otroMotivoGroup');
+        const submitBtn = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('message');
+        const summaryDiv = document.getElementById('summary');
+        const permissionPreview = document.getElementById('permissionPreview');
+        const permissionDetails = document.getElementById('permissionDetails');
+        const gradoSelect = document.getElementById('grado');
+        const grupoSelect = document.getElementById('grupo');
+        const nombreEstudianteSelect = document.getElementById('nombreEstudiante');
+
+        // URL del Google Script para obtener los docentes
+        const GOOGLE_SCRIPT_TEACHERS_URL = 'https://script.google.com/macros/s/AKfycbzPUWFLXhFAoC9w_Yqo5shO9TRyquOYYvzg8ovKB1mdFNh4dUhK7MKLOs1ITupLxb-hXQ/exec';
+        
+        // URL del Google Script para obtener los estudiantes
+        const GOOGLE_SCRIPT_STUDENTS_URL = 'https://script.google.com/macros/s/AKfycbwBl2pjwTOHVIfjmGERMBwE9_FlfQc3OF5KUYUjv8XAIF1o3LtYgj2TVb1a6fZg1eZ4/exec';
+
+        // Función para establecer la fecha mínima como hoy
+        function setMinDate() {
+            const fechaInput = document.getElementById('fecha');
+            const today = new Date();
+            // Formatear la fecha actual como YYYY-MM-DD (formato requerido por input[type="date"])
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const formattedToday = `${year}-${month}-${day}`;
+            
+            // Establecer el atributo min para permitir desde hoy en adelante
+            fechaInput.setAttribute('min', formattedToday);
+            
+            // Establecer hoy como valor por defecto
+            fechaInput.value = formattedToday;
+        }
+        
+        // Función para cargar la lista de docentes
+        async function loadTeachers() {
+            const nombreDocenteSelect = document.getElementById('nombreDocente');
+            
+            // Desactivar el select mientras se carga
+            nombreDocenteSelect.disabled = true;
+            nombreDocenteSelect.innerHTML = '<option value="">Cargando docentes...</option>';
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_TEACHERS_URL);
+                
+                // Verificar si la respuesta es exitosa
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Datos recibidos del script de docentes:', data);
+
+                // Limpiar opciones previas
+                nombreDocenteSelect.innerHTML = '<option value="">Seleccione su nombre...</option>';
+
+                // Función para procesar un array de datos
+                function processArray(array) {
+                    if (array.length === 0) {
+                        nombreDocenteSelect.innerHTML = '<option value="">No hay docentes disponibles</option>';
+                        return;
+                    }
+
+                    array.forEach(item => {
+                        let nombre = '';
+                        // Si el item es un string, usarlo directamente
+                        if (typeof item === 'string') {
+                            nombre = item;
+                        } 
+                        // Si es un objeto, intentar obtener el nombre de varias propiedades
+                        else if (typeof item === 'object') {
+                            nombre = item.nombre || item.name || item.docente || item.teacher || item.value || item.text || '';
+                        }
+                        
+                        if (nombre.trim() !== '') {
+                            const option = document.createElement('option');
+                            option.value = nombre.trim();
+                            option.textContent = nombre.trim();
+                            nombreDocenteSelect.appendChild(option);
+                        }
+                    });
+                }
+
+                // Verificar si data es un array
+                if (Array.isArray(data)) {
+                    processArray(data);
+                } else {
+                    // Si no es un array, intentar ver si tiene una propiedad que sea un array
+                    let teachersArray = null;
+                    if (data.teachers && Array.isArray(data.teachers)) {
+                        teachersArray = data.teachers;
+                    } else if (data.data && Array.isArray(data.data)) {
+                        teachersArray = data.data;
+                    } else if (data.docentes && Array.isArray(data.docentes)) {
+                        teachersArray = data.docentes;
+                    } else {
+                        throw new Error('La respuesta no contiene un array de docentes');
+                    }
+
+                    processArray(teachersArray);
+                }
+                
+                // Activar el select
+                nombreDocenteSelect.disabled = false;
+                
+            } catch (error) {
+                console.error('Error al obtener la lista de docentes:', error);
+                nombreDocenteSelect.innerHTML = '<option value="">Error al cargar docentes</option>';
+                nombreDocenteSelect.disabled = false;
+            }
+        }
+        
+        // Función para cargar la lista de estudiantes según grado y grupo
+        async function loadStudents() {
+            const grado = gradoSelect.value;
+            const grupo = grupoSelect.value;
+            
+            // Si no se ha seleccionado grado o grupo, no hacemos nada
+            if (!grado || !grupo) {
+                nombreEstudianteSelect.innerHTML = '<option value="">Seleccione grado y grupo primero</option>';
+                nombreEstudianteSelect.disabled = true;
+                return;
+            }
+            
+            // Desactivar el select mientras se carga
+            nombreEstudianteSelect.disabled = true;
+            nombreEstudianteSelect.innerHTML = '<option value="">Cargando estudiantes...</option>';
+            
+            try {
+                // Construir la URL con los parámetros de grado y grupo
+                const url = `${GOOGLE_SCRIPT_STUDENTS_URL}?grado=${encodeURIComponent(grado)}&grupo=${encodeURIComponent(grupo)}`;
+                console.log('URL para cargar estudiantes:', url);
+                
+                const response = await fetch(url);
+                
+                // Verificar si la respuesta es exitosa
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Datos recibidos del script de estudiantes:', data);
+
+                // Limpiar opciones previas
+                nombreEstudianteSelect.innerHTML = '<option value="">Seleccione un estudiante...</option>';
+
+                // Función para procesar un array de datos con filtrado
+                function processArray(array) {
+                    // Filtrar los estudiantes por grado y grupo
+                    const filteredArray = array.filter(item => {
+                        // Si el item es un string, no podemos filtrar, lo incluimos
+                        if (typeof item === 'string') {
+                            return true;
+                        }
+                        // Si es un objeto, verificamos las propiedades
+                        const itemGrado = item.grado || item.Grado || item.grado_id || '';
+                        const itemGrupo = item.grupo || item.Grupo || item.grupo_id || '';
+                        
+                        // Convertir a string para comparar correctamente
+                        return String(itemGrado) === String(grado) && String(itemGrupo) === String(grupo);
+                    });
+
+                    console.log(`Estudiantes filtrados para ${grado} ${grupo}:`, filteredArray);
+
+                    if (filteredArray.length === 0) {
+                        nombreEstudianteSelect.innerHTML = '<option value="">No hay estudiantes disponibles para este grado y grupo</option>';
+                        return;
+                    }
+
+                    filteredArray.forEach(item => {
+                        let nombre = '';
+                        // Si el item es un string, usarlo directamente
+                        if (typeof item === 'string') {
+                            nombre = item;
+                        } 
+                        // Si es un objeto, intentar obtener el nombre de varias propiedades
+                        else if (typeof item === 'object') {
+                            nombre = item.nombre || item.name || item.estudiante || item.student || item.value || item.text || '';
+                        }
+                        
+                        if (nombre.trim() !== '') {
+                            const option = document.createElement('option');
+                            option.value = nombre.trim();
+                            option.textContent = nombre.trim();
+                            nombreEstudianteSelect.appendChild(option);
+                        }
+                    });
+                }
+
+                // Verificar si data es un array
+                if (Array.isArray(data)) {
+                    processArray(data);
+                } else {
+                    // Si no es un array, intentar ver si tiene una propiedad que sea un array
+                    let studentsArray = null;
+                    if (data.students && Array.isArray(data.students)) {
+                        studentsArray = data.students;
+                    } else if (data.data && Array.isArray(data.data)) {
+                        studentsArray = data.data;
+                    } else if (data.estudiantes && Array.isArray(data.estudiantes)) {
+                        studentsArray = data.estudiantes;
+                    } else {
+                        throw new Error('La respuesta no contiene un array de estudiantes');
+                    }
+
+                    processArray(studentsArray);
+                }
+                
+                // Activar el select
+                nombreEstudianteSelect.disabled = false;
+                
+            } catch (error) {
+                console.error('Error al obtener la lista de estudiantes:', error);
+                nombreEstudianteSelect.innerHTML = '<option value="">Error al cargar estudiantes</option>';
+                nombreEstudianteSelect.disabled = false;
+            }
+        }
+
+        // Función para reiniciar el formulario
+        function resetForm() {
+            // Reiniciar el formulario
+            form.reset();
+            otroMotivoGroup.style.display = 'none';
+            
+            // Volver a establecer la fecha mínima y el valor por defecto
+            setMinDate();
+            
+            // Restablecer el valor por defecto de cantidad de días
+            document.getElementById('cantidadDias').value = 1;
+            
+            // Restablecer el select de estudiantes
+            nombreEstudianteSelect.innerHTML = '<option value="">Seleccione grado y grupo primero</option>';
+            nombreEstudianteSelect.disabled = true;
+            
+            // Ocultar resumen y vista previa
+            summaryDiv.style.display = 'none';
+            permissionPreview.style.display = 'none';
+            
+            // Eliminar el botón de reinicio si existe
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) {
+                resetBtn.remove();
+            }
+            
+            // Eliminar el contenedor de WhatsApp si existe
+            const whatsappContainer = document.querySelector('.whatsapp-container');
+            if (whatsappContainer) {
+                whatsappContainer.remove();
+            }
+            
+            // Recargar la lista de docentes
+            loadTeachers();
+            
+            // Habilitar el botón de envío
+            submitBtn.disabled = false;
+            submitBtn.textContent = '📤 Generar permiso';
+        }
+
+        // Función para obtener fechas consecutivas saltando fines de semana
+        function getFechasConsecutivas(fechaInicio, cantidadDias) {
+            const fechas = [];
+            let fechaActual = new Date(fechaInicio);
+            
+            for (let i = 0; i < cantidadDias; i++) {
+                // Si es sábado (6) o domingo (0), saltamos al lunes
+                if (fechaActual.getDay() === 6) { // Sábado
+                    fechaActual.setDate(fechaActual.getDate() + 2); // Saltar al lunes
+                } else if (fechaActual.getDay() === 0) { // Domingo
+                    fechaActual.setDate(fechaActual.getDate() + 1); // Saltar al lunes
+                }
+                
+                // Formateamos la fecha a YYYY-MM-DD
+                const year = fechaActual.getFullYear();
+                const month = String(fechaActual.getMonth() + 1).padStart(2, '0');
+                const day = String(fechaActual.getDate()).padStart(2, '0');
+                const fechaFormateada = `${year}-${month}-${day}`;
+                
+                fechas.push(fechaFormateada);
+                
+                // Avanzamos al siguiente día
+                fechaActual.setDate(fechaActual.getDate() + 1);
+            }
+            
+            return fechas;
+        }
+
+        // Función para formatear fecha a DD/MM/YYYY
+        function formatearFecha(fechaString) {
+            const partes = fechaString.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        // Llama a las funciones cuando se cargue la página
+        document.addEventListener('DOMContentLoaded', setMinDate);
+        document.addEventListener('DOMContentLoaded', loadTeachers);
+
+        // Agregar event listeners para cargar estudiantes cuando cambie el grado o el grupo
+        gradoSelect.addEventListener('change', function() {
+            // Si el grupo ya está seleccionado, cargar estudiantes
+            if (grupoSelect.value) {
+                loadStudents();
+            }
+        });
+        
+        grupoSelect.addEventListener('change', function() {
+            // Si el grado ya está seleccionado, cargar estudiantes
+            if (gradoSelect.value) {
+                loadStudents();
+            }
+        });
+
+        motivoSelect.addEventListener('change', function() {
+            if (this.value === 'Otro') {
+                otroMotivoGroup.style.display = 'block';
+                document.getElementById('otroMotivo').required = true;
+            } else {
+                otroMotivoGroup.style.display = 'none';
+                document.getElementById('otroMotivo').required = false;
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+            
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+
+            const nombreDocente = document.getElementById('nombreDocente');
+            if (!nombreDocente.value.trim()) {
+                showError('errorNombreDocente', 'Seleccione su nombre completo');
+                isValid = false;
+            }
+
+            const nombrePadreTutor = document.getElementById('nombrePadreTutor');
+            if (!nombrePadreTutor.value.trim()) {
+                showError('errorNombrePadreTutor', 'Escriba el nombre completo del padre o tutor');
+                isValid = false;
+            }
+
+            const telefonoPadreTutor = document.getElementById('telefonoPadreTutor');
+            if (!telefonoPadreTutor.value.trim()) {
+                showError('errorTelefonoPadreTutor', 'Escriba el teléfono del padre o tutor');
+                isValid = false;
+            } else {
+                // Validar que el teléfono tenga solo números y al menos 10 dígitos
+                const telefonoRegex = /^\d{10,}$/;
+                if (!telefonoRegex.test(telefonoPadreTutor.value.trim())) {
+                    showError('errorTelefonoPadreTutor', 'El teléfono debe contener solo números y al menos 10 dígitos');
+                    isValid = false;
+                }
+            }
+
+            const nombreEstudiante = document.getElementById('nombreEstudiante');
+            if (!nombreEstudiante.value.trim()) {
+                showError('errorNombreEstudiante', 'Seleccione un estudiante');
+                isValid = false;
+            }
+
+            const grado = document.getElementById('grado');
+            if (!grado.value) {
+                showError('errorGrado', 'Seleccione un grado');
+                isValid = false;
+            }
+
+            const grupo = document.getElementById('grupo');
+            if (!grupo.value) {
+                showError('errorGrupo', 'Seleccione un grupo');
+                isValid = false;
+            }
+
+            const motivo = document.getElementById('motivo');
+            if (!motivo.value) {
+                showError('errorMotivo', 'Seleccione un motivo');
+                isValid = false;
+            }
+
+            if (motivo.value === 'Otro') {
+                const otroMotivo = document.getElementById('otroMotivo');
+                if (!otroMotivo.value.trim()) {
+                    showError('errorOtroMotivo', 'Especifique el motivo');
+                    isValid = false;
+                }
+            }
+
+            const fecha = document.getElementById('fecha');
+            if (!fecha.value) {
+                showError('errorFecha', 'Seleccione una fecha');
+                isValid = false;
+            } else {
+                // Validar que la fecha no sea anterior a hoy
+                const [year, month, day] = fecha.value.split('-').map(Number);
+                const selectedDate = new Date(year, month - 1, day);
+                
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (selectedDate < today) {
+                    showError('errorFecha', 'La fecha no puede ser anterior a hoy');
+                    isValid = false;
+                }
+            }
+
+            const cantidadDias = document.getElementById('cantidadDias');
+            if (!cantidadDias.value || cantidadDias.value < 1) {
+                showError('errorCantidadDias', 'La cantidad de días debe ser al menos 1');
+                isValid = false;
+            }
+
+            const declaracion = document.getElementById('declaracion');
+            if (!declaracion.checked) {
+                showError('errorDeclaracion', 'Debe aceptar la declaración');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function showSummary(data, fechasFormateadas) {
+            const motivo = data.motivo === 'Otro' ? data.otroMotivo : data.motivo;
+            
+            let fechasHTML = '<ul class="fechas-list">';
+            fechasFormateadas.forEach(fecha => {
+                fechasHTML += `<li>${fecha}</li>`;
+            });
+            fechasHTML += '</ul>';
+            
+            summaryDiv.innerHTML = `
+                <h3>✅ Resumen del permiso generado:</h3>
+                <div class="summary-item"><strong>Docente:</strong> ${data.nombreDocente}</div>
+                <div class="summary-item"><strong>Padre/Tutor:</strong> ${data.nombreTutorSolo}</div>
+                <div class="summary-item"><strong>Teléfono:</strong> ${data.telefono}</div>
+                <div class="summary-item"><strong>Estudiante:</strong> ${data.nombreEstudiante}</div>
+                <div class="summary-item"><strong>Grado:</strong> ${data.grado}</div>
+                <div class="summary-item"><strong>Grupo:</strong> ${data.grupo}</div>
+                <div class="summary-item"><strong>Motivo:</strong> ${motivo}</div>
+                <div class="summary-item"><strong>Cantidad de días:</strong> ${data.cantidadDias}</div>
+                <div class="summary-item"><strong>Fechas del permiso:</strong></div>
+                ${fechasHTML}
+                ${data.horaSalida && data.horaSalida !== 'N/A' ? `<div class="summary-item"><strong>Hora de salida:</strong> ${data.horaSalida}</div>` : ''}
+                ${data.comentarios && data.comentarios !== 'N/A' ? `<div class="summary-item"><strong>Comentarios:</strong> ${data.comentarios}</div>` : ''}
+            `;
+            summaryDiv.style.display = 'block';
+            summaryDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function showPermissionPreview(data, fechasFormateadas) {
+            const motivo = data.motivo === 'Otro' ? data.otroMotivo : data.motivo;
+            
+            let fechasHTML = '<ul>';
+            fechasFormateadas.forEach(fecha => {
+                fechasHTML += `<li>${fecha}</li>`;
+            });
+            fechasHTML += '</ul>';
+            
+            permissionDetails.innerHTML = `
+                <p><strong>Docente:</strong> ${data.nombreDocente}</p>
+                <p><strong>Padre/Tutor:</strong> ${data.nombreTutorSolo}</p>
+                <p><strong>Teléfono:</strong> ${data.telefono}</p>
+                <p><strong>Estudiante:</strong> ${data.nombreEstudiante}</p>
+                <p><strong>Grado y Grupo:</strong> ${data.grado} ${data.grupo}</p>
+                <p><strong>Motivo:</strong> ${motivo}</p>
+                <p><strong>Cantidad de días:</strong> ${data.cantidadDias}</p>
+                <p><strong>Fechas del permiso:</strong></p>
+                ${fechasHTML}
+                ${data.horaSalida && data.horaSalida !== 'N/A' ? `<p><strong>Hora de salida:</strong> ${data.horaSalida}</p>` : ''}
+                ${data.comentarios && data.comentarios !== 'N/A' ? `<p><strong>Comentarios:</strong> ${data.comentarios}</p>` : ''}
+                <p><strong>Fecha de emisión:</strong> ${data.timestamp}</p>
+            `;
+            
+            permissionPreview.style.display = 'block';
+            permissionPreview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Función para abrir WhatsApp con manejo de errores mejorado
+        function abrirWhatsApp(numero, mensaje) {
+            try {
+                // Codificar el mensaje para URL
+                const encodedMessage = encodeURIComponent(mensaje);
+                
+                // Construir la URL de WhatsApp
+                const whatsappURL = `https://wa.me/${numero}?text=${encodedMessage}`;
+                
+                console.log('URL de WhatsApp generada:', whatsappURL);
+                
+                // Intentar abrir en una nueva ventana/pestaña
+                const newWindow = window.open(whatsappURL, '_blank');
+                
+                // Si no se pudo abrir (bloqueador de ventanas emergentes)
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    // Mostrar mensaje al usuario en lugar de redirigir
+                    showMessage('⚠️ No se pudo abrir WhatsApp automáticamente. Por favor, usa el botón de abajo.', 'info');
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error al abrir WhatsApp:', error);
+                showMessage('⚠️ Error al abrir WhatsApp. Por favor, usa el botón de abajo.', 'error');
+                return false;
+            }
+        }
+
+        // Función para mostrar el botón de WhatsApp manual
+        function mostrarBotonWhatsApp(numero, mensaje) {
+            // Codificar el mensaje para URL
+            const encodedMessage = encodeURIComponent(mensaje);
+            
+            // Construir la URL de WhatsApp
+            const whatsappURL = `https://wa.me/${numero}?text=${encodedMessage}`;
+            
+            // Crear contenedor para los botones
+            const container = document.createElement('div');
+            container.className = 'whatsapp-container';
+            
+            // Crear el botón de imprimir
+            const printBtn = document.createElement('a');
+            printBtn.href = '#';
+            printBtn.className = 'print-btn';
+            printBtn.innerHTML = '🖨️ Imprimir permiso';
+            printBtn.onclick = function(e) {
+                e.preventDefault();
+                window.print();
+            };
+            
+            // Crear el botón de WhatsApp
+            const whatsappBtn = document.createElement('a');
+            whatsappBtn.href = whatsappURL;
+            whatsappBtn.target = '_blank';
+            whatsappBtn.className = 'whatsapp-btn';
+            whatsappBtn.innerHTML = '📱 Enviar por WhatsApp';
+            
+            // Añadir los botones al contenedor
+            container.appendChild(printBtn);
+            container.appendChild(whatsappBtn);
+            
+            // Añadir el contenedor después del resumen
+            summaryDiv.parentNode.insertBefore(container, summaryDiv.nextSibling);
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Generando permiso...';
+
+            const fechaOriginal = document.getElementById('fecha').value;
+            const horaSalida = document.getElementById('horaSalida').value;
+            const cantidadDias = parseInt(document.getElementById('cantidadDias').value);
+
+            // Obtener fechas consecutivas saltando fines de semana
+            const fechas = getFechasConsecutivas(fechaOriginal, cantidadDias);
+            const fechasFormateadas = fechas.map(fecha => formatearFecha(fecha));
+
+            // Obtener los nombres del docente y tutor
+            const nombreDocente = document.getElementById('nombreDocente').value.trim();
+            const nombreTutor = document.getElementById('nombrePadreTutor').value.trim();
+            
+            // Obtener el grado y añadir el símbolo de grado
+            const grado = document.getElementById('grado').value;
+            const gradoConSimbolo = grado + '°';
+            
+            // Crear objeto con los datos del formulario
+            let formData = {
+                nombreDocente: nombreDocente,
+                nombrePadre: `${nombreDocente} / ${nombreTutor}`, // Combinación de docente y tutor
+                nombreTutorSolo: nombreTutor, // Solo el nombre del tutor para mostrar en resumen
+                telefono: document.getElementById('telefonoPadreTutor').value.trim(),
+                nombreEstudiante: document.getElementById('nombreEstudiante').value.trim(),
+                grado: gradoConSimbolo, // Grado con símbolo
+                grupo: document.getElementById('grupo').value,
+                motivo: document.getElementById('motivo').value,
+                otroMotivo: document.getElementById('otroMotivo').value.trim(),
+                horaSalida: horaSalida,
+                cantidadDias: cantidadDias,
+                comentarios: document.getElementById('comentarios').value.trim(),
+                timestamp: new Date().toLocaleString('es-MX', { 
+                    timeZone: 'America/Mexico_City',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                })
+            };
+
+            // Reemplazar campos vacíos con "N/A"
+            for (const key in formData) {
+                if (typeof formData[key] === 'string' && formData[key].trim() === '') {
+                    formData[key] = 'N/A';
+                }
+            }
+
+            // Preparar el mensaje de WhatsApp
+            const motivoFinal = formData.motivo === 'Otro' ? formData.otroMotivo : formData.motivo;
+            
+            // Construir el mensaje para WhatsApp
+            let mensaje = `📋 *PERMISO ESCOLAR GENERADO*
+
+*Datos del Docente:*
+👤 Nombre: ${formData.nombreDocente}
+
+*Datos del Padre/Tutor:*
+👤 Nombre: ${formData.nombreTutorSolo}
+📞 Teléfono: ${formData.telefono}
+
+*Datos del Estudiante:*
+👨‍🎓 Nombre: ${formData.nombreEstudiante}
+📚 Grado: ${formData.grado}
+🏫 Grupo: ${formData.grupo}
+
+*Detalles del Permiso:*
+📝 Motivo: ${motivoFinal}
+📅 Cantidad de días: ${formData.cantidadDias}
+📅 Fechas del permiso:`;
+
+            fechasFormateadas.forEach(fecha => {
+                mensaje += `\n• ${fecha}`;
+            });
+
+            mensaje += `\n ${formData.horaSalida && formData.horaSalida !== 'N/A' ? `⏰ Hora de salida: ${formData.horaSalida}` : ''}
+ ${formData.comentarios && formData.comentarios !== 'N/A' ? `💬 Comentarios: ${formData.comentarios}` : ''}
+
+✅ _Declaro que la información es verídica y que el permiso es necesario._
+
+🏫 Secundaria Profr. Honorato Tlaseca Barrera`;
+
+            // Mostrar el mensaje en la consola para depuración
+            console.log("Mensaje para WhatsApp:", mensaje);
+
+            // Número de teléfono para WhatsApp (formato internacional sin + ni espacios)
+            const numeroWhatsApp = '522751025480';
+
+            try {
+                // URL del Google Script para enviar los datos
+                const googleScriptURL = 'https://script.google.com/macros/s/AKfycbzeE814VSS2YJsNF-sa2LaxRaS9maXo3DKyoYCMJIeA7T3obLFGZklq5S0fCf6UJ3oiAA/exec';
+                
+                // Enviar un registro por cada fecha
+                let enviosExitosos = 0;
+                let enviosFallidos = 0;
+                
+                for (let i = 0; i < fechas.length; i++) {
+                    const fecha = fechas[i];
+                    const fechaFormateada = formatearFecha(fecha);
+                    
+                    // Crear objeto con los datos para esta fecha específica
+                    const formDataFecha = {
+                        ...formData,
+                        fecha: fecha,
+                        fechaFormateada: fechaFormateada,
+                        diaNumero: i + 1
+                    };
+                    
+                    // Crear FormData para enviar
+                    const formGoogle = new FormData();
+                    for (const key in formDataFecha) {
+                        formGoogle.append(key, formDataFecha[key]);
+                    }
+                    
+                    try {
+                        // Enviar datos a Google Sheets
+                        const response = await fetch(googleScriptURL, {
+                            method: 'POST',
+                            body: formGoogle,
+                            mode: 'no-cors'
+                        });
+                        
+                        console.log(`Envío ${i + 1} (${fecha}) - Respuesta:`, response);
+                        enviosExitosos++;
+                    } catch (error) {
+                        console.error(`Error al enviar el día ${i + 1} (${fecha}):`, error);
+                        enviosFallidos++;
+                    }
+                }
+                
+                // Mostrar mensaje de éxito
+                if (enviosFallidos === 0) {
+                    showMessage(`✅ ¡Permiso generado correctamente! Se han enviado ${enviosExitosos} días.`, 'success');
+                } else {
+                    showMessage(`⚠️ Permiso generado con advertencias. Se enviaron ${enviosExitosos} días correctamente y ${enviosFallidos} días fallaron.`, 'info');
+                }
+                
+                // Mostrar resumen
+                showSummary(formData, fechasFormateadas);
+                
+                // Mostrar vista previa del permiso
+                showPermissionPreview(formData, fechasFormateadas);
+
+                // Remover el botón de WhatsApp si existía
+                const existingWhatsappContainer = document.querySelector('.whatsapp-container');
+                if (existingWhatsappContainer) {
+                    existingWhatsappContainer.remove();
+                }
+                
+                // Abrir WhatsApp después de un pequeño retraso
+                setTimeout(() => {
+                    const resultado = abrirWhatsApp(numeroWhatsApp, mensaje);
+                    
+                    if (!resultado) {
+                        // Mostrar el botón manual de WhatsApp si no se pudo abrir automáticamente
+                        mostrarBotonWhatsApp(numeroWhatsApp, mensaje);
+                    }
+                }, 1000);
+                
+                // Crear botón de reinicio si no existe
+                if (!document.getElementById('resetBtn')) {
+                    const resetBtn = document.createElement('button');
+                    resetBtn.id = 'resetBtn';
+                    resetBtn.className = 'reset-btn';
+                    resetBtn.textContent = '🔄 Generar nuevo permiso';
+                    
+                    // Insertar el botón después del botón de envío
+                    submitBtn.parentNode.insertBefore(resetBtn, submitBtn.nextSibling);
+                    
+                    // Agregar event listener al botón de reinicio
+                    resetBtn.addEventListener('click', resetForm);
+                }
+                
+                // Deshabilitar el botón de envío para evitar envíos múltiples
+                submitBtn.disabled = true;
+                submitBtn.textContent = '✅ Permiso generado';
+                
+            } catch (error) {
+                console.error('❌ Error al enviar el permiso:', error);
+                showMessage('❌ Error al generar el permiso. Por favor, intenta nuevamente.', 'error');
+                
+                // Habilitar el botón de envío en caso de error
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 Generar permiso';
+            }
+        });
+    </script>
+</body>
+</html>

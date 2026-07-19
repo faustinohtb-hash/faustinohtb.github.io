@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Sistema de Consulta de Alumnos en Trayecto de Regularización</title>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 250px;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        select, input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            min-width: 80px;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+            background-color: #fdecea;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #e74c3c;
+        }
+        .info {
+            background-color: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .nombre-alumno {
+            text-align: left !important;
+            font-weight: 600;
+            min-width: 200px;
+        }
+        .numero-progresivo {
+            text-align: center !important;
+            font-weight: bold;
+            color: #3498db;
+            min-width: 40px;
+        }
+        .telefono-tutor {
+            text-align: center !important;
+            font-weight: 600;
+            min-width: 120px;
+            color: #16a085;
+        }
+        .promedio {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+        .debug-panel {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .debug-panel pre {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .toggle-debug {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .toggle-debug:hover {
+            background-color: #5a6268;
+        }
+        .debug-info {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .debug-info h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .debug-info pre {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .hidden-column {
+            display: none;
+        }
+        .auto-update-indicator {
+            display: inline-block;
+            margin-left: 10px;
+            color: #28a745;
+            font-size: 14px;
+        }
+        .auto-update-indicator::before {
+            content: "•";
+            margin-right: 5px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .calificacion-especial {
+            background-color: #fff3cd;
+            font-weight: bold;
+        }
+        .calificacion-baja {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+        }
+        .calificacion-vacia {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            font-weight: bold;
+        }
+        .filtro-info {
+            background-color: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .leyenda-calificaciones {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .leyenda-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        .print-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .print-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .print-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: auto;
+            margin-right: 10px;
+        }
+        .print-button:hover {
+            background-color: #218838;
+        }
+        .print-preview {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            display: none;
+        }
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .print-table th, .print-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .print-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .print-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .print-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .print-header h2 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 20px;
+        }
+        .print-header p {
+            margin: 5px 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .print-footer {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .total-alumnos {
+            font-size: 18px;
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .print-numero {
+            text-align: center;
+            font-weight: bold;
+            width: 30px;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .title-container {
+            flex-grow: 1;
+        }
+        .back-button {
+            background-color: #34495e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: auto;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .back-button:hover {
+            background-color: #2c3e50;
+        }
+       
+        /* Estilos para la sección de WhatsApp */
+        .whatsapp-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .whatsapp-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .whatsapp-button {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: auto;
+            margin-right: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .whatsapp-button:hover {
+            background-color: #128C7E;
+        }
+        .whatsapp-icon {
+            width: 20px;
+            height: 20px;
+        }
+        .btn-enviar-individual {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .btn-enviar-individual:hover {
+            background-color: #128C7E;
+        }
+        .btn-acta-compromiso {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+        .btn-acta-compromiso:hover {
+            background-color: #c0392b;
+        }
+        .btn-enviar-individual img, .btn-acta-compromiso img {
+            width: 16px;
+            height: 16px;
+        }
+       
+        /* Ocultar el botón de enviar a todos */
+        #enviar-todos {
+            display: none;
+        }
+       
+        /* Estilos para el Acta Compromiso */
+        .acta-compromiso-container {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            z-index: 1000;
+            overflow: auto;
+        }
+       
+        .acta-compromiso {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15mm;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12px;
+            line-height: 1.3;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .acta-compromiso h1 {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .acta-compromiso h2 {
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+        }
+        .acta-compromiso .section {
+            margin-bottom: 10px;
+        }
+        .acta-compromiso .form-group {
+            margin-bottom: 10px;
+        }
+        .acta-compromiso label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .acta-compromiso input, .acta-compromiso textarea {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: inherit;
+        }
+        .acta-compromiso .signature-line {
+            border-bottom: 1px solid #333;
+            height: 20px;
+            margin-top: 20px;
+            margin-bottom: 3px;
+        }
+        .acta-compromiso .signature-label {
+            text-align: center;
+            font-size: 10px;
+        }
+        .acta-compromiso ul {
+            padding-left: 15px;
+            margin-bottom: 5px;
+        }
+        .acta-compromiso ul li {
+            margin-bottom: 3px;
+        }
+       
+        /* Estilos específicos para la lista de asignaturas en el acta */
+        .acta-compromiso .asignaturas-list {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+       
+        .acta-compromiso .asignaturas-list .encabezado {
+            display: flex;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+            margin-bottom: 5px;
+        }
+       
+        .acta-compromiso .asignaturas-list .encabezado .asignatura {
+            width: 70%;
+        }
+       
+        .acta-compromiso .asignaturas-list .encabezado .calificacion {
+            width: 30%;
+            text-align: center;
+        }
+       
+        .acta-compromiso .asignaturas-list .fila {
+            display: flex;
+            margin-bottom: 3px;
+        }
+       
+        .acta-compromiso .asignaturas-list .fila .asignatura {
+            width: 70%;
+        }
+       
+        .acta-compromiso .asignaturas-list .fila .calificacion {
+            width: 30%;
+            text-align: center;
+            font-weight: bold;
+        }
+       
+        .acta-compromiso .footer {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 10px;
+            color: #666;
+        }
+       
+        /* Estilos para el encabezado del acta */
+        .acta-compromiso .header-acta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .acta-compromiso .header-acta .logo-acta {
+            max-width: 60px;
+            height: auto;
+            margin-left: auto;
+        }
+        
+        .acta-compromiso .header-acta .escuela-info {
+            text-align: center;
+            flex-grow: 1;
+        }
+       
+        /* Estilos específicos para impresión */
+        @media print {
+            /* Ocultar todo excepto el acta */
+            body > *:not(.acta-compromiso-container) {
+                display: none !important;
+            }
+           
+            .acta-compromiso-container {
+                display: block !important;
+                position: static !important;
+                width: 100% !important;
+                overflow: visible !important;
+            }
+           
+            /* Configuración para tamaño carta con márgenes mínimos */
+            @page {
+                size: letter;
+                margin: 0;
+                margin-top: 0.5in;
+                margin-bottom: 0.5in;
+            }
+            
+            /* Intentar ocultar encabezados y pies de página del navegador */
+            @page :header, @page :footer {
+                display: none;
+            }
+            
+            /* Ocultar URL y fecha en Chrome */
+            @page {
+                size: auto;
+                margin: 0mm;
+            }
+           
+            /* Estilos específicos para el acta compromiso al imprimir */
+            .acta-compromiso {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 10mm !important;
+                font-size: 10px !important;
+                line-height: 1.2 !important;
+                box-shadow: none !important;
+            }
+           
+            .acta-compromiso .header-acta {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 5px;
+            }
+            
+            .acta-compromiso .header-acta .logo-acta {
+                max-width: 60px;
+                height: auto;
+                margin-left: auto;
+            }
+            
+            .acta-compromiso .header-acta .escuela-info {
+                text-align: center;
+                flex-grow: 1;
+            }
+           
+            .acta-compromiso h1 {
+                text-align: center;
+                font-size: 12px;
+                margin-bottom: 5px;
+                color: #333;
+                font-weight: bold;
+            }
+           
+            .acta-compromiso h2 {
+                font-size: 10px;
+                margin-top: 5px;
+                margin-bottom: 3px;
+                color: #333;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 1px;
+            }
+           
+            .acta-compromiso h3 {
+                font-size: 9px;
+                margin-bottom: 3px;
+                color: #333;
+                text-align: center;
+                font-weight: bold;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 1px;
+            }
+           
+            .acta-compromiso .section {
+                margin-bottom: 5px;
+            }
+           
+            .acta-compromiso .datos-container,
+            .acta-compromiso .contenido-container,
+            .acta-compromiso .compromisos-container {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+            }
+           
+            .acta-compromiso .datos-column,
+            .acta-compromiso .contenido-column,
+            .acta-compromiso .compromisos-column {
+                width: 48%;
+            }
+           
+            .acta-compromiso table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 3px;
+            }
+           
+            .acta-compromiso table td {
+                padding: 1px;
+                vertical-align: top;
+                border: none;
+            }
+           
+            .acta-compromiso table td.label {
+                font-weight: bold;
+                width: 40%;
+            }
+           
+            .acta-compromiso table td.value {
+                width: 60%;
+                border-bottom: 1px solid #ddd;
+            }
+           
+            /* Estilos para la lista de asignaturas con tabulaciones */
+            .acta-compromiso .asignaturas-list {
+                margin-bottom: 3px;
+                width: 100%;
+                page-break-inside: avoid;
+            }
+           
+            .acta-compromiso .asignaturas-list .encabezado {
+                display: flex !important;
+                font-weight: bold;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 1px;
+                margin-bottom: 2px;
+            }
+           
+            .acta-compromiso .asignaturas-list .encabezado .asignatura {
+                width: 70% !important;
+            }
+           
+            .acta-compromiso .asignaturas-list .encabezado .calificacion {
+                width: 30% !important;
+                text-align: center;
+            }
+           
+            .acta-compromiso .asignaturas-list .fila {
+                display: flex !important;
+                margin-bottom: 1px;
+            }
+           
+            .acta-compromiso .asignaturas-list .fila .asignatura {
+                width: 70% !important;
+            }
+           
+            .acta-compromiso .asignaturas-list .fila .calificacion {
+                width: 30% !important;
+                text-align: center;
+                font-weight: bold;
+            }
+           
+            .acta-compromiso .compromisos-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1px;
+            }
+           
+            .acta-compromiso .compromisos-table td {
+                border: none;
+                padding: 0;
+                vertical-align: top;
+                font-size: 8px;
+            }
+           
+            .acta-compromiso .compromisos-table td.numero {
+                width: 5%;
+                text-align: center;
+                font-weight: bold;
+            }
+           
+            .acta-compromiso .compromisos-table td.texto {
+                width: 95%;
+                text-align: left !important;
+            }
+           
+            .acta-compromiso .signature-container {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 8px;
+            }
+           
+            .acta-compromiso .signature-box {
+                width: 45%;
+                text-align: center;
+            }
+           
+            .acta-compromiso .signature-line {
+                border-bottom: 1px solid #333;
+                height: 15px;
+                margin-top: 8px;
+                margin-bottom: 1px;
+            }
+           
+            .acta-compromiso .signature-label {
+                font-size: 8px;
+                text-align: center;
+            }
+           
+            .acta-compromiso .footer {
+                text-align: center;
+                margin-top: 8px;
+                font-size: 8px;
+                color: #666;
+            }
+           
+            /* Alineación del texto a la izquierda */
+            .acta-compromiso p,
+            .acta-compromiso .compromisos-table td.texto,
+            .acta-compromiso .contenido-column p {
+                text-align: left !important;
+            }
+           
+            /* Evitar saltos de página */
+            .acta-compromiso,
+            .acta-compromiso .section,
+            .acta-compromiso .datos-container,
+            .acta-compromiso .contenido-container,
+            .acta-compromiso .compromisos-container,
+            .acta-compromiso .signature-container {
+                page-break-inside: avoid;
+            }
+        }
+       
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+           
+            h1 {
+                font-size: 22px;
+            }
+           
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+           
+            .back-button {
+                margin-top: 10px;
+                width: 100%;
+            }
+           
+            .table-container {
+                overflow-x: scroll;
+            }
+           
+            table {
+                font-size: 14px;
+            }
+           
+            th, td {
+                padding: 8px 6px;
+                min-width: 60px;
+            }
+           
+            .nombre-alumno {
+                min-width: 150px;
+            }
+           
+            .telefono-tutor {
+                min-width: 100px;
+            }
+           
+            .whatsapp-section {
+                padding: 15px;
+            }
+           
+            .btn-enviar-individual, .btn-acta-compromiso {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+           
+            .leyenda-calificaciones {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+           
+            .print-section {
+                padding: 15px;
+            }
+           
+            .print-button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+           
+            .acta-compromiso {
+                padding: 10mm;
+                margin: 10px;
+            }
+        }
+       
+        /* Estilos para información de WhatsApp */
+        .whatsapp-info {
+            background-color: #e8f5e9;
+            border-left: 4px solid #25D366;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+       
+        .whatsapp-info h4 {
+            margin-top: 0;
+            color: #1e8e3e;
+        }
+       
+        .whatsapp-info ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+       
+        .whatsapp-info li {
+            margin-bottom: 5px;
+        }
+       
+        .whatsapp-info .note {
+            font-style: italic;
+            color: #555;
+            margin-top: 10px;
+        }
+       
+        /* Botón para cerrar el acta */
+        .close-acta {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+       
+        .close-acta:hover {
+            background-color: #c0392b;
+        }
+       
+        @media print {
+            .close-acta {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela Secundaria Profesor Honorato Tlaseca Barrera" class="logo">
+        </div>
+       
+        <div class="header-container">
+            <div class="title-container">
+                <h1>Sistema de Consulta de Alumnos en Trayecto de Regularización</h1>
+                <div class="subtitle">Sistema de Consulta de Calificaciones</div>
+            </div>
+            <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="back-button">Regresar a Inicio</a>
+        </div>
+       
+        <div class="info">
+            <p>Seleccione el grado y grupo para consultar las calificaciones de los alumnos. Los resultados se actualizarán automáticamente.</p>
+            <p><strong>Nota:</strong> Se mostrarán alumnos con calificaciones de 5 o 6, o con calificaciones vacías en cualquiera de sus asignaturas.</p>
+        </div>
+       
+        <div class="form-group">
+            <label for="grado">Seleccionar Grado:</label>
+            <select id="grado">
+                <option value="todos" selected>-- Todos los grados --</option>
+                <option value="1">1°</option>
+                <option value="2">2°</option>
+                <option value="3">3°</option>
+            </select>
+        </div>
+       
+        <div class="form-group">
+            <label for="grupo">Seleccionar Grupo:</label>
+            <select id="grupo">
+                <option value="todos" selected>-- Todos los grupos --</option>
+                <option value="A">Grupo A</option>
+                <option value="B">Grupo B</option>
+            </select>
+        </div>
+       
+        <span class="auto-update-indicator" id="auto-update-indicator" style="display: none;">Actualizando...</span>
+       
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Cargando datos...</p>
+        </div>
+       
+        <div class="error" id="error">
+            <p id="error-message">Ocurrió un error al obtener los datos. Por favor, intenta nuevamente.</p>
+            <button class="toggle-debug" id="toggle-debug">Mostrar detalles de depuración</button>
+        </div>
+       
+        <div class="results" id="results">
+            <h2 id="resultados-titulo">Resultados de Calificaciones</h2>
+            <div class="total-alumnos" id="total-alumnos"></div>
+           
+            <div class="filtro-info" id="filtro-info" style="display: none;">
+                <p>Mostrando únicamente alumnos con calificaciones de 5 o 6, o con calificaciones vacías en cualquiera de sus asignaturas.</p>
+                <div class="leyenda-calificaciones">
+                    <div class="leyenda-item">
+                        <div class="leyenda-color" style="background-color: #f8d7da;"></div>
+                        <span>Calificación de 5</span>
+                    </div>
+                    <div class="leyenda-item">
+                        <div class="leyenda-color" style="background-color: #fff3cd;"></div>
+                        <span>Calificación de 6</span>
+                    </div>
+                    <div class="leyenda-item">
+                        <div class="leyenda-color" style="background-color: #d1ecf1;"></div>
+                        <span>Calificación vacía</span>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="table-container">
+                <table id="tabla-calificaciones">
+                    <thead>
+                        <tr>
+                            <th class="numero-progresivo">#</th>
+                            <th class="nombre-alumno">Nombre del Alumno</th>
+                            <th class="telefono-tutor">Teléfono Tutor</th>
+                            <th class="asignatura-1">Asig. 1</th>
+                            <th class="asignatura-2">Asig. 2</th>
+                            <th class="asignatura-3">Asig. 3</th>
+                            <th class="asignatura-4">Asig. 4</th>
+                            <th class="asignatura-5">Asig. 5</th>
+                            <th class="asignatura-6">Asig. 6</th>
+                            <th class="asignatura-7">Asig. 7</th>
+                            <th class="asignatura-8">Asig. 8</th>
+                            <th class="asignatura-9">Asig. 9</th>
+                            <th class="asignatura-10">Asig. 10</th>
+                            <th class="promedio">Promedio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body">
+                        <!-- Los datos se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+           
+            <div class="whatsapp-section" id="whatsapp-section" style="display: none;">
+                <h3>Enviar Mensaje por WhatsApp</h3>
+               
+                <div class="whatsapp-info">
+                    <h4>Información sobre el envío de mensajes:</h4>
+                    <ul>
+                        <li><strong>En dispositivos móviles:</strong> Al hacer clic en "Enviar" se abrirá la aplicación de WhatsApp directamente.</li>
+                        <li><strong>En computadoras:</strong> Se abrirá WhatsApp Web en el navegador.</li>
+                        <li>Para enviar mensajes a múltiples tutores, use los botones individuales de cada alumno.</li>
+                    </ul>
+                    <p class="note">Nota: Debe tener WhatsApp instalado en su dispositivo para que funcione correctamente.</p>
+                </div>
+               
+                <div class="form-group">
+                    <label for="mensaje-general">Mensaje para tutores:</label>
+                    <textarea id="mensaje-general" placeholder="Escriba aquí el mensaje que desea enviar a los tutores...">Estimado padre, madre o tutor(a):
+Por medio del presente, le informamos que su hijo(a) requiere regularizar las siguientes asignaturas. Por tal motivo, le solicitamos atentamente acudir a la escuela el día lunes 15, a las 9:00 horas, en el salón de 1º "A", donde se le brindará información detallada sobre el proceso de regularización de aprendizajes.</textarea>
+                </div>
+               
+                <div class="form-group">
+                    <label for="fecha-acta">Fecha para el Acta Compromiso:</label>
+                    <input type="text" id="fecha-acta" value="15 de Diciembre de 2025" placeholder="Ej: 15 de Diciembre de 2025">
+                </div>
+               
+                <button class="whatsapp-button" id="enviar-todos">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTE3LjQ3MiAxNC4zODJjLS4yOTctLjE0OC0xLjc1OC0uODY3LTIuMDM0LS45NjJjLS4yNzYtLjA5NS0uNDc3LS4xNDgtLjY3OC4xNDhjLS4yLjI5NS0uNzcxLjk2Mi0uOTQ2IDEuMTY1LS4xNzUuMjAzLS4zNS4yMDMtLjYwMi4wNzUtLjI1LS4xMjgtMS4xMzYtLjU3OS0yLjE2NS0xLjA5NC0xLjAyOS0uNTE1LTEuOTk3LS4wMS0yLjg4MS4yMDUtLjg4NC4yMTUtMS43MTguNjA0LTIuNDc2IDEuMTg0LS43NTguNTgtMS4zOTYgMS4zNDItMS43NTMgMi4yMDYtLjM1Ny44NjQtLjUzNSAxLjgwOS0uNTM1IDIuNzUgMCAuOTQxLjE3OCAxLjg4Ni41MzUgMi43NS4zNTcuODY0Ljg5NSAxLjY5MiAxLjYxNSAyLjQ5MS43Mi43OTkgMS41MzUgMS41NjQgMi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43MiAxLjUzNS0xLjU2NCAyLjI5OS0yLjQ5MS43MzUtLjg2NCAxLjA5Mi0xLjgwOSAxLjA5Mi0yLjc1IDAtLjk0MS0uMTc4LTEuODg2LS41MzUtMi43NXoiLz48L3N2Zz4=" alt="WhatsApp" class="whatsapp-icon">
+                    Enviar a todos los tutores
+                </button>
+            </div>
+           
+            <div class="print-section" id="print-section" style="display: none;">
+                <h3>Imprimir Lista de Regularización</h3>
+                <p>Esta sección permite imprimir un reporte con los alumnos que necesitan regularizar asignaturas, mostrando únicamente las materias con calificaciones de 5, 6 o vacías.</p>
+               
+                <button class="print-button" id="generar-reporte">Generar Reporte de Regularización</button>
+                <button class="print-button" id="imprimir-reporte">Imprimir Reporte</button>
+               
+                <div class="print-preview" id="print-preview">
+                    <div class="print-header">
+                        <h2>Lista de Alumnos en Trayecto de Regularización</h2>
+                        <p id="print-grado-grupo"></p>
+                        <p>Fecha: <span id="print-fecha"></span></p>
+                    </div>
+                   
+                    <table class="print-table" id="print-table">
+                        <thead>
+                            <tr>
+                                <th class="print-numero">#</th>
+                                <th>Nombre del Alumno</th>
+                                <th>Teléfono Tutor</th>
+                                <th>Asignaturas a Regularizar</th>
+                                <th>Calificación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="print-table-body">
+                            <!-- Los datos se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                   
+                    <div class="print-footer">
+                        <p>Escuela Secundaria Profesor Honorato Tlaseca Barrera</p>
+                        <p>Sistema de Gestión Escolar © 2025-2026</p>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="debug-info" id="debug-info" style="display: none;">
+                <h3>Información de depuración</h3>
+                <div id="debug-content"></div>
+            </div>
+        </div>
+       
+        <div class="debug-panel" id="debug-panel">
+            <h3>Detalles de Depuración</h3>
+            <div>
+                <strong>URL utilizada:</strong>
+                <pre id="debug-url"></pre>
+            </div>
+            <div>
+                <strong>Respuesta del servidor:</strong>
+                <pre id="debug-response"></pre>
+            </div>
+            <div>
+                <strong>Error completo:</strong>
+                <pre id="debug-error"></pre>
+            </div>
+        </div>
+       
+        <div class="footer">
+            © 2025-2026 Sistema de Gestión Escolar | Escuela Secundaria Profesor Honorato Tlaseca Barrera | Todos los derechos reservados
+        </div>
+    </div>
+    <!-- Contenedor para el Acta Compromiso -->
+    <div class="acta-compromiso-container" id="acta-compromiso-container">
+        <button class="close-acta" id="close-acta">×</button>
+        <div class="acta-compromiso" id="acta-compromiso-content">
+            <!-- El contenido del acta se generará dinámicamente aquí -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectGrado = document.getElementById('grado');
+            const selectGrupo = document.getElementById('grupo');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const errorMessage = document.getElementById('error-message');
+            const results = document.getElementById('results');
+            const resultadosTitulo = document.getElementById('resultados-titulo');
+            const totalAlumnos = document.getElementById('total-alumnos');
+            const tablaBody = document.getElementById('tabla-body');
+            const toggleDebug = document.getElementById('toggle-debug');
+            const debugPanel = document.getElementById('debug-panel');
+            const debugUrl = document.getElementById('debug-url');
+            const debugResponse = document.getElementById('debug-response');
+            const debugError = document.getElementById('debug-error');
+            const debugInfo = document.getElementById('debug-info');
+            const debugContent = document.getElementById('debug-content');
+            const autoUpdateIndicator = document.getElementById('auto-update-indicator');
+            const filtroInfo = document.getElementById('filtro-info');
+            const printSection = document.getElementById('print-section');
+            const generarReporte = document.getElementById('generar-reporte');
+            const imprimirReporte = document.getElementById('imprimir-reporte');
+            const printPreview = document.getElementById('print-preview');
+            const printGradoGrupo = document.getElementById('print-grado-grupo');
+            const printFecha = document.getElementById('print-fecha');
+            const printTableBody = document.getElementById('print-table-body');
+            const pageTitle = document.getElementById('page-title');
+            const whatsappSection = document.getElementById('whatsapp-section');
+            const mensajeGeneral = document.getElementById('mensaje-general');
+            const fechaActa = document.getElementById('fecha-acta');
+            const enviarTodos = document.getElementById('enviar-todos');
+            const actaCompromisoContainer = document.getElementById('acta-compromiso-container');
+            const actaCompromisoContent = document.getElementById('acta-compromiso-content');
+            const closeActa = document.getElementById('close-acta');
+           
+            // Variable para almacenar el timeout de la actualización automática
+            let updateTimeout = null;
+           
+            // Variable para almacenar los datos procesados
+            let datosProcesados = [];
+           
+            // Variable para almacenar los datos de tutores
+            let datosTutores = [];
+           
+            // Nombres de los campos de calificaciones según el orden deseado
+            const camposCalificaciones = [
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA1",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA2",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA3",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA4",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA5",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA6",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA7",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA8",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA9",
+                "_CALIFICACIONES T1.xlsx_ TODOS::ASIGNATURA10"
+            ];
+           
+            // Nombres específicos de asignaturas para primer grado
+            const asignaturasPrimerGrado = [
+                "Español",
+                "Inglés",
+                "Artes",
+                "Matemáticas",
+                "Biología",
+                "Geografía",
+                "Historia",
+                "Formación Cívica y Ética",
+                "Tecnología",
+                "Educación Física"
+            ];
+           
+            // Nombres específicos de asignaturas para segundo grado
+            const asignaturasSegundoGrado = [
+                "Español",
+                "Inglés",
+                "Artes",
+                "Matemáticas",
+                "Física",
+                "Historia",
+                "Formación Cívica y Ética",
+                "Tecnología",
+                "Educación Física",
+                "Asig. 10"
+            ];
+           
+            // Nombres específicos de asignaturas para tercer grado
+            const asignaturasTercerGrado = [
+                "Español",
+                "Inglés",
+                "Artes",
+                "Matemáticas",
+                "Química",
+                "Historia",
+                "Formación Cívica y Ética",
+                "Tecnología",
+                "Educación Física",
+                "Asig. 10"
+            ];
+           
+            // Función para detectar si es un dispositivo móvil
+            function esDispositivoMovil() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            }
+           
+            // Event listener para cerrar el acta
+            closeActa.addEventListener('click', function() {
+                actaCompromisoContainer.style.display = 'none';
+            });
+           
+            // Mostrar/ocultar panel de depuración
+            toggleDebug.addEventListener('click', function() {
+                if (debugPanel.style.display === 'block') {
+                    debugPanel.style.display = 'none';
+                    toggleDebug.textContent = 'Mostrar detalles de depuración';
+                } else {
+                    debugPanel.style.display = 'block';
+                    toggleDebug.textContent = 'Ocultar detalles de depuración';
+                }
+            });
+           
+            // Event listeners para actualización automática al cambiar grado o grupo
+            selectGrado.addEventListener('change', function() {
+                if (updateTimeout) {
+                    clearTimeout(updateTimeout);
+                }
+                updateTimeout = setTimeout(realizarConsulta, 500);
+            });
+           
+            selectGrupo.addEventListener('change', function() {
+                if (updateTimeout) {
+                    clearTimeout(updateTimeout);
+                }
+                updateTimeout = setTimeout(realizarConsulta, 500);
+            });
+           
+            // Event listener para generar reporte
+            generarReporte.addEventListener('click', function() {
+                if (datosProcesados.length > 0) {
+                    generarReporteRegularizacion();
+                    printPreview.style.display = 'block';
+                    imprimirReporte.style.display = 'inline-block';
+                    generarReporte.style.display = 'none';
+                }
+            });
+           
+            // Event listener para imprimir reporte
+            imprimirReporte.addEventListener('click', function() {
+                if (printPreview.style.display === 'none' && datosProcesados.length > 0) {
+                    generarReporteRegularizacion();
+                    printPreview.style.display = 'block';
+                }
+               
+                const grado = selectGrado.value;
+                const grupo = selectGrupo.value;
+                const fechaActual = new Date();
+                const opcionesFecha = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                const fechaFormateada = fechaActual.toLocaleDateString('es-ES', opcionesFecha).replace(/\//g, '-');
+               
+                let tituloArchivo = "Sistema de Consulta de Alumnos en Trayecto de Regularización";
+                if (grado !== "todos" && grupo !== "todos") {
+                    tituloArchivo += ` - ${grado}°${grupo}`;
+                } else if (grado !== "todos") {
+                    tituloArchivo += ` - ${grado}°`;
+                }
+                tituloArchivo += ` - ${fechaFormateada}`;
+               
+                pageTitle.textContent = tituloArchivo;
+               
+                window.print();
+               
+                setTimeout(() => {
+                    pageTitle.textContent = "Sistema de Consulta de Alumnos en Trayecto de Regularización";
+                }, 2000);
+            });
+           
+            // Event listener para enviar mensaje a todos los tutores
+            enviarTodos.addEventListener('click', function() {
+                const mensaje = mensajeGeneral.value.trim();
+                if (!mensaje) {
+                    alert('Por favor, escriba un mensaje antes de enviar.');
+                    return;
+                }
+               
+                if (datosProcesados.length === 0) {
+                    alert('No hay alumnos para enviar mensajes.');
+                    return;
+                }
+               
+                let mensajeCompleto = mensaje + "\n\n";
+                mensajeCompleto += "LISTA DE ALUMNOS CON ASIGNATURAS A REGULARIZAR:\n\n";
+               
+                datosProcesados.forEach((alumno, index) => {
+                    mensajeCompleto += `${index + 1}. ${alumno.nombre}\n`;
+                    mensajeCompleto += " Asignaturas a regularizar:\n";
+                   
+                    alumno.asignaturasRegularizar.forEach(asignatura => {
+                        mensajeCompleto += ` - ${asignatura.nombre}: ${asignatura.calificacion}\n`;
+                    });
+                   
+                    mensajeCompleto += "\n";
+                });
+               
+                mensajeCompleto += "Escuela Secundaria Profesor Honorato Tlaseca Barrera";
+               
+                const mensajeCodificado = encodeURIComponent(mensajeCompleto);
+               
+                window.open(`https://wa.me/?text=${mensajeCodificado}`, '_blank');
+            });
+           
+            // Cargar datos de tutores
+            function cargarDatosTutores() {
+                const urlTutores = 'https://script.google.com/macros/s/AKfycbwBl2pjwTOHVIfjmGERMBwE9_FlfQc3OF5KUYUjv8XAIF1o3LtYgj2TVb1a6fZg1eZ4/exec';
+               
+                fetch(urlTutores)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        datosTutores = data;
+                        console.log('Datos de tutores cargados:', datosTutores);
+                    })
+                    .catch(err => {
+                        console.error('Error al cargar datos de tutores:', err);
+                    });
+            }
+           
+            // Realizar consulta inicial al cargar la página
+            cargarDatosTutores();
+            realizarConsulta();
+           
+            function realizarConsulta() {
+                const grado = selectGrado.value;
+                const grupo = selectGrupo.value;
+                const sheetName = 'Hoja1';
+               
+                autoUpdateIndicator.style.display = 'inline-block';
+               
+                error.style.display = 'none';
+                debugPanel.style.display = 'none';
+                debugInfo.style.display = 'none';
+               
+                const baseUrl = 'https://script.google.com/macros/s/AKfycbzeOHCjPDkDsuLLSB4EfK-x-0op3U-q-0hcFjsGffoZ1OxGTZTty223161IROpzMrh1dg/exec';
+                const url = `${baseUrl}?accion=consultar&sheetName=${encodeURIComponent(sheetName)}`;
+               
+                debugUrl.textContent = url;
+               
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
+                        }
+                        return response.text();
+                    })
+                    .then(text => {
+                        debugResponse.textContent = text;
+                       
+                        try {
+                            const data = JSON.parse(text);
+                            procesarDatos(data, grado, grupo, false, false);
+                        } catch (e) {
+                            console.error("Error al parsear JSON:", e);
+                            throw new Error(`La respuesta no es un JSON válido: ${e.message}`);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                        autoUpdateIndicator.style.display = 'none';
+                       
+                        errorMessage.textContent = `Ocurrió un error al obtener los datos: ${err.message}`;
+                        debugError.textContent = err.stack || err.toString();
+                        error.style.display = 'block';
+                    });
+            }
+           
+            function procesarDatos(data, grado, grupo, showAllData, debugMode) {
+                autoUpdateIndicator.style.display = 'none';
+               
+                tablaBody.innerHTML = '';
+               
+                if (grado === "todos" && grupo === "todos") {
+                    resultadosTitulo.textContent = "Todos los Alumnos en Trayecto de Regularización";
+                } else if (grado === "todos") {
+                    resultadosTitulo.textContent = `Alumnos en Trayecto de Regularización - Grupo ${grupo}`;
+                } else if (grupo === "todos") {
+                    resultadosTitulo.textContent = `Alumnos en Trayecto de Regularización - ${grado}°`;
+                } else {
+                    resultadosTitulo.textContent = `Calificaciones de ${grado}° ${grupo}`;
+                }
+               
+                if (data.status && data.status !== 200) {
+                    const colspan = (grado === "2" || grado === "3") ? 14 : 15;
+                    tablaBody.innerHTML = `<tr><td colspan="${colspan}">Error: ${data.error || 'Error desconocido'}</td></tr>`;
+                    results.style.display = 'block';
+                    totalAlumnos.style.display = 'none';
+                    return;
+                }
+               
+                if (!data.datos || !Array.isArray(data.datos)) {
+                    const colspan = (grado === "2" || grado === "3") ? 14 : 15;
+                    tablaBody.innerHTML = `<tr><td colspan="${colspan}">No se encontraron datos válidos</td></tr>`;
+                    results.style.display = 'block';
+                    totalAlumnos.style.display = 'none';
+                    return;
+                }
+               
+                actualizarEncabezadosTabla(grado);
+               
+                let registrosAMostrar = data.datos;
+               
+                if (!showAllData) {
+                    if (grado !== "todos" || grupo !== "todos") {
+                        registrosAMostrar = data.datos.filter(alumno => {
+                            const alumnoGrado = alumno["datospara variables::GRADO"];
+                            const alumnoGrupo = alumno["datospara variables::GRUPO"];
+                           
+                            const normalizar = (valor) => {
+                                return valor ? valor.toString().trim().toLowerCase() : '';
+                            };
+                           
+                            const gradoNormalizado = normalizar(grado);
+                            const grupoNormalizado = normalizar(grupo);
+                            const alumnoGradoNormalizado = normalizar(alumnoGrado);
+                            const alumnoGrupoNormalizado = normalizar(alumnoGrupo);
+                           
+                            const filtroGrado = grado === "todos" || alumnoGradoNormalizado === gradoNormalizado;
+                            const filtroGrupo = grupo === "todos" || alumnoGrupoNormalizado === grupoNormalizado;
+                           
+                            return filtroGrado && filtroGrupo;
+                        });
+                    }
+                   
+                    registrosAMostrar = registrosAMostrar.filter(alumno => {
+                        const normalizarGrado = (grado) => {
+                            if (!grado) return '';
+                            return grado.toString().trim().replace(/[°º]/g, '');
+                        };
+                       
+                        const alumnoGrado = normalizarGrado(alumno["datospara variables::GRADO"]);
+                       
+                        let numAsignaturas = 10;
+                       
+                        if (alumnoGrado === "2" || alumnoGrado === "3") {
+                            numAsignaturas = 9;
+                        }
+                       
+                        let tieneCalificacionEspecial = false;
+                        let tieneCalificacionVaciaEnUltimaColumna = false;
+                       
+                        for (let i = 0; i < numAsignaturas; i++) {
+                            const campo = camposCalificaciones[i];
+                            const calif = alumno[campo];
+                           
+                            if (calif === undefined || calif === null || calif === '') {
+                                tieneCalificacionEspecial = true;
+                            }
+                            else if (calif !== undefined && calif !== null && calif !== '') {
+                                const valor = parseFloat(calif);
+                                if (valor === 5 || valor === 6) {
+                                    tieneCalificacionEspecial = true;
+                                }
+                            }
+                        }
+                       
+                        if ((alumnoGrado === "2" || alumnoGrado === "3") && numAsignaturas === 9) {
+                            const ultimaColumna = camposCalificaciones[9];
+                            const califUltima = alumno[ultimaColumna];
+                           
+                            if (califUltima === undefined || califUltima === null || califUltima === '') {
+                                tieneCalificacionVaciaEnUltimaColumna = true;
+                            }
+                        }
+                       
+                        if ((alumnoGrado === "2" || alumnoGrado === "3") &&
+                            tieneCalificacionVaciaEnUltimaColumna &&
+                            !tieneCalificacionEspecial) {
+                            return false;
+                        }
+                       
+                        return tieneCalificacionEspecial;
+                    });
+                }
+               
+                if (debugMode) {
+                    let debugHtml = `
+                        <p><strong>Total de registros recibidos:</strong> ${data.datos.length}</p>
+                        <p><strong>Total de registros después del filtro de grado y grupo:</strong> ${data.datos.filter(alumno => {
+                            const alumnoGrado = alumno["datospara variables::GRADO"];
+                            const alumnoGrupo = alumno["datospara variables::GRUPO"];
+                           
+                            const normalizar = (valor) => {
+                                return valor ? valor.toString().trim().toLowerCase() : '';
+                            };
+                           
+                            const gradoNormalizado = normalizar(grado);
+                            const grupoNormalizado = normalizar(grupo);
+                            const alumnoGradoNormalizado = normalizar(alumnoGrado);
+                            const alumnoGrupoNormalizado = normalizar(alumnoGrupo);
+                           
+                            return (grado === "todos" || alumnoGradoNormalizado === gradoNormalizado) &&
+                                   (grupo === "todos" || alumnoGrupoNormalizado === grupoNormalizado);
+                        }).length}</p>
+                        <p><strong>Total de registros después del filtro de calificaciones (5, 6 o vacías):</strong> ${registrosAMostrar.length}</p>
+                        <p><strong>Valores buscados:</strong> Grado="${grado}", Grupo="${grupo}"</p>
+                        <p><strong>Primeros 5 registros (con valores de grado y grupo):</strong></p>
+                        <pre>`;
+                   
+                    for (let i = 0; i < Math.min(5, data.datos.length); i++) {
+                        const alumno = data.datos[i];
+                        debugHtml += `Registro ${i+1}: Grado="${alumno["datospara variables::GRADO"]}", Grupo="${alumno["datospara variables::GRUPO"]}"\n`;
+                    }
+                   
+                    debugHtml += `</pre>`;
+                   
+                    debugContent.innerHTML = debugHtml;
+                    debugInfo.style.display = 'block';
+                }
+               
+                filtroInfo.style.display = 'block';
+               
+                datosProcesados = [];
+               
+                if (registrosAMostrar.length === 0) {
+                    totalAlumnos.textContent = "No se encontraron alumnos con trayecto de regularización";
+                    totalAlumnos.style.display = 'block';
+                    printSection.style.display = 'none';
+                    whatsappSection.style.display = 'none';
+                } else {
+                    totalAlumnos.textContent = `Total de alumnos con trayecto de regularización: ${registrosAMostrar.length}`;
+                    totalAlumnos.style.display = 'block';
+                   
+                    registrosAMostrar.forEach((alumno, index) => {
+                        const fila = document.createElement('tr');
+                       
+                        const normalizarGrado = (grado) => {
+                            if (!grado) return '';
+                            return grado.toString().trim().replace(/[°º]/g, '');
+                        };
+                       
+                        const apellido1 = alumno["DATOS DE ALUMNOS::apellido1"] || '';
+                        const apellido2 = alumno["DATOS DE ALUMNOS::apellido2"] || '';
+                        const nombre1 = alumno["DATOS DE ALUMNOS::nombre1"] || '';
+                        const nombreCompleto = `${apellido1} ${apellido2} ${nombre1}`.trim();
+                       
+                        const matriculaId = alumno["matricula_id"] || '';
+                       
+                        let telefonoTutor = '';
+                        let nombreTutor = '';
+                        if (matriculaId && datosTutores.length > 0) {
+                            const tutorData = datosTutores.find(tutor => tutor.matricula_id === matriculaId);
+                            if (tutorData) {
+                                telefonoTutor = tutorData.celular_tutor || '';
+                                nombreTutor = tutorData.tutor || '';
+                            }
+                        }
+                       
+                        let calificaciones = [];
+                        let suma = 0;
+                        let count = 0;
+                       
+                        const alumnoGrado = normalizarGrado(alumno["datospara variables::GRADO"]);
+                        const alumnoGrupo = alumno["datospara variables::GRUPO"] || '';
+                        let nombresAsignaturas = [];
+                        let numAsignaturas = 10;
+                       
+                        if (alumnoGrado === "1") {
+                            nombresAsignaturas = asignaturasPrimerGrado;
+                        } else if (alumnoGrado === "2") {
+                            nombresAsignaturas = asignaturasSegundoGrado;
+                            numAsignaturas = 9;
+                        } else if (alumnoGrado === "3") {
+                            nombresAsignaturas = asignaturasTercerGrado;
+                            numAsignaturas = 9;
+                        } else {
+                            nombresAsignaturas = asignaturasPrimerGrado;
+                        }
+                       
+                        let datosAlumno = {
+                            nombre: nombreCompleto,
+                            grado: alumnoGrado,
+                            grupo: alumnoGrupo,
+                            matricula: matriculaId,
+                            telefonoTutor: telefonoTutor,
+                            nombreTutor: nombreTutor,
+                            asignaturasRegularizar: []
+                        };
+                       
+                        for (let i = 0; i < numAsignaturas; i++) {
+                            const campo = camposCalificaciones[i];
+                            const calif = alumno[campo];
+                           
+                            if (calif === undefined || calif === null || calif === '') {
+                                calificaciones.push(null);
+                               
+                                datosAlumno.asignaturasRegularizar.push({
+                                    nombre: nombresAsignaturas[i],
+                                    calificacion: 'VACÍA'
+                                });
+                            }
+                            else if (calif !== undefined && calif !== null && calif !== '') {
+                                const valor = parseFloat(calif);
+                                calificaciones.push(valor);
+                                suma += valor;
+                                count++;
+                               
+                                if (valor === 5 || valor === 6) {
+                                    datosAlumno.asignaturasRegularizar.push({
+                                        nombre: nombresAsignaturas[i],
+                                        calificacion: valor
+                                    });
+                                }
+                            }
+                        }
+                       
+                        if ((alumnoGrado === "2" || alumnoGrado === "3") && calificaciones.length === 9) {
+                            calificaciones.push(null);
+                        }
+                       
+                        const promedio = count > 0 ? suma / count : 0;
+                       
+                        let celdas = `<td class="numero-progresivo">${index + 1}</td>`;
+                        celdas += `<td class="nombre-alumno">${nombreCompleto}</td>`;
+                        celdas += `<td class="telefono-tutor">${telefonoTutor}</td>`;
+                       
+                        calificaciones.forEach(calif => {
+                            if (calif !== null) {
+                                if (calif === 5) {
+                                    celdas += `<td class="calificacion-baja">${calif}</td>`;
+                                } else if (calif === 6) {
+                                    celdas += `<td class="calificacion-especial">${calif}</td>`;
+                                } else {
+                                    celdas += `<td>${calif}</td>`;
+                                }
+                            } else {
+                                celdas += `<td class="calificacion-vacia">-</td>`;
+                            }
+                        });
+                       
+                        celdas += `<td class="promedio">${promedio.toFixed(2)}</td>`;
+                       
+                        celdas += `<td>`;
+                        if (telefonoTutor && datosAlumno.asignaturasRegularizar.length > 0) {
+                            celdas += `<button class="btn-enviar-individual" data-nombre="${nombreCompleto}" data-telefono="${telefonoTutor}" data-asignaturas='${JSON.stringify(datosAlumno.asignaturasRegularizar)}'>`;
+                            celdas += `<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTE3LjQ3MiAxNC4zODJjLS4yOTctLjE0OC0xLjc1OC0uODY3LTIuMDM0LS45NjJjLS4yNzYtLjA5NS0uNDc3LS4xNDgtLjY3OC4xNDhjLS4yLjI5NS0uNzcxLjk2Mi0uOTQ2IDEuMTY1LS4xNzUuMjAzLS4zNS4yMDMtLjYwMi4wNzUtLjI1LS4xMjgtMS4xMzYtLjU3OS0yLjE2NS0xLjA5NC0xLjAyOS0uNTE1LTEuOTk3LS4wMS0yLjg4MS4yMDUtLjg4NC4yMTUtMS43MTguNjA0LTIuNDc2IDEuMTg0LS43NTguNTgtMS4zOTYgMS4zNDItMS43NTMgMi4yMDYtLjM1Ny44NjQtLjUzNSAxLjgwOS0uNTM1IDIuNzUgMCAuOTQxLjE3OCAxLjg4Ni41MzUgMi43NS4zNTcuODY0Ljg5NSAxLjY5MiAxLjYxNSAyLjQ5MS43Mi43OTkgMS41MzUgMS41NjQgMi40NzYgMi4yOTkuOTQxLjczNSAxLjg4NiAxLjA5MiAyLjc1IDEuMDkyLjk0MSAwIDEuODg2LS4xNzggMi43NS0uNTM1Ljg2NC0uMzU3IDEuNjkyLS44OTUgMi40OTEtMS42MTUuNzk5LS43MiAxLjUzNS0xLjU2NCAyLjI5OS0yLjQ5MS43MzUtLjg2NCAxLjA5Mi0xLjgwOSAxLjA5Mi0yLjc1IDAtLjk0MS0uMTc4LTEuODg2LS41MzUtMi43NXoiLz48L3N2Zz4=" alt="WhatsApp">`;
+                            celdas += ` Enviar`;
+                            celdas += `</button> `;
+                           
+                            celdas += `<button class="btn-acta-compromiso" data-nombre="${nombreCompleto}" data-grado="${alumnoGrado}" data-grupo="${alumnoGrupo}" data-matricula="${matriculaId}" data-tutor="${nombreTutor}" data-telefono="${telefonoTutor}" data-asignaturas='${JSON.stringify(datosAlumno.asignaturasRegularizar)}'>`;
+                            celdas += `<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTE5IDNINWMLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJWNWMwLTEuMS0uOS0yLTItMnptLTUgMTRINXYtMmg5djJ6bTAtNEg1di0yaDl2MnptMC00SDV2LTJoOXYyem0wLTRINVY1aDl2MnoiLz48L3N2Zz4=" alt="Acta">`;
+                            celdas += ` Acta`;
+                            celdas += `</button>`;
+                        }
+                        celdas += `</td>`;
+                       
+                        fila.innerHTML = celdas;
+                        tablaBody.appendChild(fila);
+                       
+                        if (datosAlumno.asignaturasRegularizar.length > 0) {
+                            datosProcesados.push(datosAlumno);
+                        }
+                    });
+                   
+                    document.querySelectorAll('.btn-enviar-individual').forEach(boton => {
+                        boton.addEventListener('click', function() {
+                            const nombre = this.getAttribute('data-nombre');
+                            const telefono = this.getAttribute('data-telefono');
+                            const asignaturas = JSON.parse(this.getAttribute('data-asignaturas'));
+                           
+                            enviarMensajeIndividual(nombre, telefono, asignaturas);
+                        });
+                    });
+                   
+                    document.querySelectorAll('.btn-acta-compromiso').forEach(boton => {
+                        boton.addEventListener('click', function() {
+                            const nombre = this.getAttribute('data-nombre');
+                            const grado = this.getAttribute('data-grado');
+                            const grupo = this.getAttribute('data-grupo');
+                            const matricula = this.getAttribute('data-matricula');
+                            const tutor = this.getAttribute('data-tutor');
+                            const telefono = this.getAttribute('data-telefono');
+                            const asignaturas = JSON.parse(this.getAttribute('data-asignaturas'));
+                           
+                            generarActaCompromiso(nombre, grado, grupo, matricula, tutor, telefono, asignaturas);
+                        });
+                    });
+                   
+                    printSection.style.display = 'block';
+                    whatsappSection.style.display = 'block';
+                    printPreview.style.display = 'none';
+                    imprimirReporte.style.display = 'inline-block';
+                    generarReporte.style.display = 'inline-block';
+                }
+               
+                results.style.display = 'block';
+            }
+           
+            function enviarMensajeIndividual(nombre, telefono, asignaturas) {
+                const mensajeGeneralTexto = mensajeGeneral.value.trim();
+                if (!mensajeGeneralTexto) {
+                    alert('Por favor, escriba un mensaje general antes de enviar.');
+                    return;
+                }
+               
+                let mensajeCompleto = mensajeGeneralTexto + "\n\n";
+                mensajeCompleto += `ALUMNO: ${nombre}\n`;
+                mensajeCompleto += "Asignaturas a regularizar:\n";
+               
+                asignaturas.forEach(asignatura => {
+                    mensajeCompleto += `- ${asignatura.nombre}: ${asignatura.calificacion}\n`;
+                });
+               
+                mensajeCompleto += "\nEscuela Secundaria Profesor Honorato Tlaseca Barrera";
+               
+                let telefonoLimpio = telefono.replace(/\D/g, '');
+               
+                let telefonoCompleto = telefonoLimpio;
+                if (telefonoLimpio.length === 10) {
+                    telefonoCompleto = '52' + telefonoLimpio;
+                }
+               
+                const mensajeCodificado = encodeURIComponent(mensajeCompleto);
+               
+                window.open(`https://wa.me/${telefonoCompleto}?text=${mensajeCodificado}`, '_blank');
+            }
+           
+            function generarActaCompromiso(nombre, grado, grupo, matricula, tutor, telefono, asignaturas) {
+                const fechaActaValor = fechaActa.value.trim() || "15 de Diciembre de 2025";
+                
+                // Guardar el título original y establecer uno vacío para evitar que se imprima
+                const originalTitle = document.title;
+                document.title = "";
+               
+                let actaHTML = `
+                <div class="header-acta">
+                    <div class="escuela-info">
+                        <p class="escuela-info">Escuela Secundaria Profesor Honorato Tlaseca Barrera</p>
+                        <p class="escuela-info">CCT: 21EES0265J Ciclo escolar: 2025-2026</p>
+                    </div>
+                    <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela Secundaria Profesor Honorato Tlaseca Barrera" class="logo-acta">
+                </div>
+               
+                <h1>ACTA COMPROMISO PARA LA RECUPERACIÓN DE APRENDIZAJES</h1>
+               
+                <div class="section">
+                    <div class="datos-container">
+                        <div class="datos-column">
+                            <h3>I. Datos del alumno(a)</h3>
+                            <table>
+                                <tr>
+                                    <td class="label">Nombre del alumno(a):</td>
+                                    <td class="value">${nombre}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Grado y grupo:</td>
+                                    <td class="value">${grado}° ${grupo}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Matrícula:</td>
+                                    <td class="value">${matricula}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="datos-column">
+                            <h3>II. Datos del padre, madre o tutor(a)</h3>
+                            <table>
+                                <tr>
+                                    <td class="label">Nombre del padre, madre o tutor(a):</td>
+                                    <td class="value">${tutor}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Teléfono de contacto:</td>
+                                    <td class="value">${telefono}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Domicilio:</td>
+                                    <td class="value"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="section">
+                    <div class="contenido-container">
+                        <div class="contenido-column">
+                            <h2>III. Exposición de motivos</h2>
+                            <p>Por medio de la presente, el padre, madre o tutor(a) y el alumno(a) manifiestan su conocimiento y aceptación del Proceso de Recuperación de Aprendizajes, el cual tiene como finalidad fortalecer y regularizar los aprendizajes fundamentales no consolidados durante el periodo ordinario de clases.</p>
+                            <p>Dicho proceso se llevará a cabo en casa, durante el período comprendido del 19 de diciembre al 9 de enero, conforme a las indicaciones, actividades y criterios establecidos por los docentes de cada asignatura, contando con el acompañamiento y supervisión del padre, madre o tutor(a).</p>
+                        </div>
+                        <div class="contenido-column">
+                            <h2>IV. Relación de asignaturas por regularizar</h2>
+                            <div class="asignaturas-list">
+                                <div class="encabezado">
+                                    <div class="asignatura">Asignatura</div>
+                                    <div class="calificacion">Calificación</div>
+                                </div>
+                `;
+               
+                asignaturas.forEach(asignatura => {
+                    const calificacion = asignatura.calificacion === 'VACÍA' ? '_____' : asignatura.calificacion;
+                    actaHTML += `
+                                <div class="fila">
+                                    <div class="asignatura">${asignatura.nombre}</div>
+                                    <div class="calificacion">${calificacion}</div>
+                                </div>
+                    `;
+                });
+               
+                actaHTML += `
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="section">
+                    <div class="compromisos-container">
+                        <div class="compromisos-column">
+                            <h2>V. Compromisos del alumno(a)</h2>
+                            <table class="compromisos-table">
+                                <tr>
+                                    <td class="numero">1.</td>
+                                    <td class="texto">Cumplir en tiempo y forma con todas las actividades de recuperación asignadas.</td>
+                                </tr>
+                                <tr>
+                                    <td class="numero">2.</td>
+                                    <td class="texto">Mostrar responsabilidad, respeto y disposición durante el proceso.</td>
+                                </tr>
+                                <tr>
+                                    <td class="numero">3.</td>
+                                    <td class="texto">Solicitar apoyo y aclarar dudas con sus docentes cuando sea necesario.</td>
+                                </tr>
+                                <tr>
+                                    <td class="numero">4.</td>
+                                    <td class="texto">Entregar trabajos originales, evitando el plagio o copia.</td>
+                                </tr>
+                                <tr>
+                                    <td class="numero">5.</td>
+                                    <td class="texto">Atender puntualmente las asesorías, indicaciones o medios de comunicación establecidos por la escuela para el seguimiento de las actividades.</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="compromisos-column">
+                            <h2>VI. Compromisos del padre, madre o tutor(a)</h2>
+                            <table class="compromisos-table">
+                                <tr>
+                                    <td class="numero">1.</td>
+                                    <td class="texto">Dar seguimiento constante al cumplimiento de las actividades de recuperación.</td>
+                                </tr>
+                                <tr>
+                                    <td class="numero">2.</td>
+                                    <td class="texto">Proporcionar un espacio adecuado y tiempo suficiente para el estudio en casa.</td>
+                                </tr>
+                                <tr>
+                                    <td class="numero">3.</td>
+                                    <td class="texto">Mantener comunicación con la escuela y los docentes.</td>
+                                </tr>
+                                <tr>
+                                    <td class="numero">4.</td>
+                                    <td class="texto">Fomentar hábitos de estudio, responsabilidad y disciplina en el alumno(a).</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="section">
+                    <h2>VII. Recomendaciones para la recuperación de aprendizajes</h2>
+                    <table class="compromisos-table">
+                        <tr>
+                            <td class="numero">1.</td>
+                            <td class="texto">Establecer un horario fijo de estudio durante el periodo de recuperación.</td>
+                        </tr>
+                        <tr>
+                            <td class="numero">2.</td>
+                            <td class="texto">Priorizar las asignaturas con mayor dificultad.</td>
+                        </tr>
+                        <tr>
+                            <td class="numero">3.</td>
+                            <td class="texto">Leer cuidadosamente las instrucciones de cada actividad.</td>
+                        </tr>
+                        <tr>
+                            <td class="numero">4.</td>
+                            <td class="texto">Utilizar materiales de apoyo como libros de texto, cuadernos, guías y recursos digitales.</td>
+                        </tr>
+                        <tr>
+                            <td class="numero">5.</td>
+                            <td class="texto">Evitar distracciones (uso excesivo del celular, televisión o videojuegos).</td>
+                        </tr>
+                        <tr>
+                            <td class="numero">6.</td>
+                            <td class="texto">Descansar adecuadamente y mantener una alimentación balanceada.</td>
+                        </tr>
+                    </table>
+                </div>
+               
+                <div class="section">
+                    <h2>VIII. Aceptación y firma de compromisos</h2>
+                    <p>Habiendo leído y comprendido el contenido de la presente Acta Compromiso, las partes firman de conformidad, comprometiéndose a cumplir con lo aquí establecido para favorecer el logro de los aprendizajes del alumno(a).</p>
+                    <p><br></p>
+                    <p><br></p>
+                   
+                    <div class="signature-container">
+                        <div class="signature-box">
+                            <div class="signature-line"></div>
+                            <div class="signature-label">Firma del alumno(a)</div>
+                        </div>
+                        <div class="signature-box">
+                            <div class="signature-line"></div>
+                            <div class="signature-label">Firma del padre, madre o tutor(a)</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="footer">
+                    <p>Huehuetlán el Chico, Pue. A ${fechaActaValor}</p>
+                </div>
+                `;
+               
+                actaCompromisoContent.innerHTML = actaHTML;
+               
+                actaCompromisoContainer.style.display = 'block';
+               
+                setTimeout(() => {
+                    window.print();
+                    // Restaurar el título original después de imprimir
+                    document.title = originalTitle;
+                }, 500);
+            }
+           
+            function generarReporteRegularizacion() {
+                printTableBody.innerHTML = '';
+               
+                const grado = selectGrado.value;
+                const grupo = selectGrupo.value;
+               
+                if (grado === "todos" && grupo === "todos") {
+                    printGradoGrupo.textContent = "Todos los grados y grupos";
+                } else if (grado === "todos") {
+                    printGradoGrupo.textContent = `Grupo: ${grupo}`;
+                } else if (grupo === "todos") {
+                    printGradoGrupo.textContent = `Grado: ${grado}°`;
+                } else {
+                    printGradoGrupo.textContent = `Grado: ${grado}°, Grupo: ${grupo}`;
+                }
+               
+                const fechaActual = new Date();
+                const opcionesFecha = { year: 'numeric', month: 'long', day: 'numeric' };
+                printFecha.textContent = fechaActual.toLocaleDateString('es-ES', opcionesFecha);
+               
+                let numeroProgresivo = 1;
+               
+                datosProcesados.forEach(alumno => {
+                    if (alumno.asignaturasRegularizar.length > 0) {
+                        alumno.asignaturasRegularizar.forEach((asignatura, index) => {
+                            const fila = document.createElement('tr');
+                           
+                            if (index === 0) {
+                                fila.innerHTML = `
+                                    <td rowspan="${alumno.asignaturasRegularizar.length}" class="print-numero">${numeroProgresivo}</td>
+                                    <td rowspan="${alumno.asignaturasRegularizar.length}">${alumno.nombre}</td>
+                                    <td rowspan="${alumno.asignaturasRegularizar.length}">${alumno.telefonoTutor}</td>
+                                    <td>${asignatura.nombre}</td>
+                                    <td style="text-align: center; font-weight: bold;">${asignatura.calificacion}</td>
+                                `;
+                            } else {
+                                fila.innerHTML = `
+                                    <td>${asignatura.nombre}</td>
+                                    <td style="text-align: center; font-weight: bold;">${asignatura.calificacion}</td>
+                                `;
+                            }
+                           
+                            printTableBody.appendChild(fila);
+                        });
+                       
+                        numeroProgresivo++;
+                    }
+                });
+            }
+           
+            function actualizarEncabezadosTabla(grado) {
+                if (grado === "1") {
+                    for (let i = 0; i < 10; i++) {
+                        const encabezado = document.querySelector(`.asignatura-${i + 1}`);
+                        if (encabezado) {
+                            encabezado.textContent = asignaturasPrimerGrado[i];
+                            encabezado.classList.remove('hidden-column');
+                        }
+                    }
+                }
+                else if (grado === "2") {
+                    for (let i = 0; i < 9; i++) {
+                        const encabezado = document.querySelector(`.asignatura-${i + 1}`);
+                        if (encabezado) {
+                            encabezado.textContent = asignaturasSegundoGrado[i];
+                            encabezado.classList.remove('hidden-column');
+                        }
+                    }
+                   
+                    const encabezadoAsignatura10 = document.querySelector('.asignatura-10');
+                    if (encabezadoAsignatura10) {
+                        encabezadoAsignatura10.classList.add('hidden-column');
+                    }
+                }
+                else if (grado === "3") {
+                    for (let i = 0; i < 9; i++) {
+                        const encabezado = document.querySelector(`.asignatura-${i + 1}`);
+                        if (encabezado) {
+                            encabezado.textContent = asignaturasTercerGrado[i];
+                            encabezado.classList.remove('hidden-column');
+                        }
+                    }
+                   
+                    const encabezadoAsignatura10 = document.querySelector('.asignatura-10');
+                    if (encabezadoAsignatura10) {
+                        encabezadoAsignatura10.classList.add('hidden-column');
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
