@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avance de Procesos de Aprendizaje</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style id="dynamicPrintStyles"></style>
+
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            padding-bottom: 80px; 
+        }
+
+        /* --- ESTILOS HEADER --- */
+        .header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex; 
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
+
+        .header-text { flex: 1; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            height: 70px; 
+            width: auto;
+            max-width: 250px; 
+            object-fit: contain;
+            border-radius: 5px;
+            background-color: rgba(255,255,255,0.2); 
+            padding: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header { flex-direction: column; text-align: center; }
+            .header-right { flex-direction: column-reverse; margin-top: 15px; gap: 10px; }
+            .header-logo { max-height: 90px; max-width: 100%; }
+        }
+        
+        /* --- ESTILOS DASHBOARD ANUAL (TOP) --- */
+        .avance-container {
+            margin-top: 20px;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .progress-custom {
+            height: 25px;
+            background-color: #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            position: relative; 
+        }
+
+        .progress-bar-custom {
+            height: 100%;
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            transition: width 0.8s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            height: 100%;
+            transition: transform 0.2s;
+        }
+        .stats-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+
+        .stat-number { font-size: 1.8rem; font-weight: 700; display: block; }
+        .stat-label { font-size: 0.85rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* --- ESTILOS PANEL SELECCIÓN --- */
+        .selection-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .loadingIndicator { display: none; padding: 20px; margin-bottom: 20px; }
+
+        .nav-bar-container {
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .month-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .month-option {
+            border-radius: 50px; border: 1px solid #dee2e6; background-color: white;
+            color: #495057; padding: 8px 20px; cursor: pointer; transition: all 0.3s ease;
+            font-size: 0.9rem; user-select: none; text-align: center; min-width: 80px;
+        }
+        .month-option:hover { background-color: #e9ecef; transform: translateY(-1px); }
+        .month-option.selected {
+            background-color: #0d6efd; color: white; border-color: #0d6efd;
+            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.3); font-weight: 500;
+        }
+
+        /* --- ESTILOS CONTENIDO DETALLE (BOTTOM) --- */
+        .planning-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            min-height: 300px;
+        }
+
+        .content-display-box {
+            background-color: #ffffff;
+            border-left: 5px solid #0d6efd;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .content-display-box h3 {
+            color: #0d6efd;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .content-text { font-size: 1.1rem; line-height: 1.8; color: #333; }
+
+        /* --- ESTILOS CONTROL ESTADO --- */
+        .status-control-panel {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 50px;
+            padding: 5px;
+            display: inline-flex;
+            gap: 15px;
+            margin: 15px 0;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .status-option-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #6c757d;
+            user-select: none;
+        }
+        .status-option-label:hover { background-color: rgba(13, 110, 253, 0.05); }
+        .status-option-label input[type="radio"] { display: none; }
+        
+        .radio-circle-custom {
+            width: 20px; height: 20px; border: 2px solid #adb5bd; border-radius: 50%;
+            margin-right: 10px; position: relative; transition: all 0.2s;
+        }
+        .radio-circle-custom::after {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            width: 10px; height: 10px; background-color: white; border-radius: 50%; transition: transform 0.2s;
+        }
+        .status-option-label input:checked + .radio-circle-custom { border-color: #0d6efd; background-color: #0d6efd; }
+        .status-option-label input:checked + .radio-circle-custom::after { transform: translate(-50%, -50%) scale(1); }
+        .status-option-label input:checked ~ .status-text { color: #0d6efd; }
+        .status-option-label.status-done input:checked + .radio-circle-custom { border-color: #dc3545; background-color: #dc3545; }
+        .status-option-label.status-done input:checked ~ .status-text { color: #dc3545; }
+
+        /* --- ESTILOS LISTA JERÁRQUICA (BOTTOM) --- */
+        .grade-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0d6efd;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #cbd3da;
+        }
+        
+        .campo-header {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6c757d;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-style: italic;
+            padding-left: 5px;
+            border-left: 3px solid #adb5bd;
+        }
+
+        .discipline-item { margin-bottom: 8px; padding-left: 15px; }
+        .discipline-label { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 2px; font-weight: 500; }
+        .section-separator { margin: 40px 0 20px 0; border-top: 2px solid #e0e0e0; padding-top: 20px; }
+
+        .no-print { display: block; }
+        .toast-feedback {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 2000;
+            pointer-events: none;
+        }
+        .toast-feedback.show { opacity: 1; }
+
+        /* --- ESTILOS FOOTER --- */
+        .footer-seccion {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        /* --- ESTILOS ESPECÍFICOS PARA EL REPORTE OCULTO --- */
+        #hiddenReportContainer {
+            display: none;
+            background-color: white;
+            padding: 15px; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #000;
+            font-size: 11px; 
+            line-height: 1.2;
+        }
+
+        body.printing-mode .no-print { display: none !important; }
+        body.printing-mode .header, 
+        body.printing-mode .selection-panel, 
+        body.printing-mode .avance-container, 
+        body.printing-mode .planning-container,
+        body.printing-mode .footer-seccion,
+        body.printing-mode .btn-float { display: none !important; }
+
+        body.printing-mode #hiddenReportContainer {
+            display: block !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+        }
+
+        .report-header-details {
+            border-bottom: 2px solid #003366;
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .report-title { color: #003366; font-weight: 700; font-size: 16pt; text-transform: uppercase; margin-bottom: 0; line-height: 1.1;}
+        .report-subtitle { font-size: 10pt; color: #555; }
+        
+        .table-compact {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.7rem; 
+            margin-top: 5px;
+        }
+        .table-compact th, .table-compact td {
+            border: 1px solid #dee2e6;
+            padding: 3px 5px; 
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table-compact th {
+            background-color: #003366;
+            color: white;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            height: 25px; 
+        }
+        .table-grade-row td {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 10px;
+            color: #003366;
+            border-top: 2px solid #003366;
+            height: 25px;
+        }
+
+        .report-section-title {
+            background-color: #e9ecef; 
+            padding: 4px 10px; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            color: #333; 
+            margin-bottom: 10px; 
+            font-size: 0.8rem; 
+            border-left: 4px solid #003366;
+            margin-top: 10px;
+        }
+        
+        .report-mini-grid {
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
+            margin-bottom: 10px;
+        }
+        .report-card {
+            border: 1px solid #dee2e6; 
+            border-radius: 4px; 
+            padding: 5px; 
+            text-align: center;
+        }
+        .report-card h4 { margin: 0; font-size: 1.2rem; color: #003366; }
+        .report-card p { margin: 0; font-size: 0.7rem; color: #666; text-transform: uppercase; }
+
+        .report-grade-box {
+            border: 1px solid #ced4da; border-radius: 4px; padding: 5px;
+        }
+        .report-grade-box h5 { 
+            font-size: 0.75rem; border-bottom: 1px solid #eee; padding-bottom: 2px; margin-bottom: 5px; color: #444; margin: 0 0 5px 0;
+        }
+
+        @media print {
+            body { background-color: white; padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            @page { size: letter; margin: 0.2cm; } 
+            table, tr, td, th { page-break-inside: avoid !important; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 1. HEADER -->
+        <div class="header no-print">
+            <div class="header-text">
+                <h1><i class="bi bi-graph-up-arrow"></i> Avance de PDAs</h1>
+                <p class="mb-0">Escuela Secundaria Profesor Honorato Tlaseca Barrera</p>
+            </div>
+            
+            <div class="header-right">
+                <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="btn btn-outline-light btn-sm fw-bold" target="_blank">
+                    <i class="bi bi-house-door-fill"></i> Inicio
+                </a>
+                <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" class="header-logo" alt="Logo Escuela">
+            </div>
+        </div>
+
+        <!-- 2. DASHBOARD GENERAL (TOP) -->
+        <div class="avance-container no-print" id="avanceDashboardWrapper">
+            <div class="row align-items-center mb-3">
+                <div class="col">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Resumen de Avance Anual</h5>
+                    <small class="text-muted">Vista Interactiva</small>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-danger btn-sm" onclick="generarReportePDF()">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> Descargar Reporte PDF
+                    </button>
+                </div>
+            </div>
+            
+            <div id="dashboardContent">
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-graph-up-arrow" style="font-size: 2rem;"></i>
+                    <p>Cargando estadísticas...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. PANEL DE SELECCIÓN -->
+        <div class="selection-panel no-print">
+            <div id="loadingIndicator" class="loadingIndicator text-center">
+                <div class="progress mb-2" style="height: 25px;">
+                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+                </div>
+                <small class="text-muted">Conectando con el servidor...</small>
+            </div>
+
+            <div id="selectionForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="grado" class="form-label">Grado</label>
+                        <select class="form-select" id="grado">
+                            <option value="">Seleccionar</option>
+                            <option value="1°">1°</option>
+                            <option value="2°">2°</option>
+                            <option value="3°">3°</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="disciplina" class="form-label">Disciplina</label>
+                        <select class="form-select" id="disciplina">
+                            <option value="">Seleccionar</option>
+                            <option value="Español">Español</option>
+                            <option value="Inglés">Inglés</option>
+                            <option value="Artes">Artes</option>
+                            <option value="Matemáticas">Matemáticas</option>
+                            <option value="Biología">Biología</option>
+                            <option value="Física">Física</option>
+                            <option value="Química">Química</option>
+                            <option value="Geografía">Geografía</option>
+                            <option value="Historia">Historia</option>
+                            <option value="Formación Cívica y Ética">Formación Cívica y Ética</option>
+                            <option value="Tecnología">Tecnología</option>
+                            <option value="Educación Física">Educación Física</option>
+                            <option value="Educación Socioemocional / Tutoría">Educación Socioemocional / Tutoría</option>
+                            <option value="Integración Curricular">Integración Curricular</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label d-block">Mes</label>
+                    <div class="month-container" id="monthSelector"></div>
+                    <input type="hidden" id="selectedMonth" value="">
+                </div>
+
+                <button class="btn btn-primary w-100" id="cargarPlaneacion">
+                    <i class="bi bi-search"></i> Consultar Avance
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. DETALLE PROYECTO Y DESGLOSE (BOTTOM) -->
+        <div class="planning-container" id="planningContainer">
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-journal-text" style="font-size: 3rem;"></i>
+                <h4 class="mt-3">Esperando selección...</h4>
+                <small>Completa los filtros (Grado, Disciplina, Mes) para ver detalle y desglose.</small>
+            </div>
+        </div>
+
+        <!-- 5. FOOTER -->
+        <footer class="footer-seccion no-print">
+            <small>
+                © 2025-2026 Sistema de Gestión Escolar | Escuela Secundaria Profesor Honorato Tlaseca Barrera | Todos los derechos reservados
+            </small>
+        </footer>
+    </div>
+
+    <!-- BOTÓN IMPRIMIR PROYECTO INDIVIDUAL -->
+    <button class="btn btn-primary btn-float no-print" id="printBtn" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        <i class="bi bi-printer"></i> Imprimir Proyecto
+    </button>
+
+    <div id="toast" class="toast-feedback"></div>
+
+    <!-- 6. CONTENEDOR OCULTO PARA EL REPORTE PDF -->
+    <div id="hiddenReportContainer">
+        <!-- Se llena vía JS -->
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFhSyL3mXHXkP1L5neI2dPPq2qwsxv3HGqf4NtUBkcgnoZ-8AjPqXIjp54RkUgIStm5w/exec";
+        
+        const meses = ["Septiembre", "Octubre", "Noviembre", "Diciembre", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"];
+        let allData = [];
+        let selectedMonthBtn = null;
+        let progressInterval = null;
+        let matchedResults = [];
+        let currentMatchIndex = 0;
+        let currentRowNumber = null; 
+
+        // --- CONFIGURACIÓN DE CAMPOS FORMATIVOS (CORRECCIÓN FINAL: PRIORIDAD DE BÚSQUEDA) ---
+        // IMPORTANTE: El orden de las llaves en este objeto DETERMINA la prioridad de clasificación.
+        // Colocamos "De lo Humano" al principio para que verifique "educacion fisica" antes de que "Saberes" verifique "fisica".
+        const camposConfig = {
+            "De lo Humano y lo Comunitario": { orden: 4, asignaturas: ["tecnologia", "educacion socioemocional", "educacion fisica"] },
+            "Lenguajes": { orden: 1, asignaturas: ["espanol", "ingles", "artes"] },
+            "Saberes y Pensamiento Científico": { orden: 2, asignaturas: ["matematicas", "biologia", "quimica", "fisica"] },
+            "Ética, Naturaleza y Sociedades": { orden: 3, asignaturas: ["geografia", "historia", "formacion civica y etica"] }
+        };
+
+        function getCampoInfo(disciplinaNormalizada) {
+            for (const [campo, data] of Object.entries(camposConfig)) {
+                if (data.asignaturas.some(a => disciplinaNormalizada.includes(a))) {
+                    return { nombre: campo, orden: data.orden };
+                }
+            }
+            return { nombre: "Otro", orden: 99 };
+        }
+
+        // --- FUNCIÓN DE LIMPIEZA Y NORMALIZACIÓN ---
+        function getFilteredAndNormalizedData(data) {
+            return data.map(row => {
+                let grado = (row["Grado"] || "").toString().trim();
+                let disc = (row["Disciplina"] || "").toString().trim();
+
+                if (!grado || !disc) return null;
+                if (grado.toLowerCase() === "sin grado" || disc.toLowerCase() === "sin disciplina") return null;
+
+                if (disc === "Educación Socioemocional Tutoría") {
+                    disc = "Educación Socioemocional / Tutoría";
+                }
+
+                return { ...row, "Grado": grado, "Disciplina": disc };
+            }).filter(item => item !== null);
+        }
+
+        // --- GENERACIÓN DEL REPORTE PDF FORMAL (CON ORDENAMIENTO POR CAMPO) ---
+        function getTableForGrade(data, targetGrade) {
+            const gradeData = data.filter(r => r["Grado"] === targetGrade);
+            
+            let combinaciones = {};
+            gradeData.forEach(row => {
+                const isDone = (row["ProyectoActivo"] || "").toString().toLowerCase().includes("no");
+                const g = row["Grado"];
+                const d = row["Disciplina"];
+                const key = g + "|" + d;
+                if (!combinaciones[key]) combinaciones[key] = { grado: g, disc: d, total: 0, done: 0 };
+                combinaciones[key].total++;
+                if (isDone) combinaciones[key].done++;
+            });
+
+            let lista = Object.values(combinaciones);
+            
+            // ORDENAMIENTO
+            lista.sort((a, b) => {
+                const infoA = getCampoInfo(normalizeText(a.disc));
+                const infoB = getCampoInfo(normalizeText(b.disc));
+                if (infoA.orden !== infoB.orden) return infoA.orden - infoB.orden;
+                return a.disc.localeCompare(b.disc);
+            });
+
+            if (lista.length === 0) return ''; 
+
+            let rows = "";
+            
+            lista.forEach(item => {
+                const pct = Math.round((item.done / item.total) * 100);
+                const color = pct >= 70 ? 'green' : (pct >= 30 ? '#ffc107' : 'red');
+
+                rows += `
+                    <tr>
+                        <td class="text-start" style="padding-left: 8px; font-size: 0.65rem;">${item.disc}</td>
+                        <td>${item.total}</td>
+                        <td>${item.done}</td>
+                        <td style="color: ${color}; font-weight: bold;">${pct}%</td>
+                    </tr>
+                `;
+            });
+
+            return `
+                <table class="table-compact">
+                    <thead>
+                        <tr>
+                            <th class="text-start" style="padding-left: 8px;">Asignatura</th>
+                            <th style="width: 15%">Total</th>
+                            <th style="width: 15%">Concl.</th>
+                            <th style="width: 20%">%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-grade-row">
+                            <td colspan="4">${targetGrade} GRADO</td>
+                        </tr>
+                        ${rows}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function generarReportePDF() {
+            const container = document.getElementById('hiddenReportContainer');
+            const data = getFilteredAndNormalizedData(allData);
+            const total = data.length;
+            const fecha = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            if (total === 0) {
+                alert("No hay datos suficientes para generar el reporte.");
+                return;
+            }
+
+            let concluidos = 0;
+            let gruposGrado = { "1°": {t:0, d:0}, "2°": {t:0, d:0}, "3°": {t:0, d:0} };
+            data.forEach(row => {
+                const isDone = (row["ProyectoActivo"] || "").toString().toLowerCase().includes("no");
+                if (isDone) concluidos++;
+                const g = row["Grado"];
+                if (gruposGrado[g]) { gruposGrado[g].t++; if (isDone) gruposGrado[g].d++; }
+            });
+
+            const pctGlobal = Math.round((concluidos / total) * 100);
+
+            let html = `
+                <div style="padding: 5px;">
+                    <div class="report-header-details">
+                        <div>
+                            <h2 class="report-title mb-1">REPORTE DE SEGUIMIENTO DE PLANEACIONES DIDÁCTICAS</h2>
+                            <p class="mb-0 report-subtitle">Ciclo Escolar 2025-2026</p>
+                        </div>
+                        <div class="text-end">
+                            <small class="d-block report-subtitle">Fecha de impresión</small>
+                            <strong style="font-size: 10pt;">${fecha}</strong>
+                        </div>
+                    </div>
+
+                    <!-- I. RESUMEN COMPACTO -->
+                    <div class="report-section-title" style="border-left: 4px solid #003366;">
+                        I. RESUMEN DE AVANCE ANUAL
+                    </div>
+                    
+                    <div class="report-mini-grid">
+                        <div class="report-card">
+                            <h4 style="margin:0; font-size:1.1rem; color:#003366;">${total}</h4>
+                            <p style="margin:0; font-size:0.6rem; color:#666; text-transform:uppercase;">Total PDAs</p>
+                        </div>
+                        <div class="report-card" style="border-left: 3px solid #dc3545;">
+                            <h4 style="margin:0; font-size:1.1rem; color:#dc3545;">${concluidos}</h4>
+                            <p style="margin:0; font-size:0.6rem; color:#666; text-transform:uppercase;">Concluidos</p>
+                        </div>
+                        <div class="report-card" style="border-left: 3px solid #ffc107;">
+                            <h4 style="margin:0; font-size:1.1rem; color:#ffc107;">${total - concluidos}</h4>
+                            <p style="margin:0; font-size:0.6rem; color:#666; text-transform:uppercase;">Pendientes</p>
+                        </div>
+                    </div>
+
+                    <div style="position: relative; height: 25px; background: #e9ecef; border-radius: 4px; overflow: hidden; margin-bottom: 15px;">
+                        <div style="height: 100%; background: #003366; width: ${pctGlobal}%; z-index: 1;"></div>
+                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold; font-size: 0.7rem; z-index: 2;">
+                            PROGRESO GENERAL: ${pctGlobal}%
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                        ${Object.keys(gruposGrado).map(g => {
+                            const info = gruposGrado[g];
+                            const p = info.t > 0 ? Math.round((info.d / info.t) * 100) : 0;
+                            return `
+                                <div class="report-grade-box" style="padding:5px;">
+                                    <h5 style="font-size: 0.7rem; border-bottom: 1px solid #eee; padding-bottom: 2px; margin-bottom: 5px; color: #444; margin: 0;">${g}</h5>
+                                    <div style="position: relative; height: 12px; background: #e9ecef; border-radius: 2px; overflow: hidden; margin-bottom: 3px;">
+                                        <div style="height: 100%; background: #003366; width: ${p}%;"></div>
+                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333; font-size: 0.6rem; font-weight: bold;">
+                                            ${p}%
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center; font-size: 0.6rem; color: #666;">${info.d}/${info.t}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- II. DESGLOSE DETALLADO (SIN FILAS DE CAMPO) -->
+                    <div class="report-section-title" style="margin-top: 10px;">
+                        II. DESGLOSE DETALLADO POR GRADO Y ASIGNATURA
+                    </div>
+                    
+                    <!-- Top Row -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <div>
+                            ${getTableForGrade(data, "1°")}
+                        </div>
+                        <div>
+                            ${getTableForGrade(data, "2°")}
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row -->
+                    <div>
+                        ${getTableForGrade(data, "3°")}
+                    </div>
+
+                    <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 5px; text-align: center; font-size: 0.65rem; color: #999;">
+                        Generado automáticamente por el Sistema de Gestión Escolar.
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            document.body.classList.add('printing-mode');
+            window.print();
+            setTimeout(() => { document.body.classList.remove('printing-mode'); }, 1000);
+        }
+
+        // --- RESTO DE LÓGICA INTERACTIVA ---
+        function iniciarCarga() {
+            const container = document.getElementById('loadingIndicator');
+            const bar = document.getElementById('progressBar');
+            const form = document.getElementById('selectionForm');
+            container.style.display = 'block';
+            form.style.opacity = '0.4';
+            form.style.pointerEvents = 'none'; 
+
+            let percent = 0;
+            bar.style.width = '0%';
+            bar.innerText = '0%';
+            bar.setAttribute('aria-valuenow', 0);
+            if (progressInterval) clearInterval(progressInterval);
+
+            progressInterval = setInterval(() => {
+                percent += Math.random() * 2 + 0.5;
+                if (percent > 98) percent = 98; 
+                bar.style.width = percent + '%';
+                bar.innerText = Math.floor(percent) + '%';
+                bar.setAttribute('aria-valuenow', percent);
+            }, 150); 
+        }
+
+        function finalizarCarga() {
+            const container = document.getElementById('loadingIndicator');
+            const bar = document.getElementById('progressBar');
+            const form = document.getElementById('selectionForm');
+            clearInterval(progressInterval);
+            bar.style.width = '100%';
+            bar.innerText = '100%';
+            bar.setAttribute('aria-valuenow', 100);
+            setTimeout(() => {
+                container.style.display = 'none';
+                form.style.opacity = '1';
+                form.style.pointerEvents = 'auto';
+            }, 500);
+        }
+
+        function formatearTextoFase(texto) {
+            if (!texto) return "Sin información registrada.";
+            let txt = texto;
+            txt = txt.replace(/Sesión (\d+):/g, '<br><strong>Sesión $1:</strong>');
+            txt = txt.replace(/ - /g, '<br>- ');
+            txt = txt.replace(/\. -/g, '.<br>-');
+            txt = txt.replace(/(•|\*)/g, '<br>$1');
+            return txt;
+        }
+
+        function normalizeText(text) {
+            if (!text) return "";
+            let txt = text.toString().toLowerCase();
+            txt = txt.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            txt = txt.replace(/[^a-z0-9\s]/g, "");
+            txt = txt.replace(/\s+/g, ' ').trim();
+            return txt;
+        }
+
+        function updateValueInObject(obj, keyName, value) {
+            const targetKeyNorm = normalizeText(keyName);
+            for (let k in obj) {
+                if (normalizeText(k) === targetKeyNorm) {
+                    obj[k] = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        async function enviarActualizacionGoogle(valorEstado) {
+            if (!currentRowNumber) {
+                console.error("No se encontró el número de fila en los datos.");
+                alert("Error: No se puede guardar. Los datos no contienen el número de fila.");
+                return false;
+            }
+
+            mostrarFeedback("Guardando...");
+            
+            const payload = {
+                rowNumber: currentRowNumber,
+                status: valorEstado 
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                return true;
+            } catch (error) {
+                console.error("Error enviando datos:", error);
+                alert("Error de conexión al guardar en Google Sheets.");
+                return false;
+            }
+        }
+
+        function getStatusControlHtml(isDone) {
+            return `
+                <div class="no-print text-center mb-4">
+                    <div class="d-inline-block">
+                        <span class="fw-bold text-secondary me-2">Estado del Proyecto:</span>
+                        <div class="status-control-panel">
+                            <label class="status-option-label">
+                                <input type="radio" name="projectStatus" value="activo" ${!isDone ? 'checked' : ''} onchange="cambiarEstadoProyecto('activo')">
+                                <div class="radio-circle-custom"></div>
+                                <span class="status-text">Activo</span>
+                            </label>
+                            <label class="status-option-label status-done">
+                                <input type="radio" name="projectStatus" value="concluido" ${isDone ? 'checked' : ''} onchange="cambiarEstadoProyecto('concluido')">
+                                <div class="radio-circle-custom"></div>
+                                <span class="status-text">Concluido</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.cambiarEstadoProyecto = async function(labelSeleccionado) {
+            const valorSheet = (labelSeleccionado === 'concluido') ? "no" : "si";
+            const guardadoExitoso = await enviarActualizacionGoogle(valorSheet);
+
+            if (guardadoExitoso) {
+                const currentRow = matchedResults[currentMatchIndex];
+                if (currentRow) {
+                    const actualizado = updateValueInObject(currentRow, 'ProyectoActivo', valorSheet);
+                    if(actualizado) {
+                        mostrarFeedback("Estado actualizado");
+                        actualizarDashboardEnVista(); 
+                        actualizarDashboardDetalle();
+                    } else {
+                        console.warn("No se pudo actualizar la memoria local, clave no encontrada");
+                    }
+                }
+            } else {
+                mostrarPlaneacion(matchedResults[currentMatchIndex]);
+            }
+        };
+
+        function mostrarFeedback(mensaje) {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensaje;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function actualizarDashboardEnVista() {
+            const dashboardContainer = document.getElementById('dashboardContent');
+            if (dashboardContainer) {
+                dashboardContainer.innerHTML = getDashboardGeneralHtml(allData);
+            }
+        }
+
+        function actualizarDashboardDetalle() {
+            const detalleContainer = document.getElementById('avanceDetalleWrapper');
+            if (detalleContainer) {
+                detalleContainer.innerHTML = getDashboardDetalleHtml(allData);
+            }
+        }
+
+        function getNavHtml() {
+            if (matchedResults.length <= 1) return "";
+            const prevDisabled = currentMatchIndex === 0 ? 'disabled' : '';
+            const nextDisabled = currentMatchIndex === matchedResults.length -1 ? 'disabled' : '';
+
+            return `
+                <div class="no-print nav-bar-container row align-items-center">
+                    <div class="col-4 text-end">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="navegar(-1)" ${prevDisabled}>
+                            <i class="bi bi-chevron-left"></i> Anterior
+                        </button>
+                    </div>
+                    <div class="col-4 text-center fw-bold text-primary">
+                        Proyecto ${currentMatchIndex + 1} / ${matchedResults.length}
+                    </div>
+                    <div class="col-4 text-start">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="navegar(1)" ${nextDisabled}>
+                            Siguiente <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function navegar(direccion) {
+            if (direccion === 1 && currentMatchIndex < matchedResults.length - 1) currentMatchIndex++;
+            else if (direccion === -1 && currentMatchIndex > 0) currentMatchIndex--;
+            
+            mostrarPlaneacion(matchedResults[currentMatchIndex]);
+            document.getElementById('planningContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarInterfaz();
+            iniciarCarga(); 
+            cargarDatosDesdeSheet();
+            
+            document.getElementById('cargarPlaneacion').addEventListener('click', () => realizarBusqueda(true));
+            document.getElementById('grado').addEventListener('change', () => realizarBusqueda(false));
+            document.getElementById('disciplina').addEventListener('change', () => realizarBusqueda(false));
+            document.getElementById('printBtn').addEventListener('click', () => window.print());
+        });
+
+        function inicializarInterfaz() {
+            const monthSelector = document.getElementById('monthSelector');
+            const selectedMonthInput = document.getElementById('selectedMonth');
+            const mesesJS = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            const hoy = new Date();
+            const nombreMesActual = mesesJS[hoy.getMonth()];
+
+            function selectMonth(element, mes) {
+                if (selectedMonthBtn) selectedMonthBtn.classList.remove('selected');
+                element.classList.add('selected');
+                selectedMonthBtn = element;
+                selectedMonthInput.value = mes;
+                realizarBusqueda(false);
+            }
+
+            meses.forEach(mes => {
+                const btn = document.createElement('div');
+                btn.className = 'month-option';
+                btn.textContent = mes;
+                if (mes === nombreMesActual) selectMonth(btn, mes);
+                btn.onclick = () => selectMonth(btn, mes);
+                monthSelector.appendChild(btn);
+            });
+        }
+
+        async function fetchJson(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Error de red: ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error("Error en fetchJson:", error);
+                throw error;
+            }
+        }
+
+        async function cargarDatosDesdeSheet() {
+            try {
+                allData = await fetchJson(SCRIPT_URL);
+                if(allData.length > 0) {
+                    actualizarDashboardEnVista(); 
+                    realizarBusqueda(false);
+                }
+            } catch (error) { 
+                console.error(error); 
+                finalizarCarga(); 
+            }
+            finally {
+                finalizarCarga();
+            }
+        }
+
+        function realizarBusqueda(isManual) {
+            const grado = document.getElementById('grado').value.trim();
+            const disciplina = document.getElementById('disciplina').value.trim();
+            const mesSeleccionado = document.getElementById('selectedMonth').value.trim();
+            const container = document.getElementById('planningContainer');
+
+            if (!allData.length) return;
+            if (!grado || !disciplina || !mesSeleccionado) return;
+
+            const normGrado = normalizeText(grado);
+            const normDisciplina = normalizeText(disciplina);
+            const normMes = normalizeText(mesSeleccionado);
+            
+            matchedResults = allData.filter(row => {
+                const rGrado = normalizeText(row["Grado"]);
+                const rDisc = normalizeText(row["Disciplina"]);
+                const rFecha = normalizeText(row["Fecha"]);
+
+                return (rGrado.includes(normGrado) || normGrado.includes(rGrado)) &&
+                       (rDisc === normDisciplina) && 
+                       rFecha.includes(normMes);
+            });
+
+            if (matchedResults.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-warning text-center">
+                        <h4>No se encontraron datos</h4>
+                        <p>Para: ${grado} - ${disciplina} - ${mesSeleccionado}</p>
+                    </div>
+                    <div id="avanceDetalleWrapper">${getDashboardDetalleHtml(allData)}</div>
+                `;
+                ocultarBotones();
+                return;
+            }
+
+            currentMatchIndex = 0;
+            mostrarPlaneacion(matchedResults[currentMatchIndex]);
+        }
+
+        function ocultarBotones() {
+            document.getElementById('printBtn').style.display = 'none';
+        }
+        
+        function mostrarPlaneacion(data) {
+            const val = (keyInput) => {
+                const normalizedInput = normalizeText(keyInput);
+                const foundKey = Object.keys(data).find(k => normalizeText(k) === normalizedInput);
+                return foundKey ? data[foundKey].trim() : "";
+            };
+
+            currentRowNumber = data.rowNumber || null; 
+            const container = document.getElementById('planningContainer');
+            
+            const proyectoActivoVal = val('ProyectoActivo').toLowerCase();
+            const isConcluido = proyectoActivoVal.includes('no'); 
+            const statusHtml = getStatusControlHtml(isConcluido);
+            
+            const procesosRaw = val('Procesos de desarrollo de aprendizaje');
+            const procesosFormatted = formatearTextoFase(procesosRaw);
+
+            let disciplinaDisplay = val('Disciplina') || "No definido";
+            if(disciplinaDisplay === "Educación Socioemocional Tutoría") {
+                disciplinaDisplay = "Educación Socioemocional / Tutoría";
+            }
+
+            const grado = val('Grado') || "No definido";
+            const fecha = val('Fecha') || "No definido";
+            const proyecto = val('Nombre del Proyecto') || "Sin título";
+
+            configPrintSettings(false);
+            document.getElementById('printBtn').style.display = 'block';
+
+            container.innerHTML = `
+                ${getNavHtml()}
+                ${statusHtml}
+                
+                <div class="content-display-box">
+                    <div class="text-muted mb-2 text-end small">
+                        ${fecha} | ${disciplinaDisplay} | ${grado}
+                        ${!currentRowNumber ? '<br><strong class="text-danger">Advertencia: Falta rowNumber</strong>' : ''}
+                    </div>
+                    <h2 class="text-dark mb-4">${proyecto}</h2>
+                    
+                    <h3>Procesos de desarrollo de aprendizaje</h3>
+                    <div class="content-text">
+                        ${procesosFormatted}
+                    </div>
+                </div>
+
+                <div class="section-separator no-print"></div>
+                <h4 class="text-primary fw-bold mt-4 text-center no-print">Desglose Detallado por Grado</h4>
+                
+                <div id="avanceDetalleWrapper">
+                    ${getDashboardDetalleHtml(allData)}
+                </div>
+            `;
+        }
+
+        function getDashboardGeneralHtml(datos) {
+            const validRows = getFilteredAndNormalizedData(datos);
+            const total = validRows.length;
+            
+            if (total === 0) return '<div class="text-center text-muted">No hay datos válidos para mostrar.</div>';
+
+            let concluidos = 0;
+            let gruposGrado = {}; 
+
+            validRows.forEach(row => {
+                const valStatus = (row["ProyectoActivo"] || "").toString().toLowerCase();
+                const isDone = valStatus.includes("no");
+                if (isDone) concluidos++;
+
+                const g = row["Grado"] || "Sin Grado";
+                if (!gruposGrado[g]) gruposGrado[g] = { total: 0, done: 0 };
+                gruposGrado[g].total++;
+                if (isDone) gruposGrado[g].done++;
+            });
+
+            const porcentajeGlobal = Math.round((concluidos / total) * 100);
+            const activosGlobal = total - concluidos;
+
+            const ordenGrados = ["1°", "2°", "3°"];
+            let gradesHtml = "";
+
+            ordenGrados.forEach(g => {
+                const data = gruposGrado[g];
+                if (data) {
+                    const p = Math.round((data.done / data.total) * 100);
+                    let colorClass = "bg-danger";
+                    if (p > 30) colorClass = "bg-warning";
+                    if (p > 70) colorClass = "bg-success";
+
+                    gradesHtml += `
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="h5 fw-bold mb-0">${g}</span>
+                                    <span class="badge ${colorClass}">${p}%</span>
+                                </div>
+                                <div class="progress-custom" style="height: 15px; margin-bottom: 10px;">
+                                    <div class="progress-bar-custom ${colorClass}" style="width: ${p}%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted">
+                                    <span>${data.done} Concluidos</span>
+                                    <span>${data.total} Total</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            return `
+                <div class="progress-custom mb-4" style="height: 35px;">
+                    <div class="progress-bar-custom" style="width: ${porcentajeGlobal}%;"></div>
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold; font-size: 1.1rem; z-index: 2;">
+                        Progreso Total: ${porcentajeGlobal}% (${concluidos} de ${total})
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <span class="stat-number text-primary">${total}</span>
+                            <span class="stat-label">Total</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <span class="stat-number text-danger">${concluidos}</span>
+                            <span class="stat-label">Concluidos</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <span class="stat-number text-warning">${activosGlobal}</span>
+                            <span class="stat-label">Pendientes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold mb-3 text-center">Avance General por Grado</h6>
+                <div class="row g-3 mb-4">
+                    ${gradesHtml}
+                </div>
+            `;
+        }
+
+        // --- 2. DASHBOARD DETALLADO (VISUAL - CON TÍTULOS DE CAMPO) ---
+        function getDashboardDetalleHtml(datos) {
+            const validRows = getFilteredAndNormalizedData(datos);
+            const total = validRows.length;
+
+            if (total === 0) return '<div class="text-center text-muted">No hay datos válidos registrados aún.</div>';
+
+            let combinaciones = {}; 
+
+            validRows.forEach(row => {
+                const valStatus = (row["ProyectoActivo"] || "").toString().toLowerCase();
+                const isDone = valStatus.includes("no");
+
+                const g = row["Grado"];
+                const d = row["Disciplina"];
+                const key = g + "|" + d;
+
+                if (!combinaciones[key]) {
+                    combinaciones[key] = { grado: g, disciplina: d, total: 0, done: 0 };
+                }
+                combinaciones[key].total++;
+                if (isDone) combinaciones[key].done++;
+            });
+
+            let lista = Object.values(combinaciones);
+            
+            // ORDENAMIENTO
+            lista.sort((a, b) => {
+                const infoA = getCampoInfo(normalizeText(a.disciplina));
+                const infoB = getCampoInfo(normalizeText(b.disciplina));
+                if (a.grado !== b.grado) return a.grado.localeCompare(b.grado);
+                if (infoA.orden !== infoB.orden) return infoA.orden - infoB.orden;
+                return a.disciplina.localeCompare(b.disciplina);
+            });
+
+            let listaHtml = "";
+            let gradoActual = "";
+            let campoActual = "";
+
+            lista.forEach(item => {
+                const infoCampo = getCampoInfo(normalizeText(item.disciplina));
+                
+                // Encabezado de Grado
+                if (item.grado !== gradoActual) {
+                    listaHtml += `<div class="grade-header">${item.grado}</div>`;
+                    gradoActual = item.grado;
+                    campoActual = ""; // Reset campo para grado nuevo
+                }
+
+                // Encabezado de Campo (Visual, se mantiene para claridad en pantalla)
+                if (infoCampo.nombre !== campoActual) {
+                    listaHtml += `<div class="campo-header">${infoCampo.nombre}</div>`;
+                    campoActual = infoCampo.nombre;
+                }
+
+                const p = Math.round((item.done / item.total) * 100);
+                let colorClass = "bg-danger";
+                if (p > 30) colorClass = "bg-warning";
+                if (p > 70) colorClass = "bg-success";
+                listaHtml += `
+                    <div class="discipline-item">
+                        <div class="discipline-label">
+                            <span>${item.disciplina}</span>
+                            <span>${p}% (${item.done}/${item.total})</span>
+                        </div>
+                        <div class="progress-custom" style="height: 20px;">
+                            <div class="progress-bar-custom ${colorClass}" style="width: ${p}%">
+                                ${p}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return listaHtml;
+        }
+
+        function configPrintSettings(isOficial) {}
+    </script>
+</body>
+</html>

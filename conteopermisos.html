@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Alumnos - Permisos Solicitados</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            max-width: 200px;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin: 30px 0 20px;
+            font-weight: 500;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: #4a6fdc;
+            color: white;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #f1f3f9;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #e74c3c;
+            background-color: #fadbd8;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .permisos-count {
+            background-color: #4a6fdc;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 12px;
+            display: inline-block;
+            font-weight: 500;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-box {
+            width: 300px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .refresh-btn {
+            background-color: #4a6fdc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background-color: #3a5fc9;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            min-width: 200px;
+            margin: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #4a6fdc;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .grupos-stats-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .grupos-stats-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .grupos-stats-table th, .grupos-stats-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .grupos-stats-table th {
+            background-color: #4a6fdc;
+            color: white;
+        }
+        
+        .grupos-stats-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .grupos-stats-table tr:hover {
+            background-color: #f1f3f9;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
+            
+            .logo {
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela Secundaria Profesor Honorato Tlaseca Barrera" class="logo">
+        </div>
+        
+        <h1>Registro de Permisos Solicitados por Alumnos</h1>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-box" placeholder="Buscar por nombre, grado o grupo...">
+            <button id="refreshBtn" class="refresh-btn">Actualizar Datos</button>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="totalAlumnos">0</div>
+                <div class="stat-label">Total Alumnos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalPermisos">0</div>
+                <div class="stat-label">Total Permisos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="promedioPermisos">0</div>
+                <div class="stat-label">Promedio por Alumno</div>
+            </div>
+        </div>
+        
+        <div class="grupos-stats-container">
+            <h2>Permisos por Grado y Grupo</h2>
+            <table class="grupos-stats-table">
+                <thead>
+                    <tr>
+                        <th>Grado</th>
+                        <th>Grupo</th>
+                        <th>Permisos Solicitados</th>
+                    </tr>
+                </thead>
+                <tbody id="gruposStatsTableBody">
+                    <!-- Los datos se insertarán aquí mediante JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="loadingMessage" class="loading">Cargando datos...</div>
+        <div id="errorMessage" class="error" style="display: none;"></div>
+        
+        <div class="table-container">
+            <table id="alumnosTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Grado</th>
+                        <th>Grupo</th>
+                        <th>Nombre del Alumno</th>
+                        <th>Permisos Solicitados</th>
+                    </tr>
+                </thead>
+                <tbody id="alumnosTableBody">
+                    <!-- Los datos se insertarán aquí mediante JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            © 2025-2026 Sistema de Gestión Escolar | Escuela Secundaria Profesor Honorato Tlaseca Barrera
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('alumnosTable');
+            const tableBody = document.getElementById('alumnosTableBody');
+            const gruposStatsTableBody = document.getElementById('gruposStatsTableBody');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const searchInput = document.getElementById('searchInput');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const totalAlumnosElement = document.getElementById('totalAlumnos');
+            const totalPermisosElement = document.getElementById('totalPermisos');
+            const promedioPermisosElement = document.getElementById('promedioPermisos');
+            
+            let alumnosData = [];
+            let alumnosAgrupados = [];
+            let permisosPorGradoGrupo = [];
+            
+            // Función para obtener los datos del script
+            function fetchData() {
+                loadingMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                table.style.display = 'none';
+                document.querySelector('.grupos-stats-container').style.display = 'none';
+                
+                fetch('https://script.google.com/macros/s/AKfycbzbJPLzRuKgs5zyjOfamjMPH8yZcezVIAF9i6GLdR992o0cQcuoSCaz8zrQqDuq621Oaw/exec')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta del servidor');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Verificar la estructura de los datos
+                        console.log("Datos recibidos:", data);
+                        
+                        // Si los datos vienen en un objeto con una propiedad específica
+                        if (data.alumnos) {
+                            alumnosData = data.alumnos;
+                        } else if (Array.isArray(data)) {
+                            alumnosData = data;
+                        } else {
+                            // Intentar convertir a array si es un objeto simple
+                            alumnosData = Object.values(data);
+                        }
+                        
+                        // Agrupar los datos por nombre de alumno
+                        alumnosAgrupados = agruparPorNombre(alumnosData);
+                        
+                        // Calcular permisos por grado y grupo
+                        permisosPorGradoGrupo = calcularPermisosPorGradoGrupo(alumnosData);
+                        
+                        // Ordenar los datos por grado, grupo y nombre
+                        alumnosAgrupados = ordenarDatos(alumnosAgrupados);
+                        
+                        displayData(alumnosAgrupados);
+                        displayGruposStats(permisosPorGradoGrupo);
+                        updateStats(alumnosAgrupados);
+                        loadingMessage.style.display = 'none';
+                        table.style.display = 'table';
+                        document.querySelector('.grupos-stats-container').style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener los datos:', error);
+                        errorMessage.textContent = 'Error al cargar los datos. Por favor, inténtelo de nuevo más tarde.';
+                        errorMessage.style.display = 'block';
+                        loadingMessage.style.display = 'none';
+                    });
+            }
+            
+            // Función para agrupar los datos por nombre de alumno y contar los permisos
+            function agruparPorNombre(data) {
+                const agrupados = {};
+                
+                data.forEach(alumno => {
+                    const nombre = alumno.nombreEstudiante || 'N/A';
+                    const grado = alumno.grado || alumno.Grado || alumno.GRADO || 'N/A';
+                    const grupo = alumno.grupo || alumno.Grado || alumno.GRUPO || 'N/A';
+                    
+                    // Usar solo el nombre como clave
+                    const clave = nombre;
+                    
+                    if (agrupados[clave]) {
+                        // Si ya existe, incrementar el contador
+                        agrupados[clave].permisos += 1;
+                    } else {
+                        // Si no existe, crear un nuevo registro con contador en 1
+                        agrupados[clave] = {
+                            nombre: nombre,
+                            grado: grado,
+                            grupo: grupo,
+                            permisos: 1
+                        };
+                    }
+                });
+                
+                // Convertir el objeto a un array
+                return Object.values(agrupados);
+            }
+            
+            // Función para calcular permisos por grado y grupo
+            function calcularPermisosPorGradoGrupo(data) {
+                const grupos = {};
+                
+                data.forEach(alumno => {
+                    const grado = alumno.grado || alumno.Grado || alumno.GRADO || 'N/A';
+                    const grupo = alumno.grupo || alumno.Grado || alumno.GRUPO || 'N/A';
+                    
+                    // Crear una clave única combinando grado y grupo
+                    const clave = `${grado}_${grupo}`;
+                    
+                    if (grupos[clave]) {
+                        // Si ya existe, incrementar el contador
+                        grupos[clave].permisos += 1;
+                    } else {
+                        // Si no existe, crear un nuevo registro con contador en 1
+                        grupos[clave] = {
+                            grado: grado,
+                            grupo: grupo,
+                            permisos: 1
+                        };
+                    }
+                });
+                
+                // Convertir el objeto a un array
+                return Object.values(grupos);
+            }
+            
+            // Función para ordenar los datos por grado, grupo y nombre
+            function ordenarDatos(data) {
+                return data.sort((a, b) => {
+                    // Primero ordenar por grado
+                    if (a.grado < b.grado) return -1;
+                    if (a.grado > b.grado) return 1;
+                    
+                    // Si el grado es igual, ordenar por grupo
+                    if (a.grupo < b.grupo) return -1;
+                    if (a.grupo > b.grupo) return 1;
+                    
+                    // Si el grupo es igual, ordenar por nombre
+                    if (a.nombre < b.nombre) return -1;
+                    if (a.nombre > b.nombre) return 1;
+                    
+                    return 0;
+                });
+            }
+            
+            // Función para mostrar los datos en la tabla
+            function displayData(data) {
+                tableBody.innerHTML = '';
+                
+                if (data.length === 0) {
+                    const row = tableBody.insertRow();
+                    const cell = row.insertCell();
+                    cell.colSpan = 5; // Actualizado a 5 columnas
+                    cell.textContent = 'No se encontraron datos de alumnos.';
+                    cell.style.textAlign = 'center';
+                    return;
+                }
+                
+                data.forEach((alumno, index) => {
+                    const row = tableBody.insertRow();
+                    
+                    // Número de fila
+                    const numCell = row.insertCell();
+                    numCell.textContent = index + 1;
+                    
+                    // Grado
+                    const gradoCell = row.insertCell();
+                    gradoCell.textContent = alumno.grado;
+                    
+                    // Grupo
+                    const grupoCell = row.insertCell();
+                    grupoCell.textContent = alumno.grupo;
+                    
+                    // Nombre
+                    const nombreCell = row.insertCell();
+                    nombreCell.textContent = alumno.nombre;
+                    
+                    // Permisos (cantidad de registros con el mismo nombre)
+                    const permisosCell = row.insertCell();
+                    const permisosCount = document.createElement('span');
+                    permisosCount.className = 'permisos-count';
+                    permisosCount.textContent = alumno.permisos;
+                    permisosCell.appendChild(permisosCount);
+                });
+            }
+            
+            // Función para mostrar las estadísticas por grado y grupo
+            function displayGruposStats(data) {
+                gruposStatsTableBody.innerHTML = '';
+                
+                if (data.length === 0) {
+                    const row = gruposStatsTableBody.insertRow();
+                    const cell = row.insertCell();
+                    cell.colSpan = 3;
+                    cell.textContent = 'No se encontraron datos.';
+                    cell.style.textAlign = 'center';
+                    return;
+                }
+                
+                // Ordenar los datos por grado y grupo
+                const sortedData = data.sort((a, b) => {
+                    if (a.grado < b.grado) return -1;
+                    if (a.grado > b.grado) return 1;
+                    if (a.grupo < b.grupo) return -1;
+                    if (a.grupo > b.grupo) return 1;
+                    return 0;
+                });
+                
+                sortedData.forEach(item => {
+                    const row = gruposStatsTableBody.insertRow();
+                    
+                    // Grado
+                    const gradoCell = row.insertCell();
+                    gradoCell.textContent = item.grado;
+                    
+                    // Grupo
+                    const grupoCell = row.insertCell();
+                    grupoCell.textContent = item.grupo;
+                    
+                    // Permisos
+                    const permisosCell = row.insertCell();
+                    const permisosCount = document.createElement('span');
+                    permisosCount.className = 'permisos-count';
+                    permisosCount.textContent = item.permisos;
+                    permisosCell.appendChild(permisosCount);
+                });
+            }
+            
+            // Función para actualizar las estadísticas
+            function updateStats(data) {
+                const totalAlumnos = data.length;
+                const totalPermisos = data.reduce((sum, alumno) => sum + alumno.permisos, 0);
+                const promedioPermisos = totalAlumnos > 0 ? (totalPermisos / totalAlumnos).toFixed(1) : 0;
+                
+                totalAlumnosElement.textContent = totalAlumnos;
+                totalPermisosElement.textContent = totalPermisos;
+                promedioPermisosElement.textContent = promedioPermisos;
+            }
+            
+            // Función para filtrar datos
+            function filterData() {
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                // Filtrar los datos originales
+                const filteredData = alumnosData.filter(alumno => {
+                    const nombre = (alumno.nombreEstudiante || '').toLowerCase();
+                    const grado = (alumno.grado || alumno.Grado || alumno.GRADO || '').toLowerCase();
+                    const grupo = (alumno.grupo || alumno.Grado || alumno.GRUPO || '').toLowerCase();
+                    
+                    return (
+                        nombre.includes(searchTerm) ||
+                        grado.includes(searchTerm) ||
+                        grupo.includes(searchTerm)
+                    );
+                });
+                
+                // Agrupar los datos filtrados
+                const filteredAgrupados = agruparPorNombre(filteredData);
+                
+                // Calcular permisos por grado y grupo para los datos filtrados
+                const filteredPermisosPorGradoGrupo = calcularPermisosPorGradoGrupo(filteredData);
+                
+                // Ordenar los datos filtrados
+                const filteredOrdenados = ordenarDatos(filteredAgrupados);
+                
+                displayData(filteredOrdenados);
+                displayGruposStats(filteredPermisosPorGradoGrupo);
+                updateStats(filteredOrdenados);
+            }
+            
+            // Event listeners
+            refreshBtn.addEventListener('click', fetchData);
+            searchInput.addEventListener('input', filterData);
+            
+            // Cargar datos al iniciar la página
+            fetchData();
+        });
+    </script>
+</body>
+</html>

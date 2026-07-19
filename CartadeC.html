@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta de Convivencia</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #e0e0e0;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* --- NUEVO ESTILO PARA ENCABEZADO FIJO --- */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #e0e0e0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Panel de Filtros */
+        .filtro-panel {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filtro-group {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .filtro-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            color: #555;
+        }
+
+        .filtro-group select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .btn-action {
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            height: 35px;
+            min-width: 90px;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        button.btn-buscar { background-color: #0056b3; }
+        button.btn-buscar:hover { background-color: #004494; }
+        button.btn-pdf { background-color: #2e7d32; }
+        button.btn-pdf:hover { background-color: #1b5e20; }
+        
+        /* Estilo para el botón de regresar */
+        button.btn-regresar { background-color: #6c757d; }
+        button.btn-regresar:hover { background-color: #5a6268; }
+
+        /* Estilos de la Carta */
+        .carta {
+            background: white;
+            border: 2px solid black;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            position: relative;
+            page-break-inside: avoid; 
+        }
+
+        /* Encabezado de la Carta */
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .header-logo {
+            width: 90px; 
+            height: auto;
+        }
+        .header-text {
+            text-align: center;
+            flex-grow: 1;
+            padding-right: 50px;
+        }
+        .header-text p {
+            margin: 1px 0;
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .fecha-asunto {
+            margin-top: 10px;
+            font-size: 11px;
+            text-align: right;
+        }
+        .asunto { font-weight: bold; text-decoration: underline; }
+
+        .cuerpo {
+            margin-top: 15px;
+            font-size: 11px;
+            line-height: 1.4;
+            text-align: justify;
+        }
+        .student-name {
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        /* --- CONTENEDOR DE EVALUACIÓN --- */
+        .evaluacion-box {
+            border: 1px solid black;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .eval-text-area {
+            flex: 1;
+            padding-right: 15px;
+        }
+        .evaluacion-header {
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 5px;
+            padding-bottom: 2px;
+            font-size: 10px;
+        }
+        .descripcion-logro {
+            font-size: 10px;
+            font-style: italic;
+            line-height: 1.3;
+        }
+
+        /* --- GAUGE FINAL --- */
+        .gauge-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .gauge-container {
+            width: 100px;
+            height: 70px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* El Arco Semicircular */
+        .gauge-arc {
+            width: 100px;
+            height: 50px;
+            background: conic-gradient(
+                from 270deg at 50% 100%,
+                #d32f2f 0deg,       
+                #d32f2f 60deg,      
+                #fbc02d 60deg,      
+                #fbc02d 120deg,     
+                #388e3c 120deg,     
+                #388e3c 180deg      
+            );
+            border-radius: 100px 100px 0 0;
+            position: relative;
+            border: 1px solid #333;
+            border-bottom: none;
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Etiquetas de Porcentaje */
+        .gauge-label {
+            position: absolute;
+            font-size: 9px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .gl-left  { 
+            left: 8px; bottom: 12px; 
+            color: white; text-shadow: 0 0 2px black;
+        }
+        .gl-mid   { 
+            left: 50%; bottom: 40px; 
+            transform: translateX(-50%); 
+            color: black; text-shadow: none;
+        } 
+        .gl-right { 
+            right: 8px; bottom: 12px;  
+            color: white; text-shadow: 0 0 2px black;
+        }  
+
+        /* La Aguja */
+        .gauge-needle {
+            width: 2px;
+            height: 42px;
+            background: #000;
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform-origin: bottom center;
+            transform: rotate(0deg);
+            transition: transform 1s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 2;
+        }
+        .gauge-needle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #000;
+            border: 1px solid white;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -4px;
+            left: -3px;
+        }
+
+        /* Número Azul Debajo */
+        .gauge-value-container {
+            height: 25px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            width: 100%;
+        }
+        .gauge-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0056b3;
+            font-family: 'Arial', sans-serif;
+            line-height: 1;
+        }
+
+        /* Letra de calificación (Badge) */
+        .grade-badge {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid #333;
+            border-radius: 50%;
+            background: white;
+            color: #333;
+        }
+        .bg-A { background-color: #e8f5e9; border-color: #2e7d32; color: #2e7d32; }
+        .bg-B { background-color: #e3f2fd; border-color: #1565c0; color: #1565c0; }
+        .bg-C { background-color: #fff3e0; border-color: #ef6c00; color: #ef6c00; }
+        .bg-D { background-color: #fffde7; border-color: #f9a825; color: #f9a825; }
+        .bg-E { background-color: #ffebee; border-color: #c62828; color: #c62828; }
+        .bg-F { background-color: #ffcdd2; border-color: #b71c1c; color: #b71c1c; }
+
+
+        .firma-section {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+        .firma {
+            width: 45%;
+            border-top: 1px solid black;
+            padding-top: 2px;
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+
+        .contacto {
+            margin-top: 15px;
+            font-size: 9px;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            padding-top: 5px;
+        }
+
+        /* NUEVO ESTILO PARA PIE DE CARTA CON GRADO Y GRUPO */
+        .footer-carta {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #0056b3;
+            border-top: 2px solid #0056b3;
+            padding-top: 8px;
+            text-transform: uppercase;
+            page-break-inside: avoid;
+        }
+
+        #loading { text-align: center; font-size: 16px; color: #555; padding: 20px; display: none; }
+        #error-msg { color: red; text-align: center; margin-bottom: 20px; }
+        
+        @media print {
+            body { background-color: white; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .sticky-header { display: none !important; }
+            .carta { border: none; box-shadow: none; margin-bottom: 0; padding: 10px; }
+            @page { margin: 8mm; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Encabezado Fijo -->
+    <div class="sticky-header">
+        <h1 style="text-align: center; font-size: 20px; margin-top: 0; margin-bottom: 10px;">Generación de Cartas de Convivencia</h1>
+        
+        <!-- Panel de Filtros -->
+        <div class="filtro-panel">
+            <button class="btn-action btn-regresar" onclick="window.location.href='https://faustinohtb-hash.github.io/honorato/index.html'">Regresar al Inicio</button>
+
+            <div class="filtro-group">
+                <label for="filtro-ciclo">Ciclo Escolar</label>
+                <select id="filtro-ciclo"></select>
+            </div>
+            <div class="filtro-group">
+                <label for="filtro-grado">Grado</label>
+                <select id="filtro-grado"></select>
+            </div>
+            <div class="filtro-group">
+                <label for="filtro-grupo">Grupo</label>
+                <select id="filtro-grupo"></select>
+            </div>
+            
+            <button class="btn-action btn-buscar" onclick="filtrarDatos()">Generar</button>
+            <button class="btn-action btn-pdf" onclick="descargarPDF()">Descargar PDF</button>
+        </div>
+    </div>
+    <!-- Fin Encabezado Fijo -->
+
+    <div id="loading">Cargando bases de datos...</div>
+    <div id="error-msg"></div>
+
+    <!-- Contenedor de Cartas -->
+    <div id="cartas-container"></div>
+</div>
+
+<script>
+    // URLs de los Scripts de Google
+    const INCIDENCIAS_URL = "https://script.google.com/macros/s/AKfycbz58020ujulDxPvE7KSuB0e5SPoQc43w3cVLhzJL33ctC6uqtYs_YjVxkwnTBmJrOk/exec";
+    const TUTORES_URL = "https://script.google.com/macros/s/AKfycbxoxdegQqlDSAuWCdHPS7ywa2gB72JdYgjxVXTwd9yjrmxADMxRRctnrSZ88DJSW22lxA/exec";
+    const ALUMNOS_URL = "https://script.google.com/macros/s/AKfycbwBl2pjwTOHVIfjmGERMBwE9_FlfQc3OF5KUYUjv8XAIF1o3LtYgj2TVb1a6fZg1eZ4/exec";
+    
+    let rawData = []; 
+    let tutoresData = []; 
+    let alumnosData = []; 
+
+    function esMismoNombre(nombreLista, nombreIncidencia) {
+        if (!nombreLista || !nombreIncidencia) return false;
+        const normalizar = (texto) => {
+            return String(texto).toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z\s]/g, '').trim();
+        };
+        const nomL = normalizar(nombreLista);
+        const nomI = normalizar(nombreIncidencia);
+        const ordenarPalabras = (texto) => { return texto.split(/\s+/).sort().join(' '); };
+        const palabrasLista = ordenarPalabras(nomL);
+        const palabrasIncidencia = ordenarPalabras(nomI);
+        return palabrasLista.includes(palabrasIncidencia);
+    }
+
+    function obtenerNombreTutor(grado, grupo) {
+        const limpiarTexto = (texto) => String(texto).replace(/[\s°]/g, '').toUpperCase();
+        const claveAlumno = limpiarTexto(`${grado} ${grupo}`);
+        const tutorEncontrado = tutoresData.find(t => {
+            const claveTutor = limpiarTexto(t.tutorde);
+            return claveTutor === claveAlumno;
+        });
+        return tutorEncontrado ? tutorEncontrado.nombre : "TUTOR DE GRUPO";
+    }
+
+    window.onload = function() {
+        document.getElementById('loading').style.display = 'block';
+        Promise.all([
+            fetch(INCIDENCIAS_URL).then(response => response.json()),
+            fetch(TUTORES_URL).then(response => response.json()),
+            fetch(ALUMNOS_URL).then(response => response.json())
+        ])
+        .then(([incidenciasData, tutorsData, studentsData]) => {
+            rawData = incidenciasData;
+            tutoresData = tutorsData;
+            alumnosData = studentsData;
+            poblarFiltros();
+            document.getElementById('loading').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('error-msg').innerText = "Error al conectar con Google Sheets.";
+            document.getElementById('loading').style.display = 'none';
+        });
+    };
+
+    function poblarFiltros() {
+        const ciclos = new Set();
+        rawData.forEach(row => { if(row.ciclo) ciclos.add(row.ciclo); });
+        const grados = new Set();
+        const grupos = new Set();
+        alumnosData.forEach(row => {
+            if(row.grado) grados.add(row.grado);
+            if(row.grupo) grupos.add(row.grupo);
+        });
+        llenarSelect('filtro-ciclo', Array.from(ciclos).sort().reverse());
+        llenarSelect('filtro-grado', Array.from(grados).sort((a,b) => a-b));
+        llenarSelect('filtro-grupo', Array.from(grupos).sort());
+    }
+
+    function llenarSelect(id, valores) {
+        const select = document.getElementById(id);
+        select.innerHTML = '<option value="Todos">Todos</option>';
+        valores.forEach(val => {
+            const option = document.createElement('option');
+            option.value = val;
+            option.textContent = val;
+            select.appendChild(option);
+        });
+    }
+
+    function calcularCalificacion(numIncidencias) {
+        if (numIncidencias === 0) return { score: 10, letter: 'A', text: 'EXCELENTE CONDUCTA. Siempre cumple con los compromisos establecidos para la sana convivencia escolar' };
+        else if (numIncidencias === 1) return { score: 9.5, letter: 'B', text: 'MUY BUENA CONDUCTA. Casi siempre cumple con los compromisos establecidos para la sana convivencia escolar' };
+        else if (numIncidencias === 2) return { score: 9, letter: 'B', text: 'MUY BUENA CONDUCTA. Casi siempre cumple con los compromisos establecidos para la sana convivencia escolar' };
+        else if (numIncidencias === 3) return { score: 8.5, letter: 'C', text: 'BUENA CONDUCTA. Falla ocasionalmente en el cumplimiento de los compromisos establecidos para la sana convivencia escolar' };
+        else if (numIncidencias === 4) return { score: 7.5, letter: 'D', text: 'CONDUCTA REGULAR. A veces da cumplimiento a los compromisos establecidos para la sana convivencia social' };
+        else if (numIncidencias === 5) return { score: 6, letter: 'E', text: 'CONDUCTA SUFICIENTE. Mínimo cumplimiento de los compromisos establecidos para la sana convivencia escolar' };
+        else return { score: 5, letter: 'F', text: 'CONDUCTA INSUFICIENTE. No cumple con los compromisos establecidos para la sana convivencia escolar' };
+    }
+
+    function filtrarDatos() {
+        const cicloSel = document.getElementById('filtro-ciclo').value;
+        const gradoSel = document.getElementById('filtro-grado').value;
+        const grupoSel = document.getElementById('filtro-grupo').value;
+
+        let alumnosAGenerar = alumnosData.filter(alumno => {
+            return (gradoSel === "Todos" || alumno.grado == gradoSel) &&
+                   (grupoSel === "Todos" || alumno.grupo == grupoSel);
+        });
+
+        alumnosAGenerar.sort((a, b) => { return a.nombre.localeCompare(b.nombre, 'es'); });
+
+        const container = document.getElementById('cartas-container');
+        container.innerHTML = ''; 
+
+        if (alumnosAGenerar.length === 0) {
+            container.innerHTML = '<p style="text-align:center;">No se encontraron alumnos en la lista maestra para este grupo.</p>';
+            return;
+        }
+
+        alumnosAGenerar.forEach(alumno => {
+            const incidenciasDelAlumno = rawData.filter(incidencia => {
+                const coincideNombre = esMismoNombre(alumno.nombre, incidencia.nombreAlumno);
+                const coincideCiclo = (cicloSel === "Todos" || incidencia.ciclo == cicloSel);
+                return coincideNombre && coincideCiclo;
+            });
+
+            const evaluacion = calcularCalificacion(incidenciasDelAlumno.length);
+            const nombreTutor = obtenerNombreTutor(alumno.grado, alumno.grupo);
+            const infoCarta = { ...alumno, ciclo: cicloSel };
+            
+            container.innerHTML += crearCartaHTML(infoCarta, incidenciasDelAlumno, evaluacion, nombreTutor);
+        });
+    }
+
+    // NUEVA FUNCIÓN: Descargar PDF con nombre personalizado
+    function descargarPDF() {
+        const gradoSel = document.getElementById('filtro-grado').value;
+        const grupoSel = document.getElementById('filtro-grupo').value;
+        
+        // Guardar título original
+        const tituloOriginal = document.title;
+        
+        // Construir nombre del archivo
+        let nombreArchivo = "Carta de Convivencia";
+        if (gradoSel !== "Todos") {
+            nombreArchivo += ` ${gradoSel}`;
+            if (grupoSel !== "Todos") {
+                nombreArchivo += grupoSel;
+            }
+        }
+        
+        // Cambiar título temporalmente
+        document.title = nombreArchivo;
+        
+        // Pequeño delay para asegurar que el navegador registre el cambio
+        setTimeout(() => {
+            window.print();
+            // Restaurar título después de imprimir
+            setTimeout(() => {
+                document.title = tituloOriginal;
+            }, 1000);
+        }, 250);
+    }
+
+    function crearCartaHTML(alumno, listaIncidencias, evaluacion, nombreTutor) {
+        const fechaEmision = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        let angulo = -90 + ((evaluacion.score - 5) / 5) * 180;
+        
+        const claseBadge = `bg-${evaluacion.letter}`;
+        
+        // Capturamos el grado y grupo asegurando que no muestre "undefined"
+        const gradoTexto = alumno.grado || '';
+        const grupoTexto = alumno.grupo || '';
+        const identificadorGrupo = `${gradoTexto}${grupoTexto}`;
+
+        return `
+        <div class="carta">
+            <div class="header-section">
+                <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela" class="header-logo">
+                <div class="header-text">
+                    <p>SECRETARÍA DE EDUCACIÓN PÚBLICA DEL ESTADO DE PUEBLA</p>
+                    <p>DIRECCIÓN DE SECUNDARIAS GENERALES</p>
+                    <p>SUPERVISIÓN ZONA ESCOLAR 020</p>
+                    <p>SECUNDARIA GENERAL "PROFESOR HONORATO TLASECA BARRERA"</p>
+                    <p>C.C.T 21EES0265J</p>
+                </div>
+                <div style="width: 50px;"></div>
+            </div>
+
+            <div class="fecha-asunto">
+                <p>Huehuetlán el Chico, Puebla, a ${fechaEmision}</p>
+                <p class="asunto">ASUNTO: CARTA DE CONVIVENCIA ESCOLAR</p>
+            </div>
+
+            <div class="cuerpo">
+                <p><strong>HACE CONSTAR</strong></p>
+                <p>QUE EL ALUMNO(A): <span class="student-name">${alumno.nombre}</span></p>
+                <p>DE LA SECUNDARIA GENERAL "PROFESOR HONORATO TLASECA BARRERA", CON CLAVE: 21EES0265J</p>
+                <p><strong>A QUIEN CORRESPONDA:</strong></p>
+                <p><strong>PRESENTE</strong></p>
+                <p>CON BASE EN LA CARPETA DE INCIDENCIAS Y EL SEGUIMIENTO DE SUS ANTECEDENTES DE CONDUCTA DE ESTA INSTITUCIÓN DURANTE EL CICLO ESCOLAR ${alumno.ciclo}. SU PERMANENCIA EN LA MISMA OBSERVÓ:</p>
+            </div>
+
+            <div class="evaluacion-box">
+                <div class="eval-text-area">
+                    <div class="evaluacion-header">DESCRIPCIÓN DE LOGRO</div>
+                    <div class="descripcion-logro">${evaluacion.text}</div>
+                </div>
+                
+                <div class="gauge-wrapper">
+                    <div class="gauge-container">
+                        <div class="gauge-arc">
+                            <span class="gauge-label gl-left">0%</span>
+                            <span class="gauge-label gl-mid">50%</span>
+                            <span class="gauge-label gl-right">100%</span>
+                            
+                            <div class="gauge-needle" style="transform: rotate(${angulo}deg);"></div>
+                        </div>
+                        <div class="gauge-value-container">
+                            <div class="gauge-value">${evaluacion.score}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grade-badge ${claseBadge}">${evaluacion.letter}</div>
+                </div>
+            </div>
+
+            <div class="cuerpo" style="margin-top: 10px;">
+                <p>A PETICIÓN DEL INTERESADO Y PARA LOS FINES LEGALES A QUE HAYA LUGAR SE EXTIENDE LA PRESENTE.</p>
+                <p style="text-align: center; margin-top: 20px; font-weight: bold;">ATENTAMENTE</p>
+            </div>
+
+            <div class="firma-section">
+                <div class="firma">
+                    ${nombreTutor}<br>
+                    TUTOR DE GRUPO
+                </div>
+                <div class="firma">
+                    LAURA CHOLULA RIVERA<br>
+                    DIRECTORA DE LA ESCUELA
+                </div>
+            </div>
+
+            <div class="contacto">
+                Teléfono: 275 431 4723 | Correo: 21ees0265j@seppue.gob.mx<br>
+                Carretera Puebla-Chiautla No.1, Barrio de San Miguel, C.P. 74720. Huehuetlán el Chico, Puebla.
+            </div>
+
+            <!-- NUEVO BLOQUE: Grado y Grupo al final de la carta -->
+            <div class="footer-carta">
+                Carta de Convivencia ${identificadorGrupo}
+            </div>
+        </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
