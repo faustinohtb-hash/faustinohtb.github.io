@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Registro de Incidencias — Secundaria Profr. Honorato Tlaseca Barrera</title>
+
+    <!-- Metadatos para vista previa en WhatsApp y redes sociales -->
+    <meta property="og:title" content="Sistema de Registro de Incidencias — Secundaria Profr. Honorato Tlaseca Barrera">
+    <meta property="og:description" content="Sistema oficial de registro, impresión y consulta de incidencias escolares de la Secundaria Profr. Honorato Tlaseca Barrera.">
+    <meta property="og:image" content="https://faustinohtb-hash.github.io/honorato/1784576408.png">
+    <meta property="og:url" content="https://faustinohtb-hash.github.io/honorato/index.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Secundaria Profr. Honorato Tlaseca Barrera">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://faustinohtb-hash.github.io/honorato/1784576408.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 15px;
+            color: #333;
+        }
+
+        .contenedor-principal {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1100px;
+            width: 100%;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Encabezado institucional */
+        .header-institucional {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            padding: 35px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-institucional::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .header-institucional::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .escudo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .escudo {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            object-fit: contain;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .titulo-sistema {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+        }
+
+        .subtitulo-escuela {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.95;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Sección de módulo */
+        .modulo-seccion {
+            padding: 45px 30px;
+            text-align: center;
+            background: #fafbfc;
+            border-bottom: 1px solid #eaeef2;
+        }
+
+        .modulo-icono {
+            font-size: 50px;
+            margin-bottom: 15px;
+            display: inline-block;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            width: 90px;
+            height: 90px;
+            line-height: 90px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(30, 60, 114, 0.25);
+        }
+
+        .modulo-titulo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .modulo-descripcion {
+            font-size: 15px;
+            color: #5a6c7d;
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Botones de acción */
+        .botones-incidencias {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            padding: 45px 40px;
+            background: #ffffff;
+        }
+
+        .btn-incidencia {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 35px 20px;
+            text-decoration: none;
+            border-radius: 15px;
+            color: #ffffff;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+        }
+
+        .btn-incidencia::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-incidencia:hover::before {
+            left: 100%;
+        }
+
+        .btn-incidencia:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn-icono {
+            font-size: 45px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .btn-titulo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-descripcion {
+            font-size: 13px;
+            opacity: 0.9;
+            text-align: center;
+            font-weight: 300;
+        }
+
+        /* Colores diferenciados para cada botón */
+        .btn-registro {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        .btn-impresion {
+            background: linear-gradient(135deg, #2980b9 0%, #1e5f8e 100%);
+        }
+        .btn-busqueda {
+            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+        }
+
+        /* Footer */
+        .footer-institucional {
+            background: #1a252f;
+            color: #b8c5d1;
+            padding: 25px 30px;
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .footer-institucional strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .footer-divider {
+            width: 50px;
+            height: 2px;
+            background: #2a5298;
+            margin: 10px auto;
+        }
+
+        /* Responsivo */
+        @media (max-width: 600px) {
+            .titulo-sistema { font-size: 22px; }
+            .subtitulo-escuela { font-size: 14px; }
+            .modulo-titulo { font-size: 20px; }
+            .escudo { width: 85px; height: 85px; }
+            .botones-incidencias { padding: 30px 20px; gap: 18px; }
+            .btn-incidencia { padding: 28px 15px; min-height: 170px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-principal">
+        <!-- Encabezado con escudo institucional -->
+        <header class="header-institucional">
+            <div class="escudo-container">
+                <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Escudo de la Secundaria Profr. Honorato Tlaseca Barrera" class="escudo">
+            </div>
+            <h1 class="titulo-sistema">Sistema de Registro de Incidencias</h1>
+            <p class="subtitulo-escuela">Secundaria Profr. Honorato Tlaseca Barrera</p>
+        </header>
+
+        <!-- Descripción del módulo -->
+        <section class="modulo-seccion">
+            <div class="modulo-icono">📋</div>
+            <h2 class="modulo-titulo">Gestión Integral de Incidencias Escolares</h2>
+            <p class="modulo-descripcion">
+                Plataforma oficial para el registro, consulta e impresión de incidencias académicas y disciplinarias.
+                Seleccione la opción deseada para continuar con su gestión.
+            </p>
+        </section>
+
+        <!-- Botones de acción -->
+        <section class="botones-incidencias">
+            <a href="https://faustinohtb-hash.github.io/honorato/formularioIncidencias.html" class="btn-incidencia btn-registro">
+                <span class="btn-icono">📝</span>
+                <span class="btn-titulo">Registro de Incidencias</span>
+                <span class="btn-descripcion">Capturar nueva incidencia</span>
+            </a>
+
+            <a href="https://faustinohtb-hash.github.io/honorato/incidenciafecha.html" class="btn-incidencia btn-impresion">
+                <span class="btn-icono">🖨️</span>
+                <span class="btn-titulo">Impresión de Incidencias</span>
+                <span class="btn-descripcion">Generar reporte impreso</span>
+            </a>
+
+            <a href="https://faustinohtb-hash.github.io/honorato/revisionIncidencias.html" class="btn-incidencia btn-busqueda">
+                <span class="btn-icono">🔍</span>
+                <span class="btn-titulo">Búsqueda de Incidencias</span>
+                <span class="btn-descripcion">Consultar registros existentes</span>
+            </a>
+        </section>
+
+        <!-- Footer institucional -->
+        <footer class="footer-institucional">
+            <strong>Secundaria Profr. Honorato Tlaseca Barrera</strong>
+            <div class="footer-divider"></div>
+            Carretera Puebla-Chiautla No.1, Huehuetlán el Chico, Pue. C.P. 74720<br>
+            © 2025 Todos los derechos reservados.
+        </footer>
+    </div>
+</body>
+</html>
