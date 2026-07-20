@@ -2,973 +2,502 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Asistencia Escolar</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Asistencia Escolar - Profr. Honorato Tlaseca Barrera</title>
     <style>
-        /* --- Estilos Generales para Pantalla --- */
         body { 
-            font-family: Arial, sans-serif; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            font-size: 11px; 
             margin: 20px; 
-            background-color: #f4f4f9;
+            color: #000;
         }
-        h1, h2 {
-            color: #333;
-            text-align: center;
-            font-size: 1.5em; /* Ajuste para ser más discreto que el PDF impreso */
+        .header { 
+            text-align: center; 
+            margin-bottom: 15px; 
+        }
+        .header img { 
+            height: 70px; 
+            margin: 5px 15px; 
+            vertical-align: middle;
+        }
+        .school-info { 
+            text-align: center; 
+            font-weight: bold; 
+            margin: 10px 0; 
+            line-height: 1.4;
         }
         .controls { 
-            margin-bottom: 30px; 
-            padding: 20px; 
-            border: 1px solid #ddd; 
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 15px;
-            align-items: center;
+            margin: 15px 0; 
+            padding: 12px; 
+            background: #f4f6f8; 
+            border: 1px solid #d1d5da; 
+            border-radius: 6px; 
+            display: flex; 
+            gap: 12px; 
+            flex-wrap: wrap; 
+            align-items: center; 
             justify-content: center;
-            flex-wrap: wrap;
         }
-        label {
-            font-weight: bold;
-            color: #555;
+        .controls select, .controls input, .controls button { 
+            padding: 6px 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            font-size: 12px;
         }
-        select, button {
-            padding: 8px 12px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-        button {
-            background-color: #007bff;
+        .controls button {
+            background-color: #0056b3;
             color: white;
             border: none;
-            transition: background-color 0.3s;
+            cursor: pointer;
+            font-weight: bold;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .home-button {
-            background-color: #28a745;
-        }
-        .home-button:hover {
-            background-color: #218838;
-        }
+        .controls button:hover { background-color: #004494; }
+        .controls button.print-btn { background-color: #28a745; }
+        .controls button.print-btn:hover { background-color: #218838; }
+        
         table { 
-            width: 100%; 
             border-collapse: collapse; 
-            margin-top: 15px; 
-            table-layout: fixed; /* Cambiado a fixed para controlar el ancho de columnas */
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            font-size: 0.85em; /* Fuente ligeramente más pequeña */
+            width: 100%; 
+            margin-top: 10px; 
+            font-size: 10px;
         }
         th, td { 
-            border: 1px solid #ddd; 
-            padding: 6px 4px; /* Ajuste de padding */
+            border: 1px solid #333; 
+            padding: 3px 2px; 
             text-align: center; 
-            font-size: 0.9em; 
         }
         th { 
-            background-color: #e9ecef;
-            color: #333;
+            background-color: #e9ecef; 
             font-weight: bold;
-            text-transform: uppercase;
         }
-        td:first-child, th:first-child { 
+        .student-name { 
             text-align: left; 
-            width: 25%;
-            font-weight: 500;
-            font-size: 0.9em;
-        } 
-        /* Columna de género */
-        th:nth-child(2), td:nth-child(2) {
-            width: 2em; /* Ancho fijo para la columna de género */
-            text-align: center;
+            min-width: 180px; 
+            padding-left: 5px;
         }
-        /* Columnas de días (a partir de la tercera columna) */
-        th:nth-child(n+3), td:nth-child(n+3) {
-            width: 1.5em; /* Ancho fijo para las columnas de días */
-            text-align: center;
-        }
-        /* Columnas de totales */
-        .total-col {
-            width: 2.5em;
-            text-align: center;
+        .weekend { 
+            background-color: #dcdde1; 
+            color: #7f8c8d; 
             font-weight: bold;
         }
-        .day-header { 
-            font-size: 0.75em; 
-            padding: 4px; 
+        .total-col { 
+            background-color: #f8f9fa; 
             font-weight: bold;
+            min-width: 22px;
         }
-        /* Estilos específicos para centrar los días de la semana */
-        .weekday-cell {
-            text-align: center !important;
-            vertical-align: middle !important;
-        }
-        /* Estilos de colores de estado (para pantalla) */
-        td.ausente { background-color: #ffdddd; color: #d9534f; font-weight: bold; }
-        td.justificado { background-color: #cce5ff; color: #004085; font-weight: bold; } /* Cambiado a azul */
-        td.presente { background-color: #d4edda; color: #155724; font-weight: bold; } /* Usar verde como el "A" del PDF */
-        td.retardo { background-color: #fff3cd; color: #856404; font-weight: bold; }
-        td.suspendido { background-color: #343a40; color: #ffffff; font-weight: bold; } /* Cambiado a gris oscuro */
+        /* Colores para los estados de asistencia */
+        .presente { color: #28a745; font-weight: bold; }
+        .retardo { color: #fd7e14; font-weight: bold; }
+        .falta { color: #dc3545; font-weight: bold; }
+        .justificado { color: #007bff; font-weight: bold; }
+        .suspendido { color: #6f42c1; font-weight: bold; }
 
-        /* --- Estilos del encabezado principal --- */
-        .main-header {
+        .info-bar {
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            margin: 15px 0;
+            padding: 8px;
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            gap: 15px;
         }
-        .main-header-logo {
-            max-height: 60px;
-            max-width: 120px;
+        .info-bar span { white-space: nowrap; }
+        .footer { 
+            margin-top: 25px; 
+            text-align: center; 
+            font-size: 10px; 
+        }
+        .legend {
+            text-align: left;
+            font-size: 10px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        .signatures { 
+            display: flex; 
+            justify-content: space-around; 
+            margin-top: 40px; 
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .signature-box { 
+            text-align: center; 
+            width: 250px; 
+            border-top: 1px solid #000; 
+            padding-top: 5px; 
+            font-weight: bold;
+        }
+        .date-elaboracion {
+            text-align: right;
+            margin-top: 15px;
+            font-size: 11px;
+            font-style: italic;
             margin-right: 20px;
         }
-        .main-header-title {
-            font-size: 1.8em;
-            color: #333;
-            margin: 0;
-        }
-
-        /* --- Estilos del pie de página --- */
-        .footer {
-            margin-top: 40px;
-            padding: 20px;
+        .loading {
             text-align: center;
-            font-size: 0.8em;
-            color: #666;
-            border-top: 1px solid #ddd;
-            background-color: #fff;
-            border-radius: 8px;
+            padding: 40px;
+            font-size: 16px;
+            color: #0056b3;
+            font-weight: bold;
         }
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            margin: 20px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
 
-        /* --- Estilos de Cabecera y Pie (Solo para impresión) --- */
-        .header-info {
-            display: none; /* Ocultar en pantalla */
-        }
-        .footer-info {
-            display: none; /* Ocultar en pantalla */
-            margin-top: 30px;
-        }
-
-        /* --- Estilos para impresión (@media print) --- */
         @media print {
-            @page {
-                size: letter; /* Cambiado a tamaño carta */
-                margin: 0.5cm; /* Márgenes reducidos */
-            }
-            body { 
-                background-color: white; 
-                margin: 0; 
-                padding: 0;
-                font-size: 8pt; /* Tamaño de fuente base más pequeño */
-                -webkit-print-color-adjust: exact; /* Forzar colores exactos */
-            }
-            .controls, #printButton, .debug-info, .error-message, .main-header, .footer, .home-button { 
-                display: none; 
-            }
-            
-            /* Mostrar y estilizar la cabecera */
-            .header-info {
-                display: block;
-                margin-bottom: 5px; /* Margen reducido */
-                font-size: 7pt; /* Fuente más pequeña */
-            }
-            .header-top {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 5px; /* Margen reducido */
-            }
-            .header-logo-left {
-                max-height: 40px; /* Tamaño reducido */
-                max-width: 80px; /* Tamaño reducido */
-            }
-            .header-logo-right {
-                max-height: 40px; /* Tamaño reducido */
-                max-width: 80px; /* Tamaño reducido */
-            }
-            .header-text {
-                text-align: center;
-                flex-grow: 1;
-            }
-            .header-info p {
-                margin: 0;
-                line-height: 1.1; /* Altura de línea reducida */
-            }
-            .header-title {
-                font-weight: bold;
-                font-size: 10pt; /* Fuente más pequeña */
-                margin: 3px 0; /* Margen reducido */
-                text-align: center;
-            }
-            .header-grid {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr) auto 1fr;
-                gap: 5px; /* Espacio reducido */
-                font-size: 6pt; /* Fuente más pequeña */
-                border: 1px solid black;
-                padding: 3px; /* Padding reducido */
-                margin-bottom: 5px; /* Margen reducido */
-            }
-            .grid-item {
-                text-align: center;
-                border: 1px solid #000;
-                padding: 1px; /* Padding reducido */
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-            .grid-label {
-                font-weight: bold;
-                display: block;
-                border-bottom: 1px solid #000;
-                margin-bottom: 1px;
-                background-color: #eee;
-                width: 100%;
-                text-align: center;
-                padding: 1px 0; /* Padding reducido */
-            }
-            .grid-content {
-                text-align: center;
-                padding: 1px 0; /* Padding reducido */
-                width: 100%;
-            }
-
-            h1 {
-                display: none; /* Ocultar el h1 del control en la impresión */
-            }
-            h2 {
-                font-size: 1.1em;
-                margin: 5px 0 10px 0;
-                display: none; /* Ocultar h2 de la tabla para usar el del PDF */
-            }
-
-            /* Estilos de la tabla de asistencia para que sea compacta y simple */
-            table { 
-                border: 1px solid black; /* Borde más delgado */
-                box-shadow: none;
-                table-layout: fixed; /* Control estricto del ancho de columnas */
-                width: 100%;
-                font-size: 7pt; /* Fuente más pequeña */
-            }
-            th, td { 
-                border: 1px solid black; 
-                padding: 1px; /* Padding reducido */
-                height: 1em; /* Altura mínima de celda */
-            }
-            th {
-                background-color: #ddd; /* Fondo ligero para encabezado */
-                padding: 1px 0; /* Padding reducido */
-            }
-            td:first-child {
-                width: 25%; /* Ancho ajustado para nombre */
-                padding: 1px 2px; /* Padding reducido */
-                font-size: 6.5pt; /* Fuente más pequeña para nombres largos */
-            }
-            /* Columna de género */
-            th:nth-child(2), td:nth-child(2) {
-                width: 1.5em; /* Ancho fijo para la columna de género */
-                text-align: center;
-            }
-            /* Columnas de días (a partir de la tercera columna) */
-            th:nth-child(n+3), td:nth-child(n+3) {
-                width: 1.2em; /* Ancho fijo más pequeño para las columnas de días */
-                text-align: center;
-            }
-            /* Columnas de totales en impresión */
-            .total-col {
-                width: 2em; /* Ancho reducido */
-                text-align: center;
-                font-weight: bold;
-            }
-            /* Estilos específicos para centrar los días de la semana en impresión */
-            .weekday-cell {
-                text-align: center !important;
-                vertical-align: middle !important;
-                font-size: 6pt; /* Fuente más pequeña */
-            }
-            /* Eliminar colores de fondo de estado en la impresión */
-            td.ausente, td.justificado, td.presente, td.retardo, td.suspendido {
-                background-color: white !important;
-                color: black !important;
-                font-weight: normal !important;
-                font-size: 9pt; /* Un poco más grande para las letras */
-            }
-
-            /* Estilos del pie de página - Reorganizados */
-            .footer-info {
-                display: block;
-                margin-top: 20px; /* Margen reducido */
-                font-size: 7pt; /* Fuente más pequeña */
-                page-break-inside: avoid;
-            }
-            
-            .footer-date {
-                text-align: right;
-                margin-bottom: 15px; /* Margen reducido */
-                font-style: italic;
-                font-size: 8pt; /* Fuente más pequeña */
-            }
-            
-            .footer-signatures {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 10px; /* Margen reducido */
-            }
-            
-            .signature-box {
-                width: 45%;
-                text-align: center;
-            }
-            
-            .signature-title {
-                font-weight: bold;
-                margin-bottom: 3px; /* Margen reducido */
-                text-transform: uppercase;
-                font-size: 8pt; /* Fuente más pequeña */
-            }
-            
-            .signature-line {
-                border-top: 1px solid black;
-                margin-top: 25px; /* Margen reducido */
-                padding-top: 3px; /* Padding reducido */
-                font-weight: bold;
-            }
-            
-            .signature-role {
-                margin-top: 3px; /* Margen reducido */
-                font-size: 7pt; /* Fuente más pequeña */
-                font-style: italic;
-            }
-            
-            .footer-notes {
-                margin-top: 15px; /* Margen reducido */
-                font-size: 6pt; /* Fuente más pequeña */
-                border-top: 1px solid #ccc;
-                padding-top: 5px; /* Padding reducido */
-            }
-            
-            .footer-notes p {
-                margin: 2px 0; /* Margen reducido */
-            }
+            .controls, .no-print, .back-link { display: none !important; }
+            body { margin: 10px; font-size: 9px; }
+            th, td { padding: 2px 1px; }
+            .header img { height: 60px; }
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            .info-bar { font-size: 11px; padding: 5px; }
         }
     </style>
 </head>
 <body>
-
-    <div class="main-header">
-        <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela Secundaria Profesor Honorato Tlaseca Barrera" class="main-header-logo">
-        <h1>Registro de Asistencia Escolar</h1>
-    </div>
-
-        <div class="header-info">
-            <div class="header-top">
-                <img src="https://faustinohtb-hash.github.io/honorato/imagenes/lsep.png" alt="Logo SEP" class="header-logo-left">
-                <div class="header-text">
-                    <p>SECRETARIA DE EDUCACIÓN PÚBLICA</p>
-                    <p>SUBSECRETARIA DE EDUCACIÓN BÁSICA Y MEDIA SUPERIOR</p>
-                    <p>DIRECCIÓN DE SECUNDARIAS GENERALES</p>
-                </div>
-                <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo de la escuela" class="header-logo-right">
-            </div>
-            <p class="header-title">REGISTRO DE ASISTENCIA</p>
-        <div class="header-grid">
-            <div class="grid-item">
-                <span class="grid-label">NOMBRE DE LA ESCUELA</span>
-                <span class="grid-content">"PROFR. HONORATO TLASECA BARRERA"</span>
-            </div>
-            <div class="grid-item">
-                <span class="grid-label">CLAVE</span>
-                <span class="grid-content">21EES0265J</span>
-            </div>
-            <div class="grid-item" id="header-asignatura">
-                <span class="grid-label">ASIGNATURA</span>
-                <span class="grid-content">MATEMÁTICAS</span>
-            </div>
-            <div class="grid-item">
-                <span class="grid-label">CICLO ESCOLAR</span>
-                <span class="grid-content">2025-2026</span>
-            </div>
-            <div class="grid-item" id="header-grado-grupo">
-                <span class="grid-label">GRUPO</span>
-                <span class="grid-content">1°B</span>
-            </div>
-            <div class="grid-item" id="header-mes">
-                <span class="grid-label">MES</span>
-                <span class="grid-content">OCTUBRE</span>
-            </div>
+    <div class="header">
+        <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela">
+        <img src="https://faustinohtb-hash.github.io/honorato/imagenes/lsep.png" alt="Logo SEP">
+        <div class="school-info">
+            SECRETARÍA DE EDUCACIÓN PÚBLICA<br>
+            SUBSECRETARÍA DE EDUCACIÓN BÁSICA Y MEDIA SUPERIOR<br>
+            DIRECCIÓN DE SECUNDARIAS GENERALES<br>
+            ESCUELA SECUNDARIA GENERAL "PROFR. HONORATO TLASECA BARRERA"<br>
+            CLAVE: 21EES0265J
         </div>
+        <h2 style="margin: 10px 0; text-decoration: underline;">REGISTRO DE ASISTENCIA</h2>
     </div>
 
-
-    <div class="controls">
-        <label for="grado">Grado:</label>
-        <select id="grado">
-            <option value="1" selected>1°</option> 
-            <option value="2">2°</option>
-            <option value="3">3°</option>
-        </select>
-
-        <label for="grupo">Grupo:</label>
-        <select id="grupo">
-            <option value="A">A</option>
-            <option value="B" selected>B</option> 
-        </select>
-
-        <label for="mes">Mes:</label>
-        <select id="mes">
-            <option value="SEPTIEMBRE">Septiembre</option>
-            <option value="OCTUBRE">Octubre</option> 
-            <option value="NOVIEMBRE">Noviembre</option>
-            <option value="DICIEMBRE">Diciembre</option>
-            <option value="ENERO">Enero</option>
-            <option value="FEBRERO">Febrero</option>
-            <option value="MARZO">Marzo</option>
-            <option value="ABRIL">Abril</option>
-            <option value="MAYO">Mayo</option>
-            <option value="JUNIO">Junio</option>
-            <option value="JULIO">Julio</option>
-            <option value="AGOSTO">Agosto</option>
-        </select>
-
-        <label for="asignatura">Asignatura:</label>
-        <select id="asignatura">
-            <option value="ESPANOL">Español</option>
-            <option value="INGLES">Inglés</option>
-            <option value="ARTES">Artes</option>
-            <option value="MATEMATICAS" selected>Matemáticas</option>
-            <option value="BIOLOGIA">Biología</option>
-            <option value="FISICA">Física</option>
-            <option value="QUIMICA">Química</option>
-            <option value="GEOGRAFIA">Geografía</option>
-            <option value="HISTORIA">Historia</option>
-            <option value="FORMACION_CIVICA">Formación Civica y Ética</option>
-            <option value="TECNOLOGIA">Tecnología</option>
-            <option value="EDUCACION_FISICA">Educación Física</option>
-            <option value="TUTORIA">Tutoría</option>
-            <option value="INTEGRACION_CURRICULAR">Integración Curricular</option>
-        </select>
-
-        <label for="docente">Docente:</label>
-        <select id="docente">
-            <option value="">Cargando docentes...</option>
-        </select>
-
-        <button id="printButton" onclick="window.print()">Imprimir Registro</button>
-        <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="home-button">
-            <button type="button">Regresar al Inicio</button>
-        </a>
+    <div class="controls no-print">
+        <label><strong>Ciclo Escolar:</strong> 2025-2026</label>
+        <label>Grado:
+            <select id="gradoSelect">
+                <option value="1">1°</option>
+                <option value="2">2°</option>
+                <option value="3">3°</option>
+            </select>
+        </label>
+        <label>Grupo:
+            <select id="grupoSelect">
+                <option value="A">A</option>
+                <option value="B">B</option>
+            </select>
+        </label>
+        <label>Mes:
+            <select id="mesSelect">
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10" selected>Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+            </select>
+        </label>
+        <label>Asignatura:
+            <select id="asignaturaSelect">
+                <option>Español</option>
+                <option selected>Matemáticas</option>
+                <option>Inglés</option>
+                <option>Artes</option>
+                <option>Biología</option>
+                <option>Física</option>
+                <option>Química</option>
+                <option>Geografía</option>
+                <option>Historia</option>
+                <option>Formación Cívica y Ética</option>
+                <option>Tecnología</option>
+                <option>Educación Física</option>
+                <option>Tutoría</option>
+                <option>Integración Curricular</option>
+            </select>
+        </label>
+        <label>Docente:
+            <input type="text" id="docenteInput" placeholder="Nombre del docente" style="width: 180px;">
+        </label>
+        <button onclick="generarRegistro()">🔄 Actualizar Registro</button>
+        <button class="print-btn" onclick="window.print()">🖨️ Imprimir Registro</button>
     </div>
 
-    <div id="attendanceTableContainer" class="loading-message">
-        <p>Cargando datos. Por favor, espere...</p>
-    </div>
-
-        <div class="footer-info">
-        <div class="footer-date" id="fecha-impresion">
-            Heroica Puebla de Zaragoza a 4 de OCTUBRE de 2025
-        </div>
-        
-        <div class="footer-signatures">
-            <div class="signature-box">
-                <div class="signature-title">ELABORÓ</div>
-                <div class="signature-line" id="docente-elaboro">DOCENTE DEL GRUPO</div>
-                <div class="signature-role">DOCENTE</div>
-            </div>
-            
-            <div class="signature-box">
-                <div class="signature-title">Vo. Bo.</div>
-                <div class="signature-line">LAURA CHOLULA RIVERA</div>
-                <div class="signature-role">DIRECTORA DE LA ESCUELA</div>
-            </div>
-        </div>
-        
-        <div class="footer-notes">
-            <p><strong>NOTA:</strong></p>
-            <p>A) CERRAR EL REGISTRO HASTA EL ÚLTIMO DÍA HÁBIL DEL MES O FECHA DE CORTE.</p>
-            <p>B) REPORTAR EL NÚMERO TOTAL DE ASISTENCIAS, RETARDOS, FALTAS Y DÍAS DE CLASE DEL MES.</p>
+    <div id="attendanceTableContainer">
+        <div class="loading">
+            ⏳ Cargando lista maestra de alumnos y registros de asistencia en tiempo real...<br>
+            <small style="font-weight: normal; color: #555;">Por favor, espere un momento.</small>
         </div>
     </div>
 
     <div class="footer">
-        © 2025-2026 Sistema de Gestión Escolar | Escuela Secundaria Profesor Honorato Tlaseca Barrera | Todos los derechos reservados
+        <div class="legend">
+            <strong>Leyenda:</strong> L = Lunes, M = Martes, Mi = Miércoles, J = Jueves, V = Viernes, S = Sábado, D = Domingo.<br>
+            <strong>Estados:</strong> A = Asistencia, R = Retardo, F = Falta/Ausente, J = Justificado/Permiso, S = Suspendido.<br>
+            Las celdas sombreadas en gris corresponden a <strong>días inhábiles</strong> (fin de semana).
+        </div>
+        <p style="margin-top: 15px; font-weight: bold; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;">
+            NOTA:<br>
+            A) CERRAR EL REGISTRO HASTA EL ÚLTIMO DÍA HÁBIL DEL MES O FECHA DE CORTE.<br>
+            B) REPORTAR EL NÚMERO TOTAL DE ASISTENCIAS, RETARDOS, FALTAS Y DÍAS DE CLASE DEL MES.
+        </p>
+        
+        <div class="signatures">
+            <div class="signature-box">
+                <br><br>
+                <span id="firmaDocente">DOCENTE DEL GRUPO</span>
+            </div>
+            <div class="signature-box">
+                <br><br>
+                LAURA CHOLULA RIVERA<br>
+                <span style="font-weight: normal; font-size: 10px;">DIRECTORA DE LA ESCUELA</span>
+            </div>
+        </div>
+        
+        <div class="date-elaboracion" id="fechaElaboracion"></div>
+        
+        <a href="https://faustinohtb-hash.github.io/honorato/index.html" class="back-link no-print">[Regresar al Inicio]</a>
+        
+        <p style="margin-top: 20px; color: #555; font-size: 9px;">
+            © 2025-2026 Sistema de Gestión Escolar | Escuela Secundaria Profesor Honorato Tlaseca Barrera | Todos los derechos reservados
+        </p>
     </div>
 
-    <div id="debugInfo" class="debug-info" style="display: none;"></div>
-
     <script>
-        // URL del script de Google Apps Script para el método doGet (recuperar datos de asistencia)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzm4o8Q8L5qC-VZHXiryxRKGXnerxP2BCH3P2N5EnIpvyqHlVdKck8TrrgipB9t2S9h/exec';
-        
-        // URL del script de Google Apps Script para obtener los datos de docentes
-        const DOCENTES_URL = 'https://script.google.com/macros/s/AKfycbzPUWFLXhFAoC9w_Yqo5shO9TRyquOYYvzg8ovKB1mdFNh4dUhK7MKLOs1ITupLxb-hXQ/exec';
+        const STUDENTS_URL = 'https://script.google.com/macros/s/AKfycbyQ4XfTgp-qhfi_1BSUW_c6JmXDoAmr9W0y915QT977BhN6ZzU5IL7gxsDLriE8Egbv/exec';
+        const ASISTENCIA_URL = 'https://script.google.com/macros/s/AKfycbzm4o8Q8L5qC-VZHXiryxRKGXnerxP2BCH3P2N5EnIpvyqHlVdKck8TrrgipB9t2S9h/exec';
 
-        let todosLosDatos = []; 
-        let docentes = []; // Almacenará los datos de los docentes
+        let estudiantesData = [];
+        let asistenciaData = [];
 
-        const mesesES = [
-            'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 
-            'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
-        ];
-
-        // Mapeo de estados de palabras a letras:
-        // A (Ausente) en el PDF original se marca con una celda vacía o "/"
-        // P (Presente) en el PDF original se marca con "A" o celda vacía, pero en los datos está como "A" o "presente"
-        const mapeoEstadosALetras = {
-            'ausente': '/',    // Ausente se muestra como "/"
-            'A': '/',          // Si viene una 'A' del PDF original (que parece ser Ausente), la convertimos a "/"
-            'justificado': 'P', // Justificado se muestra como "P" (cambiado de "J")
-            'presente': 'A',    // El PDF usa "A" para asistencia (Presente)
-            'retardo': 'R',    // Retardo se muestra como "R"
-            'T': 'R',          // Si viene una 'T', la convertimos a "R" (Retardo)
-            'falta': 'F',
-            'suspendido': 'S', // Suspendido se muestra como "S"
-            'suspension': 'S', // También aceptamos "suspension" (con tilde)
-            'permiso': 'P'     // Permiso se muestra como "P"
-        };
-
-        // Mapeo de letras a clases CSS
-        const letraAClase = {
-            '/': 'ausente',    // La diagonal "/" corresponde a ausente
-            'A': 'presente',   // La "A" (Asistencia) corresponde a presente
-            'P': 'justificado', // La letra "P" corresponde a justificado (cambiado de "J")
-            'R': 'retardo',    // La letra "R" corresponde a retardo
-            'T': 'retardo',    // Mantenido por compatibilidad
-            'F': 'falta',
-            'S': 'suspendido', // La letra "S" corresponde a suspendido
-            'J': 'justificado' // Mantenido por compatibilidad con datos existentes
-        };
-
-        function getMonthName(date) {
-            // Usar UTC para evitar problemas de zona horaria
-            return mesesES[date.getUTCMonth()];
-        }
-        
-        function setMesActual() {
-            const mesSelect = document.getElementById('mes');
-            const fechaActual = new Date();
-            const mesActual = mesesES[fechaActual.getMonth()]; // Obtenemos el nombre del mes actual en español
-
-            for (let i = 0; i < mesSelect.options.length; i++) {
-                if (mesSelect.options[i].value === mesActual) {
-                    mesSelect.options[i].selected = true;
-                    break;
-                }
-            }
-        }
-
-        function crearObjetoFecha(fechaValue) {
-            if (!fechaValue) return null;
-            
-            if (fechaValue instanceof Date) {
-                return isNaN(fechaValue.getTime()) ? null : fechaValue;
-            }
-            
-            if (typeof fechaValue === 'number') {
-                return new Date(fechaValue);
-            }
-            
-            if (typeof fechaValue === 'string') {
-                // Intentar formato ISO (YYYY-MM-DDTHH:MM:SSZ)
-                let date = new Date(fechaValue);
-                if (!isNaN(date.getTime())) {
-                    const year = date.getUTCFullYear();
-                    const month = date.getUTCMonth();
-                    const day = date.getUTCDate();
-                    const utcDate = new Date(Date.UTC(year, month, day));
-                    return utcDate;
-                }
-                
-                // Intentar formato de fecha de Google Sheets (serial number)
-                const googleSerial = parseFloat(fechaValue);
-                if (!isNaN(googleSerial) && googleSerial > 1000) { // Mayor a un número arbitrario para evitar float no relacionados
-                    // Las fechas de Google Sheets comienzan en 30/12/1899
-                    date = new Date((googleSerial - 25569) * 86400 * 1000);
-                    if (!isNaN(date.getTime())) {
-                        return date;
-                    }
-                }
-                
-                return null;
-            }
-            
-            return null;
-        }
-
-        // Función para obtener el último día de un mes
-        function obtenerUltimoDiaMes(mesNombre, anio) {
-            const mesIndex = mesesES.indexOf(mesNombre);
-            if (mesIndex === -1) return 31; // Valor por defecto si no se encuentra el mes
-            
-            // El último día del mes es el día 0 del mes siguiente
-            return new Date(anio, mesIndex + 1, 0).getDate();
-        }
-
-        // Función para cargar los datos de los docentes
-        async function cargarDocentes() {
-            const docenteSelect = document.getElementById('docente');
-            
+        async function inicializar() {
+            const container = document.getElementById('attendanceTableContainer');
             try {
-                const response = await fetch(DOCENTES_URL);
+                const [studentsRes, asistenciaRes] = await Promise.all([
+                    fetch(STUDENTS_URL, { cache: 'no-cache' }),
+                    fetch(ASISTENCIA_URL, { cache: 'no-cache' })
+                ]);
                 
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
-                }
+                if (!studentsRes.ok) throw new Error(`Error al cargar alumnos: ${studentsRes.status}`);
+                if (!asistenciaRes.ok) throw new Error(`Error al cargar asistencias: ${asistenciaRes.status}`);
                 
-                const data = await response.json();
+                const rawStudents = await studentsRes.json();
+                estudiantesData = Array.isArray(rawStudents) ? rawStudents : (rawStudents.data || []);
                 
-                if (!data || data.length === 0) {
-                    throw new Error("Los datos de docentes recibidos están vacíos o no son válidos.");
-                }
+                const rawAsistencia = await asistenciaRes.json();
+                asistenciaData = Array.isArray(rawAsistencia) ? rawAsistencia : (rawAsistencia.data || []);
                 
-                docentes = data;
-                
-                // Limpiar el select y agregar las opciones
-                docenteSelect.innerHTML = '';
-                
-                // Agregar una opción vacía o por defecto
-                const defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.textContent = 'Seleccionar docente';
-                docenteSelect.appendChild(defaultOption);
-                
-                // Agregar los docentes como opciones
-                docentes.forEach(docente => {
-                    const option = document.createElement('option');
-                    option.value = docente.nombre;
-                    option.textContent = docente.nombre;
-                    docenteSelect.appendChild(option);
-                });
-                
-                // Seleccionar el primer docente por defecto si hay docentes disponibles
-                if (docentes.length > 0) {
-                    docenteSelect.selectedIndex = 1; // Saltar la opción vacía
-                    actualizarEncabezadoImpresion(); // Actualizar el encabezado con el docente seleccionado
-                }
+                generarRegistro();
             } catch (error) {
-                console.error('Error al cargar los datos de docentes:', error);
-                docenteSelect.innerHTML = '<option value="">Error al cargar docentes</option>';
+                console.error('Error al cargar datos:', error);
+                container.innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ Error al conectar con la base de datos</h3>
+                        <p>${error.message}</p>
+                        <button onclick="inicializar()" style="padding: 8px 16px; margin-top: 10px; cursor: pointer; background: #dc3545; color: white; border: none; border-radius: 4px;">🔄 Reintentar</button>
+                    </div>
+                `;
             }
         }
 
-        // Función para actualizar la fecha de impresión
-        function actualizarFechaImpresion() {
-            const mesSelect = document.getElementById('mes');
-            const mesTexto = mesSelect.options[mesSelect.selectedIndex].text;
-            const mesValor = mesSelect.value;
-            const fechaActual = new Date();
-            const anioActual = fechaActual.getFullYear();
-            const ultimoDia = obtenerUltimoDiaMes(mesValor, anioActual);
-            
-            const fechaImpresion = document.getElementById('fecha-impresion');
-            fechaImpresion.textContent = `Heroica Puebla de Zaragoza a ${ultimoDia} de ${mesTexto} de ${anioActual}`;
-        }
-
-        // Función para actualizar el encabezado de impresión
-        function actualizarEncabezadoImpresion() {
-            // Actualizar asignatura
-            const asignaturaSelect = document.getElementById('asignatura');
-            const headerAsignatura = document.getElementById('header-asignatura');
-            const asignaturaTexto = asignaturaSelect.options[asignaturaSelect.selectedIndex].text;
-            headerAsignatura.querySelector('.grid-content').textContent = asignaturaTexto;
-
-            // Actualizar grado y grupo
-            const gradoSelect = document.getElementById('grado');
-            const grupoSelect = document.getElementById('grupo');
-            const headerGradoGrupo = document.getElementById('header-grado-grupo');
-            const gradoTexto = gradoSelect.options[gradoSelect.selectedIndex].text;
-            const grupoTexto = grupoSelect.options[grupoSelect.selectedIndex].text;
-            headerGradoGrupo.querySelector('.grid-content').textContent = `${gradoTexto}${grupoTexto}`;
-
-            // Actualizar mes
-            const mesSelect = document.getElementById('mes');
-            const headerMes = document.getElementById('header-mes');
-            const mesTexto = mesSelect.options[mesSelect.selectedIndex].text;
-            headerMes.querySelector('.grid-content').textContent = mesTexto;
-            
-            // Actualizar el docente en la sección de elaboro
-            const docenteSelect = document.getElementById('docente');
-            const docenteElaboro = document.getElementById('docente-elaboro');
-            const docenteTexto = docenteSelect.options[docenteSelect.selectedIndex].text;
-            
-            // Si no hay docente seleccionado, mostrar el texto por defecto
-            if (docenteTexto === 'Seleccionar docente' || docenteTexto === '') {
-                docenteElaboro.textContent = 'DOCENTE DEL GRUPO';
-            } else {
-                docenteElaboro.textContent = docenteTexto;
-            }
-            
-            // Actualizar la fecha de impresión
-            actualizarFechaImpresion();
-        }
-
-        // Función principal para cargar los datos de la Google Sheet
-        async function cargarDatos() {
-            setMesActual(); // Establecer el mes actual
-            const container = document.getElementById('attendanceTableContainer');
-            
-            try {
-                console.log("Intentando cargar datos desde:", SCRIPT_URL);
-                container.innerHTML = '<p class="loading-message">Cargando datos. Por favor, espere...</p>';
-                
-                const response = await fetch(SCRIPT_URL);
-                
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!data || data.length === 0) {
-                    throw new Error("Los datos recibidos están vacíos o no son válidos.");
-                }
-                
-                todosLosDatos = data;
-                
-                cargarYFiltrarDatos(); 
-                
-                // Actualizar el encabezado de impresión después de cargar los datos
-                actualizarEncabezadoImpresion();
-            } catch (error) {
-                console.error('Error al cargar los datos:', error);
-                container.innerHTML = `<div class="error-message">Error al cargar los datos de asistencia: ${error.message}. Revisa la consola (F12) para más detalles.</div>`;
-            }
-        }
-
-        // Función para aplicar filtros y generar la tabla
-        function cargarYFiltrarDatos() {
-            const container = document.getElementById('attendanceTableContainer');
-            
-            if (!todosLosDatos || todosLosDatos.length === 0) {
-                 container.innerHTML = '<div class="error-message">No hay datos cargados. Por favor, espera a que los datos se carguen o verifica la conexión.</div>';
-                 return;
-            }
-
-            const selectedGrado = document.getElementById('grado').value; 
-            const selectedGrupo = document.getElementById('grupo').value;
-            const selectedMes = document.getElementById('mes').value; 
-            const selectedAsignatura = document.getElementById('asignatura').value;
-
-            // Mostrar indicador de carga
-            container.innerHTML = '<p class="loading-message">Actualizando tabla. Por favor, espere...</p>';
-
-            // Usar setTimeout para permitir que el navegador muestre el mensaje de carga
-            setTimeout(() => {
-                const datosFiltrados = todosLosDatos.filter(item => {
-                    if (!item.grado || !item.grupo || !item.fecha || !item.alumno || !item.estado) {
-                        return false;
-                    }
-
-                    try {
-                        const itemDate = crearObjetoFecha(item.fecha);
-
-                        if (!itemDate) {
-                            return false; 
-                        }
-                        
-                        const itemMonth = getMonthName(itemDate);
-                        
-                        const itemGrado = String(item.grado);
-                        const coincideGrado = itemGrado === selectedGrado;
-                        const coincideGrupo = item.grupo === selectedGrupo;
-                        const coincideMes = itemMonth === selectedMes;
-                        // Filtrar también por asignatura si está disponible en los datos
-                        const coincideAsignatura = !item.asignatura || item.asignatura === selectedAsignatura;
-                        
-                        return coincideGrado && coincideGrupo && coincideMes && coincideAsignatura; 
-                    } catch (e) {
-                        console.error("Error inesperado en filtro de fila:", item, e);
-                        return false;
-                    }
-                });
-
-                generarTabla(datosFiltrados);
-            }, 100);
-        }
-
-        function generarTabla(datos) {
-            const container = document.getElementById('attendanceTableContainer');
-            const filters = `${document.getElementById('grado').value}°-${document.getElementById('grupo').value} en ${document.getElementById('mes').value}`;
-
-            container.innerHTML = '';
-
-            if (datos.length === 0) {
-                container.innerHTML = `<div class="error-message">No se encontraron registros para los filtros seleccionados (${filters}).</div>
-                                      <p class="loading-message">Intenta con otros filtros o verifica que los datos existan.</p>`;
+        function generarRegistro() {
+            if (!estudiantesData || estudiantesData.length === 0) {
+                document.getElementById('attendanceTableContainer').innerHTML = '<div class="error">No se encontraron datos de alumnos en la base de datos.</div>';
                 return;
             }
 
-            // Agrupar por alumno para obtener el género y mantener el orden del PDF
-            const alumnosConGenero = {};
-            const asistenciasMap = new Map();
-            const fechasUnicas = new Set();
-            const diasSemanaMap = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-
-            datos.forEach(item => {
-                const fecha = crearObjetoFecha(item.fecha); 
-                if (!fecha) return;
-
-                alumnosConGenero[item.alumno] = item.genero || '';
-
-                const diaMes = fecha.getUTCDate(); 
-                const diaSemanaIndex = fecha.getUTCDay(); 
-                const diaSemana = diasSemanaMap[diaSemanaIndex]; 
-
-                const key = `${diaMes}-${diaSemana}`;
-                
-                if (diaSemanaIndex >= 1 && diaSemanaIndex <= 5) { // Lunes a Viernes
-                     fechasUnicas.add(JSON.stringify({ diaMes, diaSemana, timestamp: fecha.getTime() }));
-                }
-
-                if (!asistenciasMap.has(item.alumno)) {
-                    asistenciasMap.set(item.alumno, {});
-                }
-                asistenciasMap.get(item.alumno)[key] = item.estado; 
-            });
-
-            // Nombres de alumnos a mostrar, ordenados alfabéticamente
-            const alumnos = Object.keys(alumnosConGenero)
-                .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
-
-            // Fechas ordenadas para las columnas
-            const fechasOrdenadasUnicas = Array.from(fechasUnicas)
-                .map(jsonString => JSON.parse(jsonString))
-                .sort((a, b) => a.timestamp - b.timestamp)
-                .map(f => `${f.diaMes}-${f.diaSemana}`);
-
-            // Construir el HTML de la tabla
-            let tableHTML = `
-                <table><thead>
-                <tr><th rowspan="2" style="width: 25%;">NOMBRE DEL ALUMNO</th><th rowspan="2" style="width: 2em;">G</th>`;
-            // Días (28, 29, 30, 31, 1, 2, 3, 6, ...)
-            fechasOrdenadasUnicas.forEach(fechaKey => {
-                tableHTML += `<th class="day-header">${fechaKey.split('-')[0]}</th>`;
-            });
-            // Agregar encabezados de columnas de totales
-            tableHTML += '<th class="total-col">ASIST</th><th class="total-col">RET</th><th class="total-col">FALT</th><th class="total-col">DÍAS</th>';
-            tableHTML += '</tr><tr>';
-            // Días de la semana (L, M, M, J, V, L, M, J, ...)
-            fechasOrdenadasUnicas.forEach(fechaKey => {
-                tableHTML += `<th class="weekday-cell">${fechaKey.split('-')[1]}</th>`;
-            });
-            // Agregar celdas vacías para los encabezados de totales
-            tableHTML += '<th class="total-col"></th><th class="total-col"></th><th class="total-col"></th><th class="total-col"></th>';
-            tableHTML += '</tr></thead><tbody>';
-
-            // Variables para acumular totales generales
-            let totalAsistenciasGeneral = 0;
-            let totalRetardosGeneral = 0;
-            let totalFaltasGeneral = 0;
-
-            alumnos.forEach((alumno, index) => {
-                const numeroLista = index + 1; // Número de lista
-                const nombreMostrar = `${numeroLista}. ${alumno}`;
-                tableHTML += `<tr><td style="text-align: left;">${nombreMostrar}</td>`;
-                tableHTML += `<td>${alumnosConGenero[alumno] || ''}</td>`;
-                const asistencias = asistenciasMap.get(alumno) || {};
-                
-                // Contadores para este alumno
-                let asistenciasCount = 0;
-                let retardosCount = 0;
-                let faltasCount = 0;
-                
-                fechasOrdenadasUnicas.forEach(fechaKey => {
-                    const estadoCrudo = asistencias[fechaKey] || 'presente'; // Asumir "presente" si no hay registro
-                    let estado;
-                    let claseEstado;
-                    
-                    // Convertir el estado a letra (ej: 'presente' -> 'A', 'ausente' -> '/')
-                    estado = mapeoEstadosALetras[estadoCrudo] || estadoCrudo;
-                    
-                    // Asignar clase CSS
-                    claseEstado = letraAClase[estado] ? ` class="${letraAClase[estado]}"` : '';
-
-                    // Si el estado es 'S' (suspendido), mostrar solo 'S'
-                    // Para otros estados, mostrar la letra correspondiente
-                    let textoCelda = estado;
-                    if (estado === 'S') {
-                        textoCelda = 'S'; // Asegurarnos de que solo muestre 'S'
-                    }
-                    
-                    tableHTML += `<td${claseEstado}>${textoCelda}</td>`;
-                    
-                    // Contar asistencias, retardos y faltas
-                    if (estado === 'A') {
-                        asistenciasCount++;
-                    } else if (estado === 'R') {
-                        retardosCount++;
-                    } else if (estado === '/' || estado === 'P' || estado === 'F' || estado === 'S') {
-                        faltasCount++;
-                    }
-                });
-                
-                // Agregar celdas de totales para este alumno
-                tableHTML += `<td class="total-col">${asistenciasCount}</td>`;
-                tableHTML += `<td class="total-col">${retardosCount}</td>`;
-                tableHTML += `<td class="total-col">${faltasCount}</td>`;
-                tableHTML += `<td class="total-col">${fechasOrdenadasUnicas.length}</td>`;
-                
-                // Acumular totales generales
-                totalAsistenciasGeneral += asistenciasCount;
-                totalRetardosGeneral += retardosCount;
-                totalFaltasGeneral += faltasCount;
-                
-                tableHTML += '</tr>';
-            });
+            const grado = document.getElementById('gradoSelect').value;
+            const grupo = document.getElementById('grupoSelect').value;
+            const mes = parseInt(document.getElementById('mesSelect').value);
+            const asignatura = document.getElementById('asignaturaSelect').value;
+            const docente = document.getElementById('docenteInput').value || "DOCENTE DEL GRUPO";
             
-            // Agregar fila de totales generales
-            tableHTML += '<tr><td colspan="2" style="text-align: right; font-weight: bold;">TOTALES</td>';
-            // Celdas vacías para cada día
-            for (let i = 0; i < fechasOrdenadasUnicas.length; i++) {
-                tableHTML += '<td></td>';
+            document.getElementById('firmaDocente').textContent = docente.toUpperCase();
+
+            const year = mes >= 8 ? 2025 : 2026;
+            const monthNames = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+            const monthName = monthNames[mes - 1];
+            const daysInMonth = new Date(year, mes, 0).getDate();
+            
+            // Función para normalizar texto (quitar acentos y minúsculas para comparaciones seguras)
+            const normalizeStr = (str) => str ? str.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase() : "";
+            const selAsignatura = normalizeStr(asignatura);
+            
+            // 1. OBTENER TODOS LOS ALUMNOS DEL GRADO Y GRUPO (No solo los que tienen faltas)
+            const filteredStudents = estudiantesData
+                .filter(e => e.grado == grado && e.grupo == grupo)
+                .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+            
+            let html = `<div class="info-bar">
+                <span>GRADO: ${grado}°</span>
+                <span>|</span>
+                <span>GRUPO: ${grupo}</span>
+                <span>|</span>
+                <span>MES: ${monthName} ${year}</span>
+                <span>|</span>
+                <span>ASIGNATURA: ${asignatura.toUpperCase()}</span>
+                <span>|</span>
+                <span style="color: #28a745; font-size: 10px;">✅ Datos en tiempo real</span>
+            </div>`;
+            
+            html += `<table><thead><tr>
+                <th rowspan="2" style="width: 25%; min-width: 200px;">NOMBRE DEL ALUMNO</th>
+                <th rowspan="2" style="width: 60px;">MATRÍCULA</th>`;
+                
+            const dayNames = ['D', 'L', 'M', 'Mi', 'J', 'V', 'S'];
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, mes - 1, d);
+                const dayOfWeek = date.getDay();
+                const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+                const className = isWeekend ? 'weekend' : '';
+                const dayLabel = isWeekend ? 'X' : '';
+                html += `<th class="${className}" style="width: 24px;">${d}<br><small>${dayNames[dayOfWeek]}</small>${dayLabel ? '<br><small style="font-size:8px;">'+dayLabel+'</small>' : ''}</th>`;
             }
-            // Celdas de totales generales
-            tableHTML += `<td class="total-col" style="font-weight: bold;">${totalAsistenciasGeneral}</td>`;
-            tableHTML += `<td class="total-col" style="font-weight: bold;">${totalRetardosGeneral}</td>`;
-            tableHTML += `<td class="total-col" style="font-weight: bold;">${totalFaltasGeneral}</td>`;
-            tableHTML += `<td class="total-col" style="font-weight: bold;">${fechasOrdenadasUnicas.length}</td>`;
-            tableHTML += '</tr></tbody></table>';
-
-            container.innerHTML = tableHTML;
             
-            // Actualizar la fecha de impresión después de generar la tabla
-            actualizarFechaImpresion();
+            html += `<th class="total-col" rowspan="2" title="Asistencias">A</th>
+                     <th class="total-col" rowspan="2" title="Retardos">R</th>
+                     <th class="total-col" rowspan="2" title="Faltas">F</th>
+                     <th class="total-col" rowspan="2" title="Justificados/Permisos">J/P</th>
+                     <th class="total-col" rowspan="2" title="Suspendidos">S</th>
+                     </tr></thead><tbody>`;
+                     
+            if (filteredStudents.length === 0) {
+                html += `<tr><td colspan="${daysInMonth + 8}" style="text-align:center; padding: 20px; font-weight: bold;">No hay alumnos registrados en este grado y grupo.</td></tr>`;
+            } else {
+                filteredStudents.forEach((est, index) => {
+                    // 2. BUSCAR INCIDENTES ESPECÍFICOS PARA ESTE ALUMNO
+                    const studentRecords = asistenciaData.filter(r => {
+                        const rGrado = parseInt(r.grado, 10);
+                        const rGrupo = r.grupo ? r.grupo.toString().trim() : "";
+                        const rNombre = normalizeStr(r.alumno);
+                        const rAsignatura = r.asignatura ? normalizeStr(r.asignatura) : "";
+                        
+                        return rGrado == grado && 
+                               rGrupo === grupo && 
+                               rNombre === normalizeStr(est.nombre) &&
+                               (rAsignatura === selAsignatura || rAsignatura === "");
+                    });
+                    
+                    const dayStatus = {};
+                    // Prioridad en caso de múltiples registros el mismo día: Suspendido > Falta > Retardo > Justificado > Asistencia
+                    const priority = { 'S': 5, 'F': 4, 'R': 3, 'J': 2, 'A': 1 };
+                    
+                    studentRecords.forEach(r => {
+                        if (!r.fecha) return;
+                        const dateStr = r.fecha.split('T')[0];
+                        const parts = dateStr.split('-');
+                        if (parts.length !== 3) return;
+                        
+                        const rYear = parseInt(parts[0], 10);
+                        const rMonth = parseInt(parts[1], 10);
+                        const rDay = parseInt(parts[2], 10);
+                        
+                        if (rYear === year && rMonth === mes) {
+                            const estado = r.estado ? r.estado.toLowerCase() : "";
+                            let statusChar = "";
+                            
+                            if (estado === "presente") statusChar = "A";
+                            else if (estado === "retardo") statusChar = "R";
+                            else if (estado === "ausente" || estado === "falta") statusChar = "F";
+                            else if (estado === "justificado" || estado === "permiso") statusChar = "J";
+                            else if (estado === "suspendido" || estado === "suspension") statusChar = "S";
+                            
+                            if (statusChar) {
+                                if (!dayStatus[rDay] || priority[statusChar] > priority[dayStatus[rDay]]) {
+                                    dayStatus[rDay] = statusChar;
+                                }
+                            }
+                        }
+                    });
+                    
+                    html += `<tr>
+                        <td class="student-name">${index + 1}. ${est.nombre}</td>
+                        <td>${est.matricula || ''}</td>`;
+                    
+                    let countA = 0, countR = 0, countF = 0, countJ = 0, countS = 0;
+                    
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const date = new Date(year, mes - 1, d);
+                        const dayOfWeek = date.getDay();
+                        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+                        const className = isWeekend ? 'weekend' : '';
+                        
+                        // Si es fin de semana, mostrar 'X'. Si no, mostrar el estado o 'A' por defecto.
+                        let content = isWeekend ? 'X' : (dayStatus[d] || 'A');
+                        
+                        if (content === 'A') countA++;
+                        else if (content === 'R') countR++;
+                        else if (content === 'F') countF++;
+                        else if (content === 'J') countJ++;
+                        else if (content === 'S') countS++;
+                        
+                        let cellClass = className;
+                        if (content === 'R') cellClass += ' retardo';
+                        else if (content === 'F') cellClass += ' falta';
+                        else if (content === 'J') cellClass += ' justificado';
+                        else if (content === 'S') cellClass += ' suspendido';
+                        else if (content === 'A') cellClass += ' presente';
+                        
+                        html += `<td class="${cellClass.trim()}">${content}</td>`;
+                    }
+                    
+                    html += `<td class="total-col">${countA || ''}</td>
+                             <td class="total-col">${countR || ''}</td>
+                             <td class="total-col">${countF || ''}</td>
+                             <td class="total-col">${countJ || ''}</td>
+                             <td class="total-col">${countS || ''}</td></tr>`;
+                });
+            }
+            
+            // Fila de totales de días hábiles
+            let diasHabiles = 0;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, mes - 1, d);
+                if (date.getDay() !== 0 && date.getDay() !== 6) diasHabiles++;
+            }
+            
+            html += `<tr style="background-color: #e9ecef; font-weight: bold;">
+                <td colspan="2" style="text-align: right;">TOTAL DÍAS HÁBILES DEL MES</td>`;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, mes - 1, d);
+                const isWeekend = (date.getDay() === 0 || date.getDay() === 6);
+                html += `<td class="${isWeekend ? 'weekend' : ''}">${isWeekend ? 'X' : '✓'}</td>`;
+            }
+            html += `<td colspan="5" style="text-align: left; padding-left: 10px;">Total días de clase: ${diasHabiles}</td></tr>`;
+            
+            html += `</tbody></table>`;
+            
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('fechaElaboracion').textContent = `Heroica Puebla de Zaragoza a ${today.toLocaleDateString('es-MX', options)}`;
+
+            document.getElementById('attendanceTableContainer').innerHTML = html;
         }
 
-        // Añadir event listeners para actualizar automáticamente cuando cambien los selects
-        window.onload = function() {
-            cargarDatos();
-            cargarDocentes(); // Cargar los datos de los docentes
-            
-            // Añadir event listeners para actualizar automáticamente cuando cambien los selects
-            document.getElementById('grado').addEventListener('change', function() {
-                cargarYFiltrarDatos();
-                actualizarEncabezadoImpresion();
-            });
-            document.getElementById('grupo').addEventListener('change', function() {
-                cargarYFiltrarDatos();
-                actualizarEncabezadoImpresion();
-            });
-            document.getElementById('mes').addEventListener('change', function() {
-                cargarYFiltrarDatos();
-                actualizarEncabezadoImpresion();
-            });
-            document.getElementById('asignatura').addEventListener('change', function() {
-                cargarYFiltrarDatos();
-                actualizarEncabezadoImpresion();
-            });
-            document.getElementById('docente').addEventListener('change', function() {
-                actualizarEncabezadoImpresion();
-            });
-        };
+        window.onload = inicializar;
     </script>
 </body>
 </html>
