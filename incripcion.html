@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción de Alumnos - Secundaria Profr. Honorato Tlaseca Barrera</title>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #f59e0b;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --border-color: #cbd5e1;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-container { max-width: 900px; margin: 0 auto; }
+
+        .institutional-header {
+            background: var(--card-bg);
+            border-radius: 16px 16px 0 0;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            border-bottom: 4px solid var(--accent-color);
+        }
+
+        .logo-container { flex-shrink: 0; }
+        .logo-container img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .school-info { flex: 1; }
+        .school-info h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .school-info h2 {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .school-info p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        .badge-system {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-container {
+            background: var(--card-bg);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 30px 0 20px 0;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+
+        @media (min-width: 640px) { 
+            .form-grid { grid-template-columns: 1fr 1fr; } 
+            .full-width { grid-column: 1 / -1; } 
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+
+        label { 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            color: var(--text-color);
+        }
+
+        .required::after { content: " *"; color: var(--error-color); }
+
+        input, select { 
+            padding: 12px 16px; 
+            border: 2px solid var(--border-color); 
+            border-radius: 8px; 
+            font-size: 0.95rem; 
+            transition: all 0.3s; 
+            background-color: #fff;
+        }
+
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: var(--secondary-color); 
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        input[readonly] { 
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0); 
+            color: var(--primary-color); 
+            cursor: not-allowed; 
+            font-weight: 700; 
+            border-color: var(--border-color);
+        }
+
+        .hint { 
+            font-size: 0.8rem; 
+            color: var(--text-light); 
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .badge { 
+            background: linear-gradient(135deg, var(--accent-color), #fbbf24); 
+            color: white; 
+            padding: 4px 10px; 
+            border-radius: 12px; 
+            font-size: 0.7rem; 
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            margin-top: 30px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px;
+            box-shadow: var(--shadow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit:hover { 
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-submit:disabled { 
+            background: #94a3b8; 
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .spinner { 
+            display: none; 
+            width: 22px; 
+            height: 22px; 
+            border: 3px solid rgba(255,255,255,0.3); 
+            border-radius: 50%; 
+            border-top-color: white; 
+            animation: spin 1s ease-in-out infinite; 
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .message { 
+            display: none; 
+            padding: 18px; 
+            border-radius: 8px; 
+            margin-top: 25px; 
+            font-size: 0.95rem; 
+            font-weight: 500;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.success { 
+            display: block; 
+            background: #d1fae5; 
+            color: #065f46; 
+            border: 2px solid #a7f3d0; 
+        }
+
+        .message.error { 
+            display: block; 
+            background: #fee2e2; 
+            color: #991b1b; 
+            border: 2px solid #fecaca; 
+        }
+
+        .institutional-footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 0 0 16px 16px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .institutional-footer p { margin: 5px 0; font-size: 0.9rem; }
+        .institutional-footer strong { color: var(--accent-color); }
+
+        .copyright {
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        @media (max-width: 768px) {
+            .institutional-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            .logo-container img { width: 100px; height: 100px; }
+            .school-info h1 { font-size: 1.4rem; }
+            .school-info h2 { font-size: 1.1rem; }
+            .form-container { padding: 25px; }
+            .form-title { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="institutional-header">
+        <div class="logo-container">
+            <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela">
+        </div>
+        <div class="school-info">
+            <h1>Secundaria Profr. Honorato Tlaseca Barrera</h1>
+            <h2>Sistema de Gestión Escolar</h2>
+            <p><strong>Dirección:</strong> Carretera Puebla-Chiautla No.1, Huehuetlán el Chico, Pue. CP. 74720</p>
+            <p><strong>Ciclo Escolar:</strong> <span id="cicloEscolarHeader">Cargando...</span></p>
+            <span class="badge-system">Módulo de Inscripciones</span>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <div class="form-title">📝 Registro de Nuevo Alumno</div>
+        <div class="form-subtitle">
+            Complete todos los campos marcados con asterisco (*) para realizar la inscripción del alumno.
+        </div>
+
+        <form id="inscriptionForm">
+            <div class="section-title">📚 Datos Académicos</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="GRADO" class="required">Grado Escolar</label>
+                    <select id="GRADO" name="GRADO" required>
+                        <option value="">Seleccione el grado...</option>
+                        <option value="1">1° Grado</option>
+                        <option value="2">2° Grado</option>
+                        <option value="3">3° Grado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="GRUPO" class="required">Grupo</label>
+                    <select id="GRUPO" name="GRUPO" required>
+                        <option value="">Seleccione el grupo...</option>
+                        <option value="A">Grupo A</option>
+                        <option value="B">Grupo B</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="MATRICULA" class="required">
+                        Matrícula Asignada <span class="badge">Automática</span>
+                    </label>
+                    <input type="text" id="MATRICULA" name="MATRICULA" required readonly placeholder="Seleccione el grado para generar la matrícula">
+                    <div class="hint">La matrícula se genera automáticamente de forma progresiva por grado</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Matrícula Creada <span class="badge">Automática</span></label>
+                    <input type="text" id="MATRICULA_CREADA" name="MATRICULA_CREADA" readonly placeholder="Se genera automáticamente">
+                    <div class="hint">Formato: Grado + Matrícula asignada</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Matrícula Identificadora Base <span class="badge">Automática</span></label>
+                    <input type="text" id="MATRICULA_IDENTIFICADORA_BASE" name="MATRICULA_IDENTIFICADORA_BASE" readonly placeholder="Se genera automáticamente">
+                    <div class="hint">Código de generación (Ej: 2528 para 2° grado)</div>
+                </div>
+            </div>
+
+            <div class="section-title">👤 Datos Personales del Alumno</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="apellido1" class="required">Apellido Paterno</label>
+                    <input type="text" id="apellido1" name="apellido1" required placeholder="Ingrese apellido paterno" style="text-transform: uppercase;">
+                </div>
+
+                <div class="form-group">
+                    <label for="apellido2">Apellido Materno</label>
+                    <input type="text" id="apellido2" name="apellido2" placeholder="Ingrese apellido materno" style="text-transform: uppercase;">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="nombre1" class="required">Nombre(s) del Alumno</label>
+                    <input type="text" id="nombre1" name="nombre1" required placeholder="Ingrese nombre(s) completo(s)" style="text-transform: uppercase;">
+                </div>
+
+                <div class="form-group">
+                    <label for="SEXO" class="required">Sexo</label>
+                    <select id="SEXO" name="SEXO" required>
+                        <option value="">Seleccione...</option>
+                        <option value="H">Masculino (H)</option>
+                        <option value="M">Femenino (M)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span class="spinner" id="spinner"></span>
+                <span id="btnText">💾 Registrar Alumno en el Sistema</span>
+            </button>
+
+            <div id="messageBox" class="message"></div>
+        </form>
+    </div>
+
+    <div class="institutional-footer">
+        <p><strong>Secundaria Profr. Honorato Tlaseca Barrera</strong></p>
+        <p>Carretera Puebla-Chiautla No.1, Huehuetlán el Chico, Pue. CP. 74720</p>
+        <div class="copyright">
+            © <span id="anioCopyright">2025</span> Sistema de Gestión Escolar - Todos los derechos reservados.
+        </div>
+    </div>
+</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQf251X0st6j7PKxbaihZoyGT_HFV8x7dTwEbDq7hheuJawT63ma3ca4g2vAvvKD4L/exec";
+
+    // ============================================================
+    // CICLO ESCOLAR DINÁMICO (Agosto - Julio)
+    // Enero a Julio  → El ciclo inició el año pasado
+    // Agosto a Diciembre → El ciclo inicia este año
+    // ============================================================
+    const now = new Date();
+    const mesActual = now.getMonth() + 1; // 1 = Enero, 12 = Diciembre
+    const anioActual = now.getFullYear();
+
+    let cicloInicio, cicloFin;
+    if (mesActual >= 8) {
+        // Agosto o posterior: el ciclo INICIA este año
+        cicloInicio = anioActual;
+        cicloFin = anioActual + 1;
+    } else {
+        // Enero a Julio: el ciclo INICIÓ el año pasado
+        cicloInicio = anioActual - 1;
+        cicloFin = anioActual;
+    }
+
+    // Actualizar el encabezado
+    document.getElementById('cicloEscolarHeader').textContent = `${cicloInicio}-${cicloFin}`;
+
+    // Actualizar el copyright del footer
+    document.getElementById('anioCopyright').textContent = anioActual;
+
+    // ============================================================
+    // VARIABLES DEL FORMULARIO
+    // ============================================================
+    const form = document.getElementById('inscriptionForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btnText');
+    const messageBox = document.getElementById('messageBox');
+    
+    const gradoSelect = document.getElementById('GRADO');
+    const grupoSelect = document.getElementById('GRUPO');
+    const matriculaInput = document.getElementById('MATRICULA');
+    const matriculaCreadaInput = document.getElementById('MATRICULA_CREADA');
+    const baseIdInput = document.getElementById('MATRICULA_IDENTIFICADORA_BASE');
+
+    // ============================================================
+    // MAYÚSCULAS AUTOMÁTICAS EN NOMBRE Y APELLIDOS
+    // ============================================================
+    const camposMayusculas = ['apellido1', 'apellido2', 'nombre1'];
+    camposMayusculas.forEach(id => {
+        document.getElementById(id).addEventListener('input', function(e) {
+            const cursorPos = e.target.selectionStart;
+            e.target.value = e.target.value.toUpperCase();
+            e.target.setSelectionRange(cursorPos, cursorPos);
+        });
+    });
+
+    // ============================================================
+    // DATOS ACADÉMICOS AUTOMÁTICOS
+    // ============================================================
+    function actualizarDatosAcademicos() {
+        const grado = gradoSelect.value;
+        
+        if (grado) {
+            matriculaInput.value = "⏳ Consultando...";
+            matriculaInput.disabled = true;
+            
+            // Matrícula Identificadora Base: año de ingreso de la generación + año de egreso
+            const startYear = anioActual - (parseInt(grado) - 1);
+            const endYear = startYear + 3;
+            
+            const startStr = String(startYear).slice(-2);
+            const endStr = String(endYear).slice(-2);
+            baseIdInput.value = `${startStr}${endStr}`;
+
+            // Obtener la siguiente matrícula del grado
+            fetch(`${SCRIPT_URL}?action=next_matricula&grado=${encodeURIComponent(grado)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.estado) {
+                        const nextMat = data.nextMatricula;
+                        matriculaInput.value = nextMat;
+                        matriculaCreadaInput.value = `${grado}${nextMat}`;
+                    } else {
+                        showMessage("❌ Error: " + (data.mensaje || "No se pudo obtener la matrícula."), "error");
+                        matriculaInput.value = "";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error de red:", error);
+                    showMessage("❌ Error de conexión al obtener la matrícula. Verifique su conexión a internet.", "error");
+                    matriculaInput.value = "";
+                })
+                .finally(() => {
+                    matriculaInput.disabled = false;
+                });
+        } else {
+            matriculaInput.value = "";
+            matriculaCreadaInput.value = "";
+            baseIdInput.value = "";
+        }
+    }
+
+    gradoSelect.addEventListener('change', actualizarDatosAcademicos);
+
+    // ============================================================
+    // ENVÍO DEL FORMULARIO
+    // ============================================================
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!matriculaInput.value || matriculaInput.value.includes("Consultando")) {
+            showMessage("⚠️ Por favor, espere a que se generen los datos académicos automáticamente.", "error");
+            return;
+        }
+
+        submitBtn.disabled = true;
+        spinner.style.display = 'block';
+        btnText.textContent = '⏳ Procesando registro...';
+        messageBox.className = 'message';
+        messageBox.style.display = 'none';
+
+        const datos = {
+            action: "insert",
+            "MATRICULA": matriculaInput.value.trim(),
+            "GRADO": gradoSelect.value,
+            "GRUPO": grupoSelect.value,
+            "MATRICULA_CREADA": matriculaCreadaInput.value.trim(),
+            "apellido1": document.getElementById('apellido1').value.trim().toUpperCase(),
+            "apellido2": document.getElementById('apellido2').value.trim().toUpperCase(),
+            "nombre1": document.getElementById('nombre1').value.trim().toUpperCase(),
+            "SEXO": document.getElementById('SEXO').value,
+            "MATRICULA_IDENTIFICADORA_BASE": baseIdInput.value.trim()
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(datos),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.estado) {
+                showMessage(`✅ ¡Alumno registrado exitosamente! <br><strong>Matrícula:</strong> ${datos.MATRICULA} | <strong>Grado:</strong> ${datos.GRADO}° | <strong>Grupo:</strong> ${datos.GRUPO}`, 'success');
+                form.reset();
+            } else {
+                showMessage('❌ Error: ' + (data.mensaje || 'No se pudo registrar el alumno.'), 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('❌ Ocurrió un error de conexión. Por favor, intente nuevamente.', 'error');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            spinner.style.display = 'none';
+            btnText.textContent = '💾 Registrar Alumno en el Sistema';
+        });
+    });
+
+    function showMessage(text, type) {
+        messageBox.innerHTML = text;
+        messageBox.className = 'message ' + type;
+        messageBox.style.display = 'block';
+        messageBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        if (type === 'success') {
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 8000);
+        }
+    }
+</script>
+
+</body>
+</html>
