@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directorio del Estudiante 2025-2026</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px; }
+    .container { max-width: 850px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .header { display: flex; align-items: center; border-bottom: 3px solid #1565C0; padding-bottom: 20px; margin-bottom: 25px; gap: 20px; }
+    .logo { width: 120px; height: 120px; object-fit: contain; }
+    .school-info { flex: 1; text-align: center; }
+    .school-info h1 { font-size: 15px; color: #333; margin: 0; }
+    .school-info h2 { font-size: 24px; color: #1565C0; margin: 10px 0; }
+    .school-info h3 { font-size: 20px; color: #D32F2F; margin: 5px 0; }
+    .grado-grupo-box { display: flex; gap: 10px; }
+    .grado-grupo-box .box { border: 2px solid #333; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; flex-direction: column; }
+    .grado-grupo-box .box label { font-size: 10px; font-weight: bold; color: #555; margin-bottom: 4px; }
+    .grado-grupo-box .box input { border: none; text-align: center; width: 100%; height: 100%; font-weight: bold; font-size: 16px; background: transparent; text-transform: uppercase; }
+    .grado-grupo-box .box input:focus { outline: none; }
+    
+    label { display: block; font-weight: bold; margin-bottom: 8px; color: #333; font-size: 14px; }
+    .row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+    .col { flex: 1; min-width: 200px; }
+    input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-transform: uppercase; }
+    input:focus { outline: none; border-color: #1565C0; box-shadow: 0 0 4px rgba(21, 101, 192, 0.3); }
+    
+    .whatsapp-box { background: #e8f5e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #25D366; display: flex; align-items: center; gap: 15px; }
+    .whatsapp-box input { max-width: 300px; border: 2px solid #25D366; border-radius: 20px; }
+    
+    .instrucciones { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; line-height: 1.6; color: #856404; }
+    
+    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+    th { background: #757575; color: white; padding: 12px 8px; text-align: left; border: 1px solid #616161; font-size: 13px; }
+    td { padding: 8px; border: 1px solid #ddd; }
+    .num { background: #f5f5f5; font-weight: bold; text-align: center; width: 40px; }
+    
+    .aviso { color: #d32f2f; font-size: 12px; text-align: center; padding: 10px; background: #ffebee; border-radius: 4px; font-weight: bold; margin-bottom: 20px; }
+    
+    .firma-section { margin-top: 40px; text-align: center; padding: 20px; background: #f9f9f9; border-radius: 6px; }
+    .firma-linea { margin-top: 30px; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center; }
+    .firma-linea label { text-align: center; margin-bottom: 10px; }
+    .firma-linea input { text-align: center; }
+    .espacio-firma { height: 100px; border-bottom: 2px solid #333; margin: 20px auto 10px auto; max-width: 500px; }
+    
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+    .btn { flex: 1; min-width: 150px; padding: 14px; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; transition: all 0.3s; }
+    .btn-guardar { background: #4CAF50; color: white; }
+    .btn-guardar:hover { background: #45a049; }
+    .btn-pdf { background: #1565C0; color: white; }
+    .btn-pdf:hover { background: #0d47a1; }
+    .btn-nuevo { background: #ff9800; color: white; }
+    .btn-nuevo:hover { background: #f57c00; }
+    .btn:disabled { background: #ccc; cursor: not-allowed; opacity: 0.7; }
+    
+    .msg { padding: 12px; margin: 15px 0; border-radius: 4px; display: none; text-align: center; font-weight: bold; }
+    .msg.ok { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+    .msg.err { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+
+    /* ===== MODO PDF: CONTENIDO COMPACTO PARA UNA SOLA HOJA ===== */
+    .container.pdf-mode { padding: 10px !important; max-width: 100% !important; box-shadow: none !important; }
+    .container.pdf-mode .header { padding-bottom: 10px !important; margin-bottom: 12px !important; gap: 12px !important; }
+    .container.pdf-mode .logo { width: 70px !important; height: 70px !important; }
+    .container.pdf-mode .school-info h1 { font-size: 11px !important; }
+    .container.pdf-mode .school-info h2 { font-size: 16px !important; margin: 4px 0 !important; }
+    .container.pdf-mode .school-info h3 { font-size: 14px !important; margin: 2px 0 !important; }
+    .container.pdf-mode .grado-grupo-box .box { width: 60px !important; height: 60px !important; }
+    .container.pdf-mode .grado-grupo-box .box label { font-size: 8px !important; }
+    .container.pdf-mode .grado-grupo-box .box input { font-size: 12px !important; }
+    .container.pdf-mode .row { margin-bottom: 8px !important; gap: 8px !important; }
+    .container.pdf-mode input { padding: 4px 6px !important; font-size: 11px !important; }
+    .container.pdf-mode label { margin-bottom: 4px !important; font-size: 11px !important; }
+    .container.pdf-mode .whatsapp-box { padding: 8px !important; margin-bottom: 10px !important; gap: 8px !important; }
+    .container.pdf-mode .whatsapp-box svg { width: 28px !important; height: 28px !important; }
+    .container.pdf-mode .whatsapp-box input { max-width: 220px !important; padding: 4px 8px !important; font-size: 11px !important; }
+    .container.pdf-mode .instrucciones { padding: 8px !important; margin-bottom: 10px !important; font-size: 10px !important; }
+    .container.pdf-mode table { margin-bottom: 8px !important; }
+    .container.pdf-mode th { padding: 6px 4px !important; font-size: 10px !important; }
+    .container.pdf-mode td { padding: 4px !important; }
+    .container.pdf-mode .aviso { padding: 6px !important; font-size: 10px !important; margin-bottom: 10px !important; }
+    .container.pdf-mode .firma-section { margin-top: 15px !important; padding: 10px !important; }
+    .container.pdf-mode .firma-section h4 { font-size: 12px !important; }
+    .container.pdf-mode .espacio-firma { height: 60px !important; margin: 10px auto 5px auto !important; }
+    .container.pdf-mode .firma-linea { margin-top: 15px !important; }
+    .container.pdf-mode .btn-group,
+    .container.pdf-mode .msg { display: none !important; }
+
+    @page { size: letter; margin: 10mm; }
+    @media print {
+      body { background: white; padding: 0; margin: 0; }
+      .container { max-width: 100%; box-shadow: none; padding: 10px; border-radius: 0; }
+      .btn-group, .msg { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="contenidoPDF">
+    <div class="header">
+      <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo" class="logo">
+      <div class="school-info">
+        <h1>SECUNDARIA PROFESOR HONORATO TLASECA BARRERA</h1>
+        <h1>21EES0265J</h1>
+        <h2>DIRECTORIO DEL ESTUDIANTE</h2>
+        <h3 id="cicloEscolar">2025 - 2026</h3>
+      </div>
+      <div class="grado-grupo-box">
+        <div class="box">
+          <label>GRADO</label>
+          <input type="text" id="grado" placeholder="1°">
+        </div>
+        <div class="box">
+          <label>GRUPO</label>
+          <input type="text" id="grupo" placeholder="A">
+        </div>
+      </div>
+    </div>
+
+    <div id="mensaje" class="msg"></div>
+
+    <form id="miFormulario">
+      <label>ALUMNA(O):</label>
+      <div class="row">
+        <div class="col"><input type="text" id="nombre" placeholder="NOMBRE(S)" class="mayusculas"></div>
+        <div class="col"><input type="text" id="apellidoP" placeholder="APELLIDO PATERNO" class="mayusculas"></div>
+        <div class="col"><input type="text" id="apellidoM" placeholder="APELLIDO MATERNO" class="mayusculas"></div>
+      </div>
+
+      <div class="whatsapp-box">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        <div>
+          <label style="margin:0; color:#2e7d32;">Celular del alumno (Requiere WhatsApp):</label>
+          <input type="tel" id="celularA" placeholder="Ej: 5512345678" class="mayusculas">
+        </div>
+      </div>
+
+      <div class="instrucciones">
+        Se solicita al padre, madre o tutor, <strong>4 números telefónicos</strong> de personas mayores de edad autorizadas para recibir información o asistir en casos de emergencia.
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th class="num">No.</th>
+            <th>NOMBRE DE LA PERSONA</th>
+            <th>PARENTESCO</th>
+            <th>NÚMERO DE CELULAR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">1</td><td><input type="text" id="nombre1" class="mayusculas"></td><td><input type="text" id="parentesco1" class="mayusculas"></td><td><input type="tel" id="celular1" class="mayusculas"></td></tr>
+          <tr><td class="num">2</td><td><input type="text" id="nombre2" class="mayusculas"></td><td><input type="text" id="parentesco2" class="mayusculas"></td><td><input type="tel" id="celular2" class="mayusculas"></td></tr>
+          <tr><td class="num">3</td><td><input type="text" id="nombre3" class="mayusculas"></td><td><input type="text" id="parentesco3" class="mayusculas"></td><td><input type="tel" id="celular3" class="mayusculas"></td></tr>
+          <tr><td class="num">4</td><td><input type="text" id="nombre4" class="mayusculas"></td><td><input type="text" id="parentesco4" class="mayusculas"></td><td><input type="tel" id="celular4" class="mayusculas"></td></tr>
+        </tbody>
+      </table>
+
+      <div class="aviso">SE RECOMIENDA LLENAR LOS 4 NÚMEROS TELEFÓNICOS POR MOTIVOS DE SEGURIDAD.</div>
+
+      <div class="firma-section">
+        <h4>AUTORIZÓ: EL PADRE, MADRE DE FAMILIA O TUTOR</h4>
+        <div class="espacio-firma"></div>
+        <div class="firma-linea">
+          <label>NOMBRE COMPLETO Y FIRMA:</label>
+          <input type="text" id="tutor" placeholder="Escribe tu nombre completo" class="mayusculas">
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit" class="btn btn-guardar" id="btnEnviar">💾 GUARDAR INFORMACIÓN</button>
+        <button type="button" class="btn btn-pdf" id="btnPDF">📄 DESCARGAR PDF</button>
+        <button type="button" class="btn btn-nuevo" id="btnNuevo">🔄 NUEVO REGISTRO</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // ===== CICLO ESCOLAR DINÁMICO =====
+    (function calcularCicloEscolar() {
+      var hoy = new Date();
+      var mes = hoy.getMonth();
+      var anio = hoy.getFullYear();
+      var cicloInicio, cicloFin;
+      if (mes >= 7) { cicloInicio = anio; cicloFin = anio + 1; }
+      else { cicloInicio = anio - 1; cicloFin = anio; }
+      document.getElementById('cicloEscolar').textContent = cicloInicio + ' - ' + cicloFin;
+    })();
+
+    // ===== MAYÚSCULAS AUTOMÁTICAS =====
+    document.querySelectorAll('.mayusculas').forEach(function(input) {
+      input.addEventListener('input', function(e) {
+        var start = e.target.selectionStart;
+        var end = e.target.selectionEnd;
+        e.target.value = e.target.value.toUpperCase();
+        e.target.setSelectionRange(start, end);
+      });
+    });
+
+    // ===== URL DEL SCRIPT =====
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxnMtaDb6TxHcKjbBFIHI5LsEkBclWoUVgx_rMpNdNZqWw-7dFLMB6D7L0-hZJnHO6A/exec";
+
+    // ===== VARIABLES DE CONTROL PARA EVITAR DUPLICADOS =====
+    let isSending = false;
+    let datosYaEnviados = false;
+
+    // Si el usuario modifica cualquier campo, permitimos un nuevo envío
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', () => {
+        datosYaEnviados = false;
+      });
+    });
+
+    // ===== FUNCIÓN PARA OBTENER DATOS =====
+    function obtenerDatos() {
+      return {
+        nombre: document.getElementById('nombre').value.trim(),
+        apellidoP: document.getElementById('apellidoP').value.trim(),
+        apellidoM: document.getElementById('apellidoM').value.trim(),
+        grado: document.getElementById('grado').value.trim(),
+        grupo: document.getElementById('grupo').value.trim(),
+        celularA: document.getElementById('celularA').value.trim(),
+        nombre1: document.getElementById('nombre1').value.trim(),
+        parentesco1: document.getElementById('parentesco1').value.trim(),
+        celular1: document.getElementById('celular1').value.trim(),
+        nombre2: document.getElementById('nombre2').value.trim(),
+        parentesco2: document.getElementById('parentesco2').value.trim(),
+        celular2: document.getElementById('celular2').value.trim(),
+        nombre3: document.getElementById('nombre3').value.trim(),
+        parentesco3: document.getElementById('parentesco3').value.trim(),
+        celular3: document.getElementById('celular3').value.trim(),
+        nombre4: document.getElementById('nombre4').value.trim(),
+        parentesco4: document.getElementById('parentesco4').value.trim(),
+        celular4: document.getElementById('celular4').value.trim(),
+        tutor: document.getElementById('tutor').value.trim()
+      };
+    }
+
+    // ===== FUNCIÓN PARA ENVIAR A GOOGLE SHEETS (CON BLOQUEO) =====
+    function enviarAGoogleSheets(datos) {
+      return new Promise((resolve, reject) => {
+        if (isSending) {
+          resolve({ success: true, message: '⏳ Ya se está enviando, por favor espere...' });
+          return;
+        }
+        
+        if (datosYaEnviados) {
+          resolve({ success: true, message: '✅ Estos datos ya fueron enviados previamente.' });
+          return;
+        }
+
+        isSending = true;
+        deshabilitarBotones(true);
+
+        fetch(URL_SCRIPT, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(datos)
+        })
+        .then(() => {
+          datosYaEnviados = true;
+          resolve({ success: true, message: '✅ Datos enviados correctamente a Google Sheets.' });
+        })
+        .catch((error) => {
+          reject(error);
+        })
+        .finally(() => {
+          isSending = false;
+          deshabilitarBotones(false);
+        });
+      });
+    }
+
+    function deshabilitarBotones(estado) {
+      document.getElementById('btnEnviar').disabled = estado;
+      document.getElementById('btnPDF').disabled = estado;
+      document.getElementById('btnNuevo').disabled = estado;
+      
+      if (estado) {
+        document.getElementById('btnEnviar').textContent = '⏳ Enviando...';
+        document.getElementById('btnPDF').textContent = '⏳ Procesando...';
+      } else {
+        document.getElementById('btnEnviar').textContent = '💾 GUARDAR INFORMACIÓN';
+        document.getElementById('btnPDF').textContent = '📄 DESCARGAR PDF';
+      }
+    }
+
+    // ===== ENVIAR FORMULARIO (BOTÓN GUARDAR) =====
+    document.getElementById('miFormulario').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var msg = document.getElementById('mensaje');
+      msg.className = 'msg';
+      msg.style.display = 'none';
+
+      var datos = obtenerDatos();
+      
+      if (!datos.nombre && !datos.apellidoP && !datos.tutor) {
+        msg.className = 'msg err';
+        msg.textContent = '⚠️ Por favor, llena al menos el nombre del alumno o del tutor.';
+        msg.style.display = 'block';
+        return;
+      }
+
+      try {
+        var resultado = await enviarAGoogleSheets(datos);
+        msg.className = 'msg ok';
+        msg.textContent = resultado.message + ' (Los datos se mantienen en pantalla)';
+        msg.style.display = 'block';
+      } catch (error) {
+        msg.className = 'msg err';
+        msg.textContent = '❌ Error al enviar: ' + error.message;
+        msg.style.display = 'block';
+      }
+    });
+
+    // ===== BOTÓN NUEVO REGISTRO =====
+    document.getElementById('btnNuevo').addEventListener('click', function() {
+      if (confirm('¿Estás seguro de que deseas borrar los datos actuales para capturar un nuevo registro?')) {
+        document.getElementById('miFormulario').reset();
+        datosYaEnviados = false; // Reiniciar flag de envío
+        isSending = false; // Reiniciar bloqueo por seguridad
+        var msg = document.getElementById('mensaje');
+        msg.className = 'msg';
+        msg.style.display = 'none';
+        document.getElementById('grado').focus();
+      }
+    });
+
+    // ===== DESCARGAR PDF =====
+    document.getElementById('btnPDF').addEventListener('click', async function() {
+      var msg = document.getElementById('mensaje');
+      msg.className = 'msg';
+      msg.style.display = 'none';
+
+      var datos = obtenerDatos();
+
+      if (!datos.nombre && !datos.apellidoP && !datos.tutor) {
+        msg.className = 'msg err';
+        msg.textContent = '⚠️ Por favor, llena al menos el nombre del alumno o del tutor.';
+        msg.style.display = 'block';
+        return;
+      }
+
+      try {
+        // Intentar enviar. Si ya fue enviado, esta función resolverá rápido sin hacer fetch duplicado.
+        var resultado = await enviarAGoogleSheets(datos);
+        
+        msg.className = 'msg ok';
+        msg.textContent = resultado.message + ' Generando PDF...';
+        msg.style.display = 'block';
+
+        // Generar PDF
+        var contenido = document.getElementById('contenidoPDF');
+        contenido.classList.add('pdf-mode');
+
+        var nombreArchivo = 'Directorio_Estudiante';
+        if (datos.apellidoP) nombreArchivo += '_' + datos.apellidoP;
+        if (datos.nombre) nombreArchivo += '_' + datos.nombre;
+        nombreArchivo += '.pdf';
+
+        var opt = {
+          margin: [5, 5, 5, 5],
+          filename: nombreArchivo,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 1.5, useCORS: true, letterRendering: true, scrollY: 0 },
+          jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        await html2pdf().set(opt).from(contenido).save();
+        
+        contenido.classList.remove('pdf-mode');
+        msg.textContent = '✅ Proceso completado: Datos en Google Sheets y PDF descargado.';
+        
+      } catch (error) {
+        var contenido = document.getElementById('contenidoPDF');
+        contenido.classList.remove('pdf-mode');
+        msg.className = 'msg err';
+        msg.textContent = '❌ Error: ' + error.message;
+        msg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
