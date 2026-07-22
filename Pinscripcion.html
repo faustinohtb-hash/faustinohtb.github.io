@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción en Línea - Secundaria Profr. Honorato Tlaseca Barrera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 15px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        header h2 {
+            font-size: 1.3em;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            /* Estilos agregados para que funcione como enlace sin perder diseño */
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #1e3c72;
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+        }
+
+        .card h3 {
+            font-size: 3em;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .card h4 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .card .badge {
+            display: inline-block;
+            background: #1e3c72;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .info-section h3 {
+            color: #1e3c72;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .info-item .icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .info-item h4 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+
+        .info-item p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .nav-links a {
+            color: #1e3c72;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2a5298;
+        }
+
+        footer {
+            background: #1e3c72;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.5em; }
+            header h2 { font-size: 1em; }
+            .content { padding: 20px; }
+            .section-title { font-size: 1.4em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela">
+            <h1>Inscripción en Línea</h1>
+            <h2>Secundaria Profr. Honorato Tlaseca Barrera</h2>
+        </header>
+
+        <div class="content">
+            <h2 class="section-title">📚 Seleccione el Grado de Inscripción</h2>
+            <p class="section-subtitle">Elija el grado al que desea inscribirse para el ciclo escolar 2026-2027. Haga clic en la tarjeta correspondiente para continuar con el proceso.</p>
+
+            <div class="cards-container">
+                <a href="https://faustinohtb-hash.github.io/honorato/primer_grado.html" class="card">
+                    <h3>1°</h3>
+                    <h4>Primer Grado</h4>
+                    <p>Inscripción para alumnos de nuevo ingreso a la secundaria</p>
+                    <span class="badge">Nuevo Ingreso</span>
+                </a>
+
+                <a href="https://faustinohtb-hash.github.io/honorato/segundo_grado.html" class="card">
+                    <h3>2°</h3>
+                    <h4>Segundo Grado</h4>
+                    <p>Reinscripción para alumnos que cursaron primer grado</p>
+                    <span class="badge">Reinscripción</span>
+                </a>
+
+                <a href="https://faustinohtb-hash.github.io/honorato/tercer_grado.html" class="card">
+                    <h3>3°</h3>
+                    <h4>Tercer Grado</h4>
+                    <p>Reinscripción para alumnos que cursaron segundo grado</p>
+                    <span class="badge">Reinscripción</span>
+                </a>
+            </div>
+
+            <div class="info-section">
+                <h3>📋 Información Importante</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="icon">📅</div>
+                        <h4>Periodo de Inscripción</h4>
+                        <p>Del 1 al 31 de agosto de 2026</p>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="icon">🏫</div>
+                        <h4>Ubicación</h4>
+                        <p>Carretera Puebla-Chiautla No.1, Huehuetlán el Chico, Pue.</p>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="icon">📞</div>
+                        <h4>Contacto</h4>
+                        <p>Control Escolar: Lunes a Viernes 8:00 - 14:00 hrs</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html">🏠</a>
+                <a href="index.html">Volver al Inicio</a>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Secundaria Profr. Honorato Tlaseca Barrera</strong></p>
+            <p>Carretera Puebla-Chiautla No.1, Huehuetlán el Chico, Pue. CP. 74720</p>
+            <p>© 2025 Todos los derechos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>
