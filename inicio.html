@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+   <!-- Open Graph (Facebook, WhatsApp, Telegram, LinkedIn, etc.) -->
+<meta property="og:title" content="Sistema de Gestión Escolar | Secundaria Profr. Honorato Tlaseca Barrera">
+<meta property="og:description" content="Plataforma institucional para la administración académica, el seguimiento escolar y la gestión de procesos educativos de la Escuela Secundaria Profr. Honorato Tlaseca Barrera.">
+<meta property="og:image" content="https://faustinohtb-hash.github.io/honorato/SGE.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://faustinohtb-hash.github.io/honorato/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Escuela Secundaria Profr. Honorato Tlaseca Barrera">
+<meta property="og:locale" content="es_MX">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sistema de Gestión Escolar | Secundaria Profr. Honorato Tlaseca Barrera">
+<meta name="twitter:description" content="Plataforma institucional para la administración académica y la gestión de información escolar.">
+<meta name="twitter:image" content="https://faustinohtb-hash.github.io/honorato/SGE.png">
+
+<!-- SEO -->
+<meta name="description" content="Sistema de Gestión Escolar de la Escuela Secundaria Profr. Honorato Tlaseca Barrera. Plataforma para la administración académica, control escolar, seguimiento de alumnos, docentes y procesos institucionales.">
+<meta name="keywords" content="Sistema de Gestión Escolar, Control Escolar, Administración Escolar, Secundaria Honorato Tlaseca Barrera, Gestión Académica, Educación, Puebla">
+<meta name="author" content="Escuela Secundaria Profr. Honorato Tlaseca Barrera">
+<meta name="robots" content="index,follow">    
+
+
+
+
+
+    <title>Sistema de Gestión Escolar — Secundaria Profr. Honorato Tlaseca Barrera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px 10px;
+            color: #fff;
+        }
+
+        header img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        header h2 {
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            padding: 30px 20px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .menu-container a {
+            display: block;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a2a6c;
+            text-decoration: none;
+            padding: 18px 22px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .menu-container a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            background: #fff;
+        }
+
+        .menu-container a.locked {
+            position: relative;
+        }
+
+        .menu-container a.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 1rem;
+        }
+
+        .welcome {
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+            max-width: 700px;
+        }
+
+        .welcome h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Modal de contraseña */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 35px 30px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-box h3 {
+            color: #1a2a6c;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .modal-box .icon-lock {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-box p.subtitle {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .modal-box input:focus {
+            border-color: #1a2a6c;
+        }
+
+        .modal-box .btn-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-box button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .modal-box .btn-enter {
+            background: #1a2a6c;
+            color: #fff;
+        }
+
+        .modal-box .btn-enter:hover {
+            background: #2a3a8c;
+        }
+
+        .modal-box .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .modal-box .btn-cancel:hover {
+            background: #ccc;
+        }
+
+        .error-msg {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            background: #ffe0e0;
+            border: 1px solid #ff4d4d;
+            border-radius: 8px;
+            color: #b30000;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .error-msg.visible {
+            display: block;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://faustinohtb-hash.github.io/honorato/imagenes/logo_escuela.png" alt="Logo Escuela">
+        <h1>Sistema de Gestión Escolar</h1>
+        <h2>Secundaria Profr. Honorato Tlaseca Barrera</h2>
+    </header>
+
+    <nav class="menu-container">
+        <a href="https://faustinohtb-hash.github.io/honorato/Gpermisosdocentes.html">Generar Permiso Alumno por Docente</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/permisosdeldia.html">Permisos del Día</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/PermisoDocentes.html" class="locked" onclick="return solicitarPassword(event, this.href)">Permisos de Docentes</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/Incidencias_escolares.html">Incidencias</a>
+
+        <a href="https://faustinohtb-hash.github.io/honorato/ReporteAsistencia.html">Retardos/Inasistencias</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/RevisionAsistencia.html">Revisión de Asistencia</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/SiATECCE.html">SiATECCE</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/registro_asistencia.html">Registro de Asistencia</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/regularizacion.html">Alumnos en Trayecto de Regularización 1° Periodo</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/calificaciones.html">Calificaciones del Primer Periodo</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/planodidactico.html">Planeaciones</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/AvancePDA.html">Monitoreo del Avance en los PDA</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/RegularizacionE1P.html">Resultados del Proceso de Regularización 1° Periodo</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/PanelIntegral.html" class="locked" onclick="return solicitarPassword(event, this.href)">Panel Integral de Control</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/GraficasCalPrimerT.html">Visualización de Rendimiento Académico 1° Periodo</a>
+        <a href="https://faustinohtb-hash.github.io/honorato/CartadeC.html">Cartas de Convivencia</a>
+    </nav>
+
+    <div class="welcome">
+        <h3>Bienvenido al Sistema de Gestión Escolar</h3>
+        <p>Seleccione una de las opciones del menú para comenzar a trabajar con el sistema.</p>
+    </div>
+
+    <footer>
+        <p>Secundaria Profr. Honorato Tlaseca Barrera</p>
+        <p>Carretera Puebla-Chiautla No.1, Huehuetlán el Chico, Pue. CP. 74720</p>
+        <p>© 2025 Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Modal de Contraseña -->
+    <div class="modal-overlay" id="modalPassword">
+        <div class="modal-box">
+            <div class="icon-lock">🔐</div>
+            <h3>Acceso Restringido</h3>
+            <p class="subtitle">Ingrese la contraseña de acceso</p>
+            <input type="password" id="inputPassword" placeholder="Contraseña" autocomplete="off">
+            <div class="btn-group">
+                <button class="btn-enter" onclick="verificarPassword()">Ingresar</button>
+                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+            </div>
+            <div class="error-msg" id="errorMsg">
+                ⚠️ Solo tienen acceso Autoridades Escolares y personal autorizado.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let urlDestino = '';
+
+        function solicitarPassword(event, url) {
+            event.preventDefault();
+            urlDestino = url;
+            document.getElementById('modalPassword').classList.add('active');
+            document.getElementById('inputPassword').value = '';
+            document.getElementById('errorMsg').classList.remove('visible');
+            setTimeout(() => {
+                document.getElementById('inputPassword').focus();
+            }, 300);
+            return false;
+        }
+
+        function verificarPassword() {
+            const input = document.getElementById('inputPassword').value.trim();
+            const anio = new Date().getFullYear().toString(); // Año dinámico (2026)
+
+            // Contraseñas válidas: primera letra mayúscula o minúscula + año
+            const prefijos = ['D', 'J', 'L', 'F', 'FDJ', 'N', 'ns', 'g', 'in'];
+            const passwordsValidas = [];
+
+            prefijos.forEach(prefijo => {
+                // Versión con primera letra mayúscula
+                passwordsValidas.push(prefijo.charAt(0).toUpperCase() + prefijo.slice(1) + anio);
+                // Versión con primera letra minúscula
+                passwordsValidas.push(prefijo.charAt(0).toLowerCase() + prefijo.slice(1) + anio);
+            });
+
+            if (passwordsValidas.includes(input)) {
+                window.location.href = urlDestino;
+            } else {
+                document.getElementById('errorMsg').classList.add('visible');
+                document.getElementById('inputPassword').value = '';
+                document.getElementById('inputPassword').focus();
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalPassword').classList.remove('active');
+            urlDestino = '';
+        }
+
+        // Permitir ingresar con Enter
+        document.getElementById('inputPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                verificarPassword();
+            }
+            if (e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalPassword').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
